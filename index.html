@@ -370,6 +370,68 @@
     font-weight: 700;
   }
 
+  /* ─── MAIN TABS (navegação entre blocos) ─────────── */
+  .main-tabs {
+    display: none;
+    gap: 0;
+    border-bottom: 1px solid var(--line);
+    background: white;
+    padding: 0 4px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .main-tabs::-webkit-scrollbar { display: none; }
+
+  .main-tabs.visible { display: flex; }
+
+  .main-tab {
+    padding: 16px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+    letter-spacing: 0.02em;
+    font-family: inherit;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .main-tab:hover {
+    color: var(--ink);
+  }
+
+  .main-tab.active {
+    color: var(--coral);
+    border-bottom-color: var(--coral);
+    font-weight: 700;
+  }
+
+  .main-tab-icon {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--coral);
+    margin-right: 8px;
+    vertical-align: middle;
+    opacity: 0;
+  }
+
+  .main-tab.active .main-tab-icon {
+    opacity: 1;
+  }
+
+  @media (max-width: 700px) {
+    .main-tab { padding: 14px 12px; font-size: 12px; }
+  }
+
   /* ─── FILTER BAR (tab bar minimalista) ───────────── */
   .bloco-filter {
     display: flex;
@@ -1032,6 +1094,27 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════ -->
+<!-- NAVEGAÇÃO ENTRE BLOCOS (abas) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<nav class="main-tabs" id="mainTabs" role="tablist">
+  <button class="main-tab active" data-block="blocoDaily" role="tab" aria-selected="true">
+    <span class="main-tab-icon"></span>Hoje
+  </button>
+  <button class="main-tab" data-block="blocoSemanal" role="tab">
+    <span class="main-tab-icon"></span>Semana
+  </button>
+  <button class="main-tab" data-block="blocoMensal" role="tab">
+    <span class="main-tab-icon"></span>Mês
+  </button>
+  <button class="main-tab" data-block="blocoDistrib" role="tab">
+    <span class="main-tab-icon"></span>Distribuição
+  </button>
+  <button class="main-tab" data-block="blocoVelocidade" role="tab">
+    <span class="main-tab-icon"></span>Velocidade
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
 <!-- BLOCO 1: RESULTADO DIÁRIO -->
 <!-- ═══════════════════════════════════════════════════════ -->
 <div id="blocoDaily" class="bloco" style="display: none;">
@@ -1689,11 +1772,14 @@ function processCSV(text) {
   });
 
   document.getElementById('initialMsg').style.display = 'none';
-  document.getElementById('blocoDaily').style.display = 'block';
-  document.getElementById('blocoSemanal').style.display = 'block';
-  document.getElementById('blocoMensal').style.display = 'block';
-  document.getElementById('blocoDistrib').style.display = 'block';
-  document.getElementById('blocoVelocidade').style.display = 'block';
+  document.getElementById('mainTabs').classList.add('visible');
+  // Mostra só o bloco ativo (default: Hoje)
+  const activeTab = document.querySelector('.main-tab.active');
+  const activeBlockId = activeTab ? activeTab.dataset.block : 'blocoDaily';
+  ALL_BLOCK_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === activeBlockId) ? 'block' : 'none';
+  });
 
   const zone = document.getElementById('inputZone');
   const body = document.getElementById('inputBody');
@@ -1817,9 +1903,34 @@ function historyAverage(periods) {
 }
 
 // ─── TAB SELECTOR (transforma <select> em tab bar minimalista) ───
+// ─── SWITCH BLOCK (navegação entre abas) ──────────────
+const ALL_BLOCK_IDS = ['blocoDaily', 'blocoSemanal', 'blocoMensal', 'blocoDistrib', 'blocoVelocidade'];
+
+function switchToBlock(blockId) {
+  ALL_BLOCK_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === blockId) ? 'block' : 'none';
+  });
+  
+  document.querySelectorAll('.main-tab').forEach(t => {
+    const isActive = t.dataset.block === blockId;
+    t.classList.toggle('active', isActive);
+    if (isActive) {
+      t.setAttribute('aria-selected', 'true');
+    } else {
+      t.removeAttribute('aria-selected');
+    }
+  });
+  
+  // Scroll suave pro topo do conteúdo (se necessário)
+  try {
+    document.getElementById(blockId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {}
+}
+
+// ─── TAB SELECTOR (transforma <select> em tab bar minimalista) ───
 function makeTabSelector(selectEl, options = {}) {
   if (!selectEl || selectEl.dataset.tabified === 'true') {
-    // Já convertido — apenas re-sincroniza o estado ativo
     if (selectEl && selectEl.dataset.tabified === 'true') {
       const container = selectEl.nextElementSibling;
       if (container && container.classList.contains('filter-tabs')) {
@@ -1835,7 +1946,6 @@ function makeTabSelector(selectEl, options = {}) {
   container.className = 'filter-tabs';
   container.setAttribute('role', 'tablist');
   
-  // Mapa de labels abreviados (opcional — pra meses usar "Jan" em vez de "Janeiro")
   const labelMap = options.labels || {};
   
   Array.from(selectEl.options).forEach(opt => {
@@ -2787,6 +2897,11 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   document.getElementById('blocoMensal').style.display = 'none';
   document.getElementById('blocoDistrib').style.display = 'none';
   document.getElementById('blocoVelocidade').style.display = 'none';
+  document.getElementById('mainTabs').classList.remove('visible');
+  // Reset aba ativa pra "Hoje"
+  document.querySelectorAll('.main-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.block === 'blocoDaily');
+  });
   document.getElementById('refreshBtn').style.display = 'none';
   hideSyncStatus();
   hideSyncBar();
@@ -2908,6 +3023,13 @@ document.getElementById('csvInput').addEventListener('keydown', e => {
   });
   document.getElementById('anoVelocSelector').addEventListener('change', () => {
     if (allDealsData.length) updateBlocoVelocidade();
+  });
+  
+  // Listeners: abas principais (navegação entre blocos)
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      switchToBlock(tab.dataset.block);
+    });
   });
   
   // Auto-load: se tem URL salva, carrega automaticamente
