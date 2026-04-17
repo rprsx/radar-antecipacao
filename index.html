@@ -370,114 +370,105 @@
     font-weight: 700;
   }
 
-  /* ─── FILTER BAR (pills clicáveis) ─────────────────── */
+  /* ─── FILTER BAR (tab bar minimalista) ───────────── */
   .bloco-filter {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px 20px;
-    background: var(--paper-2);
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: white;
     border-bottom: 1px solid var(--line);
+    gap: 24px;
   }
 
-  .filter-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .filter-row-label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    font-weight: 700;
-    min-width: 56px;
-    flex-shrink: 0;
-  }
-
-  .filter-pills {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    align-items: center;
+  .filter-main {
     flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
   }
 
-  .filter-pill {
-    display: inline-flex;
+  .filter-side {
+    flex-shrink: 0;
+    display: flex;
+    gap: 16px;
     align-items: center;
-    padding: 7px 14px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  .filter-tab {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+    margin-bottom: -1px;
+  }
+
+  .filter-tab:hover {
+    color: var(--ink);
+  }
+
+  .filter-tab.active {
+    color: var(--coral);
+    border-bottom-color: var(--coral);
+    font-weight: 700;
+  }
+
+  /* Dropdown compacto inline (pra ano e semana) */
+  .filter-inline-select {
+    font-family: inherit;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    background: white;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all 0.12s ease;
-    border-radius: 2px;
-    font-family: inherit;
-    white-space: nowrap;
-  }
-
-  .filter-pill:hover {
-    border-color: var(--coral);
     color: var(--ink);
-    background: white;
-    transform: translateY(-1px);
-  }
-
-  .filter-pill.active {
-    background: var(--coral);
-    color: white;
-    border-color: var(--coral);
-    box-shadow: 0 2px 6px rgba(211, 123, 90, 0.25);
-  }
-
-  .filter-pill.active:hover {
-    background: var(--ink);
-    border-color: var(--ink);
-    transform: translateY(-1px);
-  }
-
-  .filter-select {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--ink);
-    background-color: white;
-    padding: 8px 36px 8px 14px;
-    border: 1px solid var(--line);
-    border-radius: 2px;
+    background-color: transparent;
+    padding: 4px 20px 4px 8px;
+    border: none;
     cursor: pointer;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='none' stroke='%23D37B5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 L6 7.5 L9 4.5'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'><path fill='none' stroke='%23D37B5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3 4.5 L6 7.5 L9 4.5'/></svg>");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 12px;
-    transition: all 0.15s ease;
-    min-width: 140px;
+    background-position: right 4px center;
+    background-size: 10px;
+    transition: color 0.12s;
   }
 
-  .filter-select:hover {
-    border-color: var(--coral);
+  .filter-inline-select:hover {
+    color: var(--coral);
   }
 
-  .filter-select:focus {
+  .filter-inline-select:focus {
     outline: none;
-    border-color: var(--coral);
-    box-shadow: 0 0 0 3px var(--coral-soft);
+    color: var(--coral);
+  }
+
+  .filter-separator {
+    width: 1px;
+    height: 16px;
+    background: var(--line);
   }
 
   @media (max-width: 700px) {
-    .filter-row { align-items: flex-start; }
-    .filter-row-label { min-width: 100%; margin-bottom: 2px; }
-    .filter-pill { padding: 8px 12px; font-size: 11px; }
-    .filter-select { flex: 1; min-width: 0; }
+    .bloco-filter { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+    .filter-side { width: 100%; justify-content: space-between; }
+    .filter-main { width: 100%; }
   }
 
   /* ─── RESULT PANELS ────────────────────────────────── */
@@ -1127,31 +1118,27 @@
     Consolidado por semana. <b>Yield Total</b> = rentabilidade bruta (deságio ÷ valor do contrato). <b>Yield Mês</b> = rentabilidade ajustada pelo prazo das parcelas. O histórico compara a semana atual com as 4 anteriores — linhas com <b>PICO</b> ou <b>BAIXA</b> indicam desvio maior que 30% vs média.
   </div>
   <div class="bloco-filter">
-    <div class="filter-row">
-      <span class="filter-row-label">Mês</span>
-      <select id="mesSemanalSelector" class="filter-select" title="Mês">
-        <option value="0">Todos os meses</option>
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
+    <div class="filter-main">
+      <select id="mesSemanalSelector">
+        <option value="0">Todos</option>
+        <option value="1">Jan</option>
+        <option value="2">Fev</option>
+        <option value="3">Mar</option>
+        <option value="4">Abr</option>
+        <option value="5">Mai</option>
+        <option value="6">Jun</option>
+        <option value="7">Jul</option>
+        <option value="8">Ago</option>
+        <option value="9">Set</option>
+        <option value="10">Out</option>
+        <option value="11">Nov</option>
+        <option value="12">Dez</option>
       </select>
     </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Ano</span>
-      <select id="anoSemanalSelector" class="filter-select" title="Ano"></select>
-    </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Semana</span>
-      <select id="semanaSelector" class="filter-select" title="Semana"></select>
+    <div class="filter-side">
+      <select id="semanaSelector" class="filter-inline-select"></select>
+      <div class="filter-separator"></div>
+      <select id="anoSemanalSelector" class="filter-inline-select"></select>
     </div>
   </div>
 
@@ -1226,27 +1213,25 @@
     Consolidado por mês. Mesmas métricas do semanal, mas em escala mensal. O histórico mostra os 3 meses anteriores pra comparação — linhas com <b>PICO</b> ou <b>BAIXA</b> sinalizam meses que destoam significativamente da média.
   </div>
   <div class="bloco-filter">
-    <div class="filter-row">
-      <span class="filter-row-label">Mês</span>
-      <select id="mesSelector" class="filter-select" title="Mês">
-        <option value="0">Todos os meses</option>
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
+    <div class="filter-main">
+      <select id="mesSelector">
+        <option value="0">Todos</option>
+        <option value="1">Jan</option>
+        <option value="2">Fev</option>
+        <option value="3">Mar</option>
+        <option value="4">Abr</option>
+        <option value="5">Mai</option>
+        <option value="6">Jun</option>
+        <option value="7">Jul</option>
+        <option value="8">Ago</option>
+        <option value="9">Set</option>
+        <option value="10">Out</option>
+        <option value="11">Nov</option>
+        <option value="12">Dez</option>
       </select>
     </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Ano</span>
-      <select id="anoMensalSelector" class="filter-select" title="Ano"></select>
+    <div class="filter-side">
+      <select id="anoMensalSelector" class="filter-inline-select"></select>
     </div>
   </div>
 
@@ -1321,27 +1306,25 @@
     Como as operações pagas se distribuem por <b>faixa de Yield Total</b>. Mostra onde está concentrado o volume e a rentabilidade — útil pra identificar se a operação depende de poucas transações gordas ou de muitas menores.
   </div>
   <div class="bloco-filter">
-    <div class="filter-row">
-      <span class="filter-row-label">Mês</span>
-      <select id="mesDistribSelector" class="filter-select" title="Mês">
-        <option value="0">Todos os meses</option>
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
+    <div class="filter-main">
+      <select id="mesDistribSelector">
+        <option value="0">Todos</option>
+        <option value="1">Jan</option>
+        <option value="2">Fev</option>
+        <option value="3">Mar</option>
+        <option value="4">Abr</option>
+        <option value="5">Mai</option>
+        <option value="6">Jun</option>
+        <option value="7">Jul</option>
+        <option value="8">Ago</option>
+        <option value="9">Set</option>
+        <option value="10">Out</option>
+        <option value="11">Nov</option>
+        <option value="12">Dez</option>
       </select>
     </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Ano</span>
-      <select id="anoDistribSelector" class="filter-select" title="Ano"></select>
+    <div class="filter-side">
+      <select id="anoDistribSelector" class="filter-inline-select"></select>
     </div>
   </div>
   
@@ -1360,27 +1343,25 @@
     Tempo entre a <b>abertura</b> do deal e o <b>pagamento</b>. Média e mediana medem o ciclo típico da operação — quanto menor, mais rápido seu pipeline está girando. A distribuição mostra quanto % dos deals fecha em cada faixa de tempo.
   </div>
   <div class="bloco-filter">
-    <div class="filter-row">
-      <span class="filter-row-label">Mês</span>
-      <select id="mesVelocSelector" class="filter-select" title="Mês">
-        <option value="0">Todos os meses</option>
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
+    <div class="filter-main">
+      <select id="mesVelocSelector">
+        <option value="0">Todos</option>
+        <option value="1">Jan</option>
+        <option value="2">Fev</option>
+        <option value="3">Mar</option>
+        <option value="4">Abr</option>
+        <option value="5">Mai</option>
+        <option value="6">Jun</option>
+        <option value="7">Jul</option>
+        <option value="8">Ago</option>
+        <option value="9">Set</option>
+        <option value="10">Out</option>
+        <option value="11">Nov</option>
+        <option value="12">Dez</option>
       </select>
     </div>
-    <div class="filter-row">
-      <span class="filter-row-label">Ano</span>
-      <select id="anoVelocSelector" class="filter-select" title="Ano"></select>
+    <div class="filter-side">
+      <select id="anoVelocSelector" class="filter-inline-select"></select>
     </div>
   </div>
   
@@ -1835,15 +1816,15 @@ function historyAverage(periods) {
   return nonZero.reduce((s, m) => s + m.total, 0) / nonZero.length;
 }
 
-// ─── PILL SELECTOR (transforma <select> em pills clicáveis) ───
-function makePillSelector(selectEl) {
-  if (!selectEl || selectEl.dataset.pillified === 'true') {
+// ─── TAB SELECTOR (transforma <select> em tab bar minimalista) ───
+function makeTabSelector(selectEl, options = {}) {
+  if (!selectEl || selectEl.dataset.tabified === 'true') {
     // Já convertido — apenas re-sincroniza o estado ativo
-    if (selectEl && selectEl.dataset.pillified === 'true') {
+    if (selectEl && selectEl.dataset.tabified === 'true') {
       const container = selectEl.nextElementSibling;
-      if (container && container.classList.contains('filter-pills')) {
-        container.querySelectorAll('.filter-pill').forEach(p => {
-          p.classList.toggle('active', p.dataset.value === selectEl.value);
+      if (container && container.classList.contains('filter-tabs')) {
+        container.querySelectorAll('.filter-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.value === selectEl.value);
         });
       }
     }
@@ -1851,37 +1832,40 @@ function makePillSelector(selectEl) {
   }
   
   const container = document.createElement('div');
-  container.className = 'filter-pills';
+  container.className = 'filter-tabs';
   container.setAttribute('role', 'tablist');
   
+  // Mapa de labels abreviados (opcional — pra meses usar "Jan" em vez de "Janeiro")
+  const labelMap = options.labels || {};
+  
   Array.from(selectEl.options).forEach(opt => {
-    const pill = document.createElement('button');
-    pill.type = 'button';
-    pill.className = 'filter-pill';
-    pill.textContent = opt.textContent;
-    pill.dataset.value = opt.value;
-    pill.setAttribute('role', 'tab');
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'filter-tab';
+    tab.textContent = labelMap[opt.value] || opt.textContent;
+    tab.dataset.value = opt.value;
+    tab.setAttribute('role', 'tab');
     if (opt.value === selectEl.value) {
-      pill.classList.add('active');
-      pill.setAttribute('aria-selected', 'true');
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
     }
-    pill.addEventListener('click', () => {
-      if (selectEl.value === opt.value) return; // no-op se já ativo
+    tab.addEventListener('click', () => {
+      if (selectEl.value === opt.value) return;
       selectEl.value = opt.value;
-      container.querySelectorAll('.filter-pill').forEach(p => {
-        p.classList.remove('active');
-        p.removeAttribute('aria-selected');
+      container.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.remove('active');
+        t.removeAttribute('aria-selected');
       });
-      pill.classList.add('active');
-      pill.setAttribute('aria-selected', 'true');
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
       selectEl.dispatchEvent(new Event('change', { bubbles: true }));
     });
-    container.appendChild(pill);
+    container.appendChild(tab);
   });
   
   selectEl.style.display = 'none';
   selectEl.parentNode.insertBefore(container, selectEl.nextSibling);
-  selectEl.dataset.pillified = 'true';
+  selectEl.dataset.tabified = 'true';
 }
 
 // ─── GRÁFICO DE LINHA (tendência) ──────────────────────
@@ -2884,11 +2868,10 @@ document.getElementById('csvInput').addEventListener('keydown', e => {
   // Popular seletor de semanas com as semanas do mês selecionado
   refreshWeekSelector();
   
-  // Transformar selects de MÊS e ANO em pills clicáveis (UX friendly)
-  // Semana continua como dropdown (52 opções é demais pra pills)
-  ['mesSelector', 'mesSemanalSelector', 'mesDistribSelector', 'mesVelocSelector',
-   'anoSemanalSelector', 'anoMensalSelector', 'anoDistribSelector', 'anoVelocSelector']
-    .forEach(id => makePillSelector(document.getElementById(id)));
+  // Transformar selects de MÊS em tabs horizontais (UX friendly)
+  // Ano e Semana ficam como dropdown inline minimalista
+  ['mesSelector', 'mesSemanalSelector', 'mesDistribSelector', 'mesVelocSelector']
+    .forEach(id => makeTabSelector(document.getElementById(id)));
   
   // Listeners: Bloco 2
   document.getElementById('mesSemanalSelector').addEventListener('change', () => {
