@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar de Antecipação — 3 Blocos</title>
+<style>
+  :root {
+    --coral: #D37B5A;
+    --coral-soft: #D37B5A15;
+    --coral-line: #D37B5A40;
+    --ink: #1A1816;
+    --ink-soft: #4A453F;
+    --ink-mute: #8A847B;
+    --paper: #FAF7F2;
+    --paper-2: #F2EDE5;
+    --line: #E5DFD4;
+    --green: #5A8F6B;
+    --green-soft: #5A8F6B15;
+    --amber: #C9933B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    padding: 24px 32px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ─── HEADER ───────────────────────────────────────── */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .masthead-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .masthead-title .accent {
+    color: var(--coral);
+  }
+
+  .masthead-subtitle {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 4px;
+  }
+
+  .masthead-meta {
+    text-align: right;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+
+  .masthead-meta .date-big {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── INPUT AREA ───────────────────────────────────── */
+  .input-zone {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+
+  .input-zone.collapsed {
+    padding: 10px 20px;
+  }
+
+  .input-zone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .input-zone.collapsed .input-zone-header {
+    margin-bottom: 0;
+  }
+
+  .input-zone-title {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .input-zone-title::before {
+    content: "▸ ";
+    color: var(--coral);
+  }
+
+  textarea {
+    width: 100%;
+    height: 120px;
+    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    font-size: 11px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 12px;
+    resize: vertical;
+    color: var(--ink);
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--coral);
+  }
+
+  .input-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 8px 16px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  button:hover {
+    background: var(--coral);
+    border-color: var(--coral);
+  }
+
+  button.ghost {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  button.ghost:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .error-msg {
+    color: var(--coral);
+    font-size: 11px;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  /* ─── BLOCOS ───────────────────────────────────────── */
+  .bloco {
+    margin-bottom: 40px;
+    border: 2px solid var(--line);
+    background: white;
+  }
+
+  .bloco-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bloco-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--coral);
+    min-width: 24px;
+  }
+
+  .bloco-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  .bloco-selector {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .bloco-selector select {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    padding: 4px 8px;
+    border: 1px solid var(--paper);
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .bloco-selector button {
+    font-size: 9px;
+    padding: 4px 12px;
+    background: var(--coral);
+    border-color: var(--coral);
+  }
+
+  /* ─── RESULT PANELS ────────────────────────────────── */
+  .result-panel {
+    padding: 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .result-panel.primary {
+    background: var(--coral-soft);
+  }
+
+  .result-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .result-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--coral);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .result-value .currency {
+    font-size: 16px;
+    color: var(--ink-soft);
+    font-weight: 400;
+    margin-right: 4px;
+    vertical-align: 6px;
+  }
+
+  .result-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .result-breakdown span {
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ─── META INPUT ROW ───────────────────────────────── */
+  .meta-input-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 20px;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-input label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+    min-width: 80px;
+  }
+
+  .meta-input input {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    width: 140px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .meta-input input:focus {
+    outline: none;
+    border-color: var(--coral);
+  }
+
+  .progress-section {
+    flex: 1;
+  }
+
+  .progress-bar {
+    background: var(--line);
+    height: 8px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .progress-fill {
+    background: var(--coral);
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+  }
+
+  .progress-fill.over {
+    background: var(--green);
+  }
+
+  .progress-text {
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── INFO GRID ────────────────────────────────────── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .info-box {
+    padding: 16px 20px;
+    border-right: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .info-box:last-child {
+    border-right: none;
+  }
+
+  .info-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .info-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .info-sub {
+    font-size: 10px;
+    color: var(--ink-soft);
+  }
+
+  /* ─── HISTORY TABLE ────────────────────────────────── */
+  .history-section {
+    border-top: 1px solid var(--line);
+    background: white;
+  }
+
+  .history-header {
+    padding: 10px 20px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .history-header::before {
+    content: "▸ ";
+    color: var(--coral);
+  }
+
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .history-table thead tr {
+    background: var(--paper);
+  }
+
+  .history-table th {
+    padding: 8px 20px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .history-table th.num {
+    text-align: right;
+  }
+
+  .history-table td {
+    padding: 9px 20px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  .history-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .history-table tbody tr:hover td {
+    background: var(--coral-soft);
+  }
+
+  .history-table td.num {
+    text-align: right;
+    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    font-size: 11px;
+  }
+
+  .history-table td.label {
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .history-table td.label .sub {
+    display: block;
+    font-weight: 400;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .history-table td.zero {
+    color: var(--ink-mute);
+  }
+
+  .history-table tr.current td {
+    background: var(--coral-soft);
+  }
+
+  .history-table tr.current td.label::after {
+    content: " ●";
+    color: var(--coral);
+  }
+
+  .history-table tr.summary td {
+    background: var(--paper-2);
+    font-weight: 700;
+    border-top: 2px solid var(--ink);
+    color: var(--ink);
+  }
+
+  .history-table tr.summary td.label .sub {
+    font-weight: 400;
+  }
+
+  /* ─── TRENDS ───────────────────────────────────────── */
+  .trend {
+    display: inline-block;
+    font-size: 10px;
+    margin-left: 6px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .trend-up { color: var(--green); }
+  .trend-down { color: var(--coral); }
+  .trend-flat { color: var(--ink-mute); }
+
+  .comp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+  }
+
+  .comp-badge.up { background: var(--green-soft); color: var(--green); }
+  .comp-badge.down { background: var(--coral-soft); color: var(--coral); }
+  .comp-badge.flat { background: var(--paper-2); color: var(--ink-mute); }
+
+  .result-panel .comp-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  /* ─── FILTERS APPLIED ──────────────────────────────── */
+  .filters-applied {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    background: var(--coral-soft);
+    padding: 12px 20px;
+    border: 1px solid var(--coral-line);
+    text-align: center;
+  }
+
+  /* ─── INITIAL STATE ────────────────────────────────── */
+  .initial-msg {
+    padding: 40px;
+    text-align: center;
+    border: 1px dashed var(--line);
+    background: var(--paper-2);
+    margin-bottom: 32px;
+  }
+
+  .initial-msg h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .initial-msg p {
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin: 0 auto;
+    font-size: 13px;
+  }
+
+  /* ─── RESPONSIVE ───────────────────────────────────── */
+  @media (max-width: 700px) {
+    body { padding: 16px; }
+    .bloco-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .bloco-selector { align-self: flex-end; }
+    .result-breakdown { flex-direction: column; gap: 8px; }
+    .meta-input-row { flex-direction: column; align-items: stretch; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-box { border-right: none; border-bottom: 1px solid var(--line); }
+    .info-box:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="masthead-title">Radar de <span class="accent">Antecipação</span></div>
+    <div class="masthead-subtitle">Análise diária, semanal e mensal</div>
+  </div>
+  <div class="masthead-meta">
+    <div id="today" class="date-big"></div>
+    <div id="now"></div>
+  </div>
+</header>
+
+<div id="inputZone" class="input-zone">
+  <div class="input-zone-header">
+    <div class="input-zone-title">CSV · aba pipeline</div>
+    <button id="toggleInput" class="ghost" style="display: none;">Editar CSV</button>
+  </div>
+  <div id="inputBody" style="display: block;">
+    <textarea id="csvInput" placeholder="Cole aqui o CSV da aba pipeline
+
+Preciso das colunas:
+• Data Fechamento (coluna mestra de período)
+• Mês Fechamento
+• Deságio Total
+• Status Fechamento  
+• Status do Contrato
+• Parcelas Antecipadas
+• Yield Operação (Total) e (Mês)"></textarea>
+    <div class="input-actions">
+      <button id="processBtn">Processar dados</button>
+      <button id="sampleBtn" class="ghost">Dados de exemplo</button>
+      <button id="clearBtn" class="ghost">Limpar</button>
+    </div>
+    <div id="errorMsg" class="error-msg"></div>
+  </div>
+</div>
+
+<div class="initial-msg" id="initialMsg">
+  <h2>Painel de Antecipação</h2>
+  <p>
+    Cole o CSV da aba pipeline para começar a análise. 
+    O sistema vai calcular automaticamente os resultados diários, semanais e mensais.
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 1: RESULTADO DIÁRIO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="blocoDaily" class="bloco" style="display: none;">
+  <div class="bloco-header">
+    <div class="bloco-number">01</div>
+    <div class="bloco-title">Resultado Diário</div>
+  </div>
+
+  <div class="result-panel primary">
+    <div class="result-label">Projeção do dia</div>
+    <div class="result-value">
+      <span class="currency">R$</span><span id="projecaoDia">0,00</span>
+    </div>
+    <div class="result-breakdown">
+      <div>pago hoje + em aberto trabalhando</div>
+    </div>
+    <div class="comp-container" id="compDiario"></div>
+  </div>
+
+  <div class="meta-input-row">
+    <div class="meta-input">
+      <label>Meta diária</label>
+      <input type="text" inputmode="numeric" id="metaDiaria" placeholder="0,00" value="">
+    </div>
+    <div class="progress-section">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressDiaria" style="width: 0%;"></div>
+      </div>
+      <div class="progress-text" id="progressDiariaText">0.0% da meta diária</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-label">Pago hoje · confirmado</div>
+      <div class="info-value">R$ <span id="pagoHoje">0,00</span></div>
+      <div class="info-sub"><span id="pagoHojeCount">0</span> casos fechados</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Em aberto · trabalhando</div>
+      <div class="info-value">R$ <span id="resultDiario">0,00</span></div>
+      <div class="info-sub"><span id="countDiario">0</span> contratos · ticket <span id="ticketDiario">R$ 0</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Em aberto · aguardando resposta</div>
+      <div class="info-value">R$ <span id="semDataDesagio">0,00</span></div>
+      <div class="info-sub"><span id="semDataCount">0</span> aguardando retorno</div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-header">Últimos 5 dias · fechados</div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th class="num">Deságio</th>
+          <th class="num">Yield Total</th>
+          <th class="num">Yield Mês</th>
+          <th class="num">Casos</th>
+          <th class="num">Parcelas</th>
+        </tr>
+      </thead>
+      <tbody id="historyDaily"></tbody>
+    </table>
+  </div>
+
+  <div class="filters-applied" id="filtersDiario">Filtros: Aguard. aprovação + Incluir banco + Em aberto • Assinado + Enviado + Enviar + Em revisão</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 2: ANÁLISE SEMANAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="blocoSemanal" class="bloco" style="display: none;">
+  <div class="bloco-header">
+    <div class="bloco-number">02</div>
+    <div class="bloco-title">Análise Semanal</div>
+    <div class="bloco-selector">
+      <select id="anoSemanalSelector"></select>
+      <select id="mesSemanalSelector">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+      <select id="semanaSelector"></select>
+    </div>
+  </div>
+
+  <div class="result-panel">
+    <div class="result-label">Deságio da semana</div>
+    <div class="result-value">
+      <span class="currency">R$</span><span id="resultSemanal">0,00</span>
+    </div>
+    <div class="comp-container" id="compSemanal"></div>
+  </div>
+
+  <div class="meta-input-row">
+    <div class="meta-input">
+      <label>Meta semanal</label>
+      <input type="text" inputmode="numeric" id="metaSemanal" placeholder="0,00" value="">
+    </div>
+    <div class="progress-section">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressSemanal" style="width: 0%;"></div>
+      </div>
+      <div class="progress-text" id="progressSemanalText">0.0% da meta semanal</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-label">Yield Total</div>
+      <div class="info-value"><span id="yieldSemanalTotal">0,00%</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Yield Mês</div>
+      <div class="info-value"><span id="yieldSemanalMes">0,00%</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Casos</div>
+      <div class="info-value"><span id="casosSemanal">0</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Parcelas Média</div>
+      <div class="info-value"><span id="parcelasSemanal">0,000</span></div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-header">Semanas do mês selecionado</div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th class="num">Deságio</th>
+          <th class="num">Yield Total</th>
+          <th class="num">Yield Mês</th>
+          <th class="num">Casos</th>
+          <th class="num">Parcelas</th>
+        </tr>
+      </thead>
+      <tbody id="historyWeekly"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 3: ANÁLISE MENSAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="blocoMensal" class="bloco" style="display: none;">
+  <div class="bloco-header">
+    <div class="bloco-number">03</div>
+    <div class="bloco-title">Análise Mensal</div>
+    <div class="bloco-selector">
+      <select id="mesSelector">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+      <select id="anoMensalSelector"></select>
+    </div>
+  </div>
+
+  <div class="result-panel">
+    <div class="result-label">Deságio do mês</div>
+    <div class="result-value">
+      <span class="currency">R$</span><span id="resultMensal">0,00</span>
+    </div>
+    <div class="comp-container" id="compMensal"></div>
+  </div>
+
+  <div class="meta-input-row">
+    <div class="meta-input">
+      <label>Meta mensal</label>
+      <input type="text" inputmode="numeric" id="metaMensal" placeholder="0,00" value="">
+    </div>
+    <div class="progress-section">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressMensal" style="width: 0%;"></div>
+      </div>
+      <div class="progress-text" id="progressMensalText">0.0% da meta mensal</div>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-label">Yield Total</div>
+      <div class="info-value"><span id="yieldMensalTotal">0,00%</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Yield Mês</div>
+      <div class="info-value"><span id="yieldMensalMes">0,00%</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Casos</div>
+      <div class="info-value"><span id="casosMensal">0</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Parcelas Média</div>
+      <div class="info-value"><span id="parcelasMensal">0,000</span></div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-header">Últimos 3 meses</div>
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th class="num">Deságio</th>
+          <th class="num">Yield Total</th>
+          <th class="num">Yield Mês</th>
+          <th class="num">Casos</th>
+          <th class="num">Parcelas</th>
+        </tr>
+      </thead>
+      <tbody id="historyMonthly"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ─── SETUP ─────────────────────────────────────────────
+(function () {
+  const d = new Date();
+  const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const diasSemana = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  document.getElementById('today').textContent =
+    `${d.getDate()} ${meses[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById('now').textContent =
+    `${diasSemana[d.getDay()]} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+})();
+
+const fmtBRL = v => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtInt = v => Math.round(v).toLocaleString('pt-BR');
+const fmtPct = v => (v == null || isNaN(v)) ? '—' : v.toFixed(2).replace('.', ',') + '%';
+const fmtDec = (v, digits = 2) => (v == null || isNaN(v)) ? '—' : Number(v).toFixed(digits).replace('.', ',');
+
+// ─── MÁSCARA MONETÁRIA BR ──────────────────────────────
+// Usuário digita apenas dígitos → reformata pra 10.000,00 em tempo real
+function maskMoneyBR(rawValue) {
+  const digits = String(rawValue).replace(/\D/g, '');
+  if (!digits) return '';
+  const cents = parseInt(digits, 10);
+  const reais = cents / 100;
+  return reais.toLocaleString('pt-BR', { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  });
+}
+
+function unmaskMoneyBR(maskedValue) {
+  const digits = String(maskedValue).replace(/\D/g, '');
+  if (!digits) return 0;
+  return parseInt(digits, 10) / 100;
+}
+
+// ─── CSV PARSER ─────────────────────────────────────────
+function detectDelimiter(text) {
+  const firstLine = text.split(/\r?\n/)[0] || '';
+  const counts = { ',': 0, ';': 0, '\t': 0 };
+  for (const ch of firstLine) if (ch in counts) counts[ch]++;
+  return Object.entries(counts).sort((a,b) => b[1]-a[1])[0][0] || ',';
+}
+
+function parseCSV(text) {
+  const delim = detectDelimiter(text);
+  const rows = [];
+  let row = [], cell = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"' && text[i+1] === '"') { cell += '"'; i++; }
+      else if (c === '"') { inQuotes = false; }
+      else { cell += c; }
+    } else {
+      if (c === '"') { inQuotes = true; }
+      else if (c === delim) { row.push(cell); cell = ''; }
+      else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+      else if (c === '\r') { /* skip */ }
+      else { cell += c; }
+    }
+  }
+  if (cell.length > 0 || row.length > 0) { row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(c => c && c.trim().length > 0));
+}
+
+function parseNum(v) {
+  if (v == null) return null;
+  const s = String(v).trim().replace(/R\$\s*/i, '').replace(/%/g, '').replace(/\s/g, '');
+  if (!s) return null;
+  
+  let out;
+  if (/^\d{1,3}(\.\d{3})*,\d{1,2}$/.test(s)) {
+    out = parseFloat(s.replace(/\./g, '').replace(',', '.'));
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(s)) {
+    out = parseFloat(s.replace(/\./g, ''));
+  } else if (/^\d+,\d{1,2}$/.test(s)) {
+    out = parseFloat(s.replace(',', '.'));
+  } else {
+    out = parseFloat(s.replace(/,/g, ''));
+  }
+  
+  return isNaN(out) ? null : out;
+}
+
+// ─── DATE PARSER ────────────────────────────────────────
+function parseDate(v) {
+  if (!v) return null;
+  const s = String(v).trim();
+  if (!s) return null;
+  
+  let d = null;
+  
+  // dd/mm/yyyy ou dd/mm/yy
+  const brMatch = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (brMatch) {
+    let [, day, month, year] = brMatch;
+    if (year.length === 2) year = '20' + year;
+    d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  }
+  
+  // yyyy-mm-dd
+  if (!d) {
+    const isoMatch = s.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})/);
+    if (isoMatch) {
+      const [, year, month, day] = isoMatch;
+      d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+  }
+  
+  // Fallback: tentar Date.parse
+  if (!d) {
+    const parsed = Date.parse(s);
+    if (!isNaN(parsed)) d = new Date(parsed);
+  }
+  
+  return (d && !isNaN(d.getTime())) ? d : null;
+}
+
+// Calcular semana ISO do ano
+function getWeekNumber(d) {
+  const date = new Date(d.getTime());
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+// ─── HEADER MAPPING ────────────────────────────────────
+function norm(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function mapHeaders(headerRow) {
+  const mapping = {};
+  
+  headerRow.forEach((h, i) => {
+    const n = norm(h);
+    
+    if (n.includes('desagio') && n.includes('total')) {
+      mapping.desagio_total = i;
+    } else if (n.includes('desagio') && !mapping.desagio_total) {
+      mapping.desagio_total = i;
+    } else if (n === 'datafechamento' || (n.includes('data') && n.includes('fechamento') && !n.includes('status'))) {
+      mapping.data_fechamento = i;
+    } else if (n === 'mesfechamento' || (n.includes('mes') && n.includes('fechamento') && !n.includes('status') && !n.includes('semana') && !n.includes('data'))) {
+      mapping.mes_fechamento = i;
+    } else if ((n.includes('status') && n.includes('fechamento')) || 
+               (n.includes('fechamento') && !n.includes('semana') && !n.includes('data') && !n.includes('mes'))) {
+      mapping.status_fechamento = i;
+    } else if ((n.includes('semana') && n.includes('fechamento')) ||
+               (n.includes('semanafechamento'))) {
+      mapping.semana_fechamento = i;
+    } else if ((n.includes('status') && n.includes('contrato')) ||
+               (n.includes('statusdocontrato'))) {
+      mapping.status_contrato = i;
+    } else if ((n.includes('yield') && n.includes('operacao') && n.includes('total')) ||
+               (n.includes('yieldoperacaototal'))) {
+      mapping.yield_operacao_total = i;
+    } else if ((n.includes('yield') && n.includes('operacao') && n.includes('mes')) ||
+               (n.includes('yieldoperacaomes'))) {
+      mapping.yield_operacao_mes = i;
+    } else if (n === 'semana' || n.includes('semana')) {
+      mapping.semana = i;
+    } else if ((n.includes('parcelas') && n.includes('antecipadas')) ||
+               (n.includes('parcelasantecipadas'))) {
+      mapping.parcelas_antecipadas = i;
+    } else if (n === 'ano' || n === 'year') {
+      mapping.ano = i;
+    } else if (n === 'mes' || n === 'month') {
+      mapping.mes = i;
+    } else if (n === 'cliente') {
+      mapping.cliente = i;
+    } else if (n.includes('cliente') && mapping.cliente === undefined) {
+      mapping.cliente = i;
+    } else if ((n.includes('valor') && n.includes('total')) ||
+               n.includes('valorcontrato') || n.includes('valortotal')) {
+      mapping.valor_contrato = i;
+    } else if (n.includes('deal') || n === 'id') {
+      mapping.deal = i;
+    }
+  });
+  
+  return mapping;
+}
+
+// ─── MAIN PROCESS ──────────────────────────────────────
+let allDealsData = [];
+
+function processCSV(text) {
+  const err = document.getElementById('errorMsg');
+  err.textContent = '';
+
+  if (!text.trim()) {
+    err.textContent = 'Cole o CSV antes de processar.';
+    return;
+  }
+
+  let rows;
+  try { rows = parseCSV(text); }
+  catch (e) { err.textContent = 'Erro ao ler CSV.'; return; }
+
+  if (rows.length < 2) {
+    err.textContent = 'CSV precisa de cabeçalho + dados.';
+    return;
+  }
+
+  const header = rows[0].map(c => c.trim());
+  const mapping = mapHeaders(header);
+
+  console.log('=== DEBUG MAPEAMENTO ===');
+  console.log('Headers CSV:', header);
+  console.log('Headers normalizados:', header.map((h, i) => `[${i}] "${h}" → "${norm(h)}"`));
+  console.log('Mapping resultado:', JSON.stringify(mapping));
+  console.log('Coluna mapeada como cliente:', mapping.cliente, '→ header:', header[mapping.cliente]);
+
+  const required = ['desagio_total'];
+  const missing = required.filter(k => mapping[k] === undefined);
+  if (missing.length) {
+    const foundHeaders = header.map(h => `"${h}"`).join(', ');
+    
+    const hasMoneyValues = header.some(h => h.includes('R$') || h.includes('%') || /^\d+[,.]?\d*$/.test(h));
+    
+    if (hasMoneyValues) {
+      err.innerHTML = `
+        <strong style="color: #D37B5A;">❌ VOCÊ COPIOU SÓ OS DADOS!</strong><br><br>
+        <strong>Precisa incluir a PRIMEIRA LINHA da planilha (cabeçalhos das colunas).</strong><br><br>
+        <strong>Como fazer:</strong><br>
+        1️⃣ Vá para a aba "pipeline"<br>
+        2️⃣ Clique na célula A2 (onde estão os cabeçalhos reais)<br>
+        3️⃣ Aperte Ctrl+Shift+End (seleciona tudo até o fim)<br>
+        4️⃣ Ctrl+C (copia)<br>
+        5️⃣ Cole aqui<br><br>
+        <em>A primeira linha deve ter: Ano, Mês, Cliente, Deságio Total, Status Fechamento, etc.</em>
+      `;
+    } else {
+      err.innerHTML = `
+        <strong>Colunas não encontradas:</strong> ${missing.join(', ')}<br><br>
+        <strong>Cabeçalhos encontrados:</strong><br>
+        ${foundHeaders}<br><br>
+        <em>Verifique se os cabeçalhos contêm as palavras: "deságio"</em>
+      `;
+    }
+    return;
+  }
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  allDealsData = rows.slice(1).map((r, idx) => {
+    const get = (key) => mapping[key] !== undefined ? (r[mapping[key]] || '').trim() : '';
+    
+    // Colunas mestras: Mês Fechamento e Data Fechamento
+    const dataFechStr = get('data_fechamento');
+    const dataFech = parseDate(dataFechStr);
+    const mesFechamentoRaw = parseNum(get('mes_fechamento'));
+    
+    // Prioridade pra mês: 1) Mês Fechamento  2) Data Fechamento  3) Mês
+    const fech_mes = mesFechamentoRaw || (dataFech ? (dataFech.getMonth() + 1) : null) || (parseNum(get('mes')) || currentMonth);
+    // Prioridade pra ano: 1) Data Fechamento  2) Ano
+    const fech_ano = dataFech ? dataFech.getFullYear() : (parseNum(get('ano')) || currentYear);
+    // Prioridade pra semana: 1) Data Fechamento  2) Semana Fechamento  3) Semana
+    const fech_semana = dataFech ? getWeekNumber(dataFech) : (parseNum(get('semana_fechamento')) || parseNum(get('semana')) || 0);
+    const fech_dia = dataFech ? dataFech.getDate() : null;
+    
+    return {
+      deal: get('deal') || `#${idx+1}`,
+      cliente: get('cliente') || '—',
+      desagio_total: parseNum(get('desagio_total')) || 0,
+      status_fechamento: get('status_fechamento').toLowerCase(),
+      status_contrato: get('status_contrato').toLowerCase(),
+      yield_operacao_total: parseNum(get('yield_operacao_total')) || 0,
+      yield_operacao_mes: parseNum(get('yield_operacao_mes')) || 0,
+      parcelas_antecipadas: parseNum(get('parcelas_antecipadas')) || 0,
+      semana: parseNum(get('semana')) || 0,
+      semana_fechamento: fech_semana,
+      ano: fech_ano,
+      mes: fech_mes,
+      dia: fech_dia,
+      data_fechamento: dataFech,
+      data_fechamento_str: dataFechStr,
+      mes_fechamento_raw: mesFechamentoRaw,
+      valor_contrato: parseNum(get('valor_contrato')) || 0,
+    };
+  }).filter(d => d.cliente !== '—' || d.status_fechamento || d.desagio_total > 0);
+
+  console.log('=== DEBUG PRIMEIRAS LINHAS ===');
+  console.log('Total deals parseados:', allDealsData.length);
+  console.log('Coluna Data Fechamento:', mapping.data_fechamento !== undefined ? `col ${mapping.data_fechamento}` : 'NÃO ENCONTRADA');
+  console.log('Coluna Mês Fechamento:', mapping.mes_fechamento !== undefined ? `col ${mapping.mes_fechamento}` : 'NÃO ENCONTRADA');
+  allDealsData.slice(0, 5).forEach((d, i) => {
+    console.log(`Row ${i}: cliente="${d.cliente}", data_fech="${d.data_fechamento_str}", mes_fech_raw=${d.mes_fechamento_raw}, → ano=${d.ano}, mes=${d.mes}, semana=${d.semana_fechamento}`);
+  });
+
+  document.getElementById('initialMsg').style.display = 'none';
+  document.getElementById('blocoDaily').style.display = 'block';
+  document.getElementById('blocoSemanal').style.display = 'block';
+  document.getElementById('blocoMensal').style.display = 'block';
+
+  const zone = document.getElementById('inputZone');
+  const body = document.getElementById('inputBody');
+  const toggleBtn = document.getElementById('toggleInput');
+  zone.classList.add('collapsed');
+  body.style.display = 'none';
+  toggleBtn.style.display = 'inline-block';
+  toggleBtn.textContent = 'Editar CSV';
+
+  updateBlocoDaily();
+  updateBlocoSemanal();
+  updateBlocoMensal();
+}
+
+// ─── HELPERS: MÉTRICAS, TENDÊNCIAS E HISTÓRICO ─────────
+function calcMetrics(deals) {
+  const total = deals.reduce((s, d) => s + d.desagio_total, 0);
+  const valorTotal = deals.reduce((s, d) => s + (d.valor_contrato || 0), 0);
+  const clientesUnicos = new Set(deals.map(d => d.cliente)).size;
+  const totalParcelas = deals.reduce((s, d) => s + (d.parcelas_antecipadas || 0), 0);
+  const parcelasMedio = clientesUnicos > 0 ? totalParcelas / clientesUnicos : 0;
+  const yieldTotal = valorTotal > 0 ? (total / valorTotal) * 100 : 0;
+  const yieldMes = parcelasMedio > 0 ? yieldTotal / parcelasMedio : 0;
+  return { total, valorTotal, clientesUnicos, totalParcelas, parcelasMedio, yieldTotal, yieldMes };
+}
+
+function calcTrend(current, previous) {
+  if (previous == null || previous === 0 || current === 0) {
+    return { icon: '', text: '', cls: '' };
+  }
+  const diff = current - previous;
+  const pct = (diff / previous) * 100;
+  if (Math.abs(pct) < 1) return { icon: '→', text: '±0%', cls: 'trend-flat' };
+  if (pct > 0) return { icon: '↑', text: `+${pct.toFixed(0)}%`, cls: 'trend-up' };
+  return { icon: '↓', text: `${pct.toFixed(0)}%`, cls: 'trend-down' };
+}
+
+function renderTrendHtml(current, previous) {
+  const t = calcTrend(current, previous);
+  if (!t.icon) return '';
+  return `<span class="trend ${t.cls}">${t.icon} ${t.text}</span>`;
+}
+
+function renderHistoryTable(periods, orderRecentFirst) {
+  // periods: SEMPRE em ordem cronológica (antiga → recente)
+  // orderRecentFirst: se true, inverte a ordem de EXIBIÇÃO (mas mantém tendências corretas)
+  const rows = [];
+  const allMetrics = [];
+  
+  periods.forEach((p, i) => {
+    const m = calcMetrics(p.deals);
+    allMetrics.push(m);
+    
+    const isZero = p.deals.length === 0;
+    const zeroClass = isZero ? ' zero' : '';
+    const trClass = p.isCurrent ? ' class="current"' : '';
+    const subHtml = p.sublabel ? `<span class="sub">${p.sublabel}</span>` : '';
+    
+    // Tendência comparando com período cronologicamente anterior
+    const prevM = i > 0 ? allMetrics[i - 1] : null;
+    const trendHtml = prevM ? renderTrendHtml(m.total, prevM.total) : '';
+    
+    rows.push(`<tr${trClass}>
+      <td class="label${zeroClass}">${p.label}${subHtml}</td>
+      <td class="num${zeroClass}">R$ ${fmtBRL(m.total)}${trendHtml}</td>
+      <td class="num${zeroClass}">${fmtPct(m.yieldTotal)}</td>
+      <td class="num${zeroClass}">${fmtPct(m.yieldMes)}</td>
+      <td class="num${zeroClass}">${m.clientesUnicos}</td>
+      <td class="num${zeroClass}">${fmtDec(m.parcelasMedio, 2)}</td>
+    </tr>`);
+  });
+  
+  if (orderRecentFirst) rows.reverse();
+  
+  // Linha de média (sempre no final)
+  const nonZero = allMetrics.filter(m => m.total > 0);
+  if (nonZero.length > 0) {
+    const avgTotal = nonZero.reduce((s, m) => s + m.total, 0) / nonZero.length;
+    const avgYield = nonZero.reduce((s, m) => s + m.yieldTotal, 0) / nonZero.length;
+    const avgYieldMes = nonZero.reduce((s, m) => s + m.yieldMes, 0) / nonZero.length;
+    const avgCasos = nonZero.reduce((s, m) => s + m.clientesUnicos, 0) / nonZero.length;
+    const avgParcelas = nonZero.reduce((s, m) => s + m.parcelasMedio, 0) / nonZero.length;
+    
+    rows.push(`<tr class="summary">
+      <td class="label">Média<span class="sub">${nonZero.length} de ${periods.length} períodos com dados</span></td>
+      <td class="num">R$ ${fmtBRL(avgTotal)}</td>
+      <td class="num">${fmtPct(avgYield)}</td>
+      <td class="num">${fmtPct(avgYieldMes)}</td>
+      <td class="num">${fmtDec(avgCasos, 1)}</td>
+      <td class="num">${fmtDec(avgParcelas, 2)}</td>
+    </tr>`);
+  }
+  
+  return rows.join('');
+}
+
+function historyAverage(periods) {
+  // Retorna a média do total dos períodos com dados (útil pra comparativos)
+  const allMetrics = periods.map(p => calcMetrics(p.deals));
+  const nonZero = allMetrics.filter(m => m.total > 0);
+  if (!nonZero.length) return 0;
+  return nonZero.reduce((s, m) => s + m.total, 0) / nonZero.length;
+}
+
+function sameDay(d1, d2) {
+  if (!d1 || !d2) return false;
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
+}
+
+// Semana ISO anterior (handle de virada de ano)
+function prevIsoWeek(year, week) {
+  if (week > 1) return { year, week: week - 1 };
+  // Semana 1 → última semana do ano anterior (28/dez sempre está na última semana ISO)
+  const dec28 = new Date(year - 1, 11, 28);
+  return { year: year - 1, week: getWeekNumber(dec28) };
+}
+
+// Semanas ISO que contêm pelo menos um dia do mês especificado
+function getWeeksOfMonth(year, month) {
+  const weekMap = new Map(); // key: "year-week" → {year, week}
+  const daysInMonth = new Date(year, month, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month - 1, d);
+    const w = getWeekNumber(date);
+    // Anos podem diferir (ex: 1/jan pode estar na semana 52 do ano anterior)
+    let wYear = date.getFullYear();
+    if (month === 1 && w >= 52) wYear = year - 1;
+    else if (month === 12 && w === 1) wYear = year + 1;
+    else wYear = year;
+    const key = `${wYear}-${w}`;
+    if (!weekMap.has(key)) weekMap.set(key, { year: wYear, week: w });
+  }
+  return Array.from(weekMap.values()).sort((a, b) => 
+    a.year !== b.year ? a.year - b.year : a.week - b.week
+  );
+}
+
+// ─── BLOCO 1: DIÁRIO ───────────────────────────────────
+function updateBlocoDaily() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+
+  // Status Contrato considerados "com visão" (trabalhando):
+  // assinado, enviado, enviar, gerar, em revisão
+  const statusContTrabalhando = ['assinado', 'enviado', 'enviar', 'gerar', 'emrevisao', 'revisao'];
+  
+  const isEmAberto = d => {
+    const sf = norm(d.status_fechamento);
+    return sf === 'emaberto' || sf === 'aberto';
+  };
+  
+  const isContratoTrabalhando = d => {
+    const sc = norm(d.status_contrato);
+    if (!sc) return false;
+    return statusContTrabalhando.some(v => sc.includes(v));
+  };
+
+  // TRABALHANDO: em aberto + contrato em um dos 5 status definidos
+  const trabalhandoDeals = allDealsData.filter(d => 
+    isEmAberto(d) && isContratoTrabalhando(d)
+  );
+  const totalTrabalhando = trabalhandoDeals.reduce((s, d) => s + d.desagio_total, 0);
+  const clientesTrabalhando = new Set(trabalhandoDeals.map(d => d.cliente)).size;
+  const ticketTrabalhando = clientesTrabalhando > 0 ? totalTrabalhando / clientesTrabalhando : 0;
+
+  // PAGO HOJE: status = pago + data_fechamento = hoje
+  const pagoHojeDeals = allDealsData.filter(d => {
+    const isPago = norm(d.status_fechamento).includes('pago');
+    return isPago && d.data_fechamento && sameDay(d.data_fechamento, today);
+  });
+  const totalPagoHoje = pagoHojeDeals.reduce((s, d) => s + d.desagio_total, 0);
+  const pagoHojeCasos = new Set(pagoHojeDeals.map(d => d.cliente)).size;
+
+  // SEM VISÃO: em aberto + contrato NÃO está nos 5 status (vazio OU outros valores)
+  const semVisaoDeals = allDealsData.filter(d => 
+    isEmAberto(d) && !isContratoTrabalhando(d)
+  );
+  const totalSemVisao = semVisaoDeals.reduce((s, d) => s + d.desagio_total, 0);
+  const semVisaoCasos = new Set(semVisaoDeals.map(d => d.cliente)).size;
+
+  // Total em aberto (trabalhando + aguardando resposta) — pra sanity check
+  console.log('=== DEBUG BLOCO 1 ===');
+  console.log('Trabalhando:', trabalhandoDeals.length, 'deals · R$', fmtBRL(totalTrabalhando));
+  console.log('Aguardando resposta:', semVisaoDeals.length, 'deals · R$', fmtBRL(totalSemVisao));
+  console.log('Soma total em aberto:', fmtBRL(totalTrabalhando + totalSemVisao));
+  console.log('Pago hoje:', pagoHojeDeals.length, 'deals · R$', fmtBRL(totalPagoHoje));
+
+  document.getElementById('resultDiario').textContent = fmtBRL(totalTrabalhando);
+  document.getElementById('countDiario').textContent = clientesTrabalhando;
+  document.getElementById('ticketDiario').textContent = 'R$ ' + fmtInt(ticketTrabalhando);
+  document.getElementById('pagoHoje').textContent = fmtBRL(totalPagoHoje);
+  document.getElementById('pagoHojeCount').textContent = pagoHojeCasos;
+  document.getElementById('projecaoDia').textContent = fmtBRL(totalTrabalhando + totalPagoHoje);
+  document.getElementById('semDataDesagio').textContent = fmtBRL(totalSemVisao);
+  document.getElementById('semDataCount').textContent = semVisaoCasos;
+
+  document.getElementById('filtersDiario').textContent = 
+    `Trabalhando: Em aberto + contrato Assinado/Enviado/Enviar/Gerar/Em revisão • Aguardando resposta: Em aberto + demais valores de contrato`;
+
+  // ─── HISTÓRICO: últimos 5 dias corridos anteriores (sem hoje) ───
+  // Calculo em ordem cronológica (antiga → recente) pra tendência ficar correta,
+  // mas exibo com o dia mais recente no topo (orderRecentFirst = true)
+  const diasSemanaAbbr = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  const mesesAbbr = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const periods = [];
+  
+  for (let i = 5; i >= 1; i--) {
+    const refDate = new Date(today);
+    refDate.setDate(refDate.getDate() - i);
+    refDate.setHours(0, 0, 0, 0);
+    
+    const dayDeals = allDealsData.filter(d => {
+      const isPago = norm(d.status_fechamento).includes('pago');
+      return isPago && d.data_fechamento && sameDay(d.data_fechamento, refDate);
+    });
+    
+    const label = `${String(refDate.getDate()).padStart(2,'0')}/${mesesAbbr[refDate.getMonth()]}`;
+    const sublabel = diasSemanaAbbr[refDate.getDay()];
+    periods.push({ label, sublabel, deals: dayDeals, isCurrent: false });
+  }
+  
+  document.getElementById('historyDaily').innerHTML = renderHistoryTable(periods, true);
+
+  // ─── COMPARATIVOS ───
+  const mediaHistorica = historyAverage(periods);
+  const compEl = document.getElementById('compDiario');
+  let compHtml = '';
+  if (mediaHistorica > 0 && totalPagoHoje > 0) {
+    const t = calcTrend(totalPagoHoje, mediaHistorica);
+    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">Pago hoje ${t.icon} ${t.text} vs média 5 dias</span>`;
+  }
+  if (totalSemVisao > 0) {
+    compHtml += `<span class="comp-badge flat">${semVisaoCasos} aguardando resposta</span>`;
+  }
+  compEl.innerHTML = compHtml;
+
+  updateProgress('diaria', totalTrabalhando + totalPagoHoje);
+}
+
+// ─── BLOCO 2: SEMANAL ──────────────────────────────────
+function updateBlocoSemanal() {
+  const selectedYear = parseInt(document.getElementById('anoSemanalSelector').value);
+  const selectedMonth = parseInt(document.getElementById('mesSemanalSelector').value);
+  const selectedWeek = parseInt(document.getElementById('semanaSelector').value);
+
+  console.log('=== DEBUG BLOCO 2 ===');
+  console.log('Filtros semanal:', {selectedYear, selectedMonth, selectedWeek});
+  
+  const semanalDeals = allDealsData.filter(d => {
+    const matchAno = d.ano === selectedYear;
+    const matchMes = d.mes === selectedMonth;
+    const matchSemana = d.semana_fechamento === selectedWeek;
+    const isPago = norm(d.status_fechamento).includes('pago');
+    
+    return matchAno && matchMes && matchSemana && isPago;
+  });
+
+  console.log('Deals semanal encontrados:', semanalDeals.length);
+
+  const m = calcMetrics(semanalDeals);
+  const yieldOperacaoMes = m.parcelasMedio > 0 ? m.yieldTotal / m.parcelasMedio : 0;
+
+  document.getElementById('resultSemanal').textContent = fmtBRL(m.total);
+  document.getElementById('yieldSemanalTotal').textContent = fmtPct(m.yieldTotal);
+  document.getElementById('casosSemanal').textContent = m.clientesUnicos;
+  document.getElementById('parcelasSemanal').textContent = fmtDec(m.parcelasMedio, 3);
+  document.getElementById('yieldSemanalMes').textContent = fmtPct(yieldOperacaoMes);
+
+  // ─── HISTÓRICO: últimas 5 semanas (selecionada + 4 anteriores), ordem antiga → recente ───
+  const weekChain = [{ year: selectedYear, week: selectedWeek }];
+  for (let i = 0; i < 4; i++) {
+    const last = weekChain[weekChain.length - 1];
+    weekChain.push(prevIsoWeek(last.year, last.week));
+  }
+  // Reverter pra ordem antiga → recente
+  weekChain.reverse();
+  
+  const periods = weekChain.map(wk => {
+    const deals = allDealsData.filter(d => {
+      const isPago = norm(d.status_fechamento).includes('pago');
+      return isPago && d.ano === wk.year && d.semana_fechamento === wk.week;
+    });
+    const isCurrent = wk.year === selectedYear && wk.week === selectedWeek;
+    return {
+      label: `Semana ${wk.week}`,
+      sublabel: String(wk.year),
+      deals,
+      isCurrent
+    };
+  });
+  
+  document.getElementById('historyWeekly').innerHTML = renderHistoryTable(periods, true);
+
+  // ─── COMPARATIVO: semana atual vs média das 5 semanas + vs semana anterior ───
+  const compEl = document.getElementById('compSemanal');
+  let compHtml = '';
+  const mediaHistorica = historyAverage(periods);
+  if (mediaHistorica > 0 && m.total > 0) {
+    const t = calcTrend(m.total, mediaHistorica);
+    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs média 5 sem</span>`;
+  }
+  // Semana anterior
+  const prevPeriod = periods[periods.length - 2];
+  if (prevPeriod) {
+    const prevM = calcMetrics(prevPeriod.deals);
+    if (prevM.total > 0 && m.total > 0) {
+      const t = calcTrend(m.total, prevM.total);
+      compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs semana ${prevPeriod.label.replace('Semana ', '')}</span>`;
+    }
+  }
+  compEl.innerHTML = compHtml;
+
+  updateProgress('semanal', m.total);
+}
+
+// Repopula o seletor de semanas com base no mês/ano escolhido
+function refreshWeekSelector() {
+  const year = parseInt(document.getElementById('anoSemanalSelector').value);
+  const month = parseInt(document.getElementById('mesSemanalSelector').value);
+  const weekSel = document.getElementById('semanaSelector');
+  const currentValue = parseInt(weekSel.value) || 0;
+  
+  const weeks = getWeeksOfMonth(year, month);
+  weekSel.innerHTML = '';
+  weeks.forEach(wk => {
+    const opt = document.createElement('option');
+    opt.value = wk.week;
+    opt.dataset.year = wk.year;
+    opt.textContent = `Semana ${wk.week}` + (wk.year !== year ? ` · ${wk.year}` : '');
+    weekSel.appendChild(opt);
+  });
+  
+  // Tentar manter a seleção anterior se ainda válida; senão, selecionar a primeira
+  const stillValid = weeks.some(wk => wk.week === currentValue);
+  if (stillValid) {
+    weekSel.value = currentValue;
+  } else {
+    // Se o mês/ano é o atual, tenta selecionar a semana atual
+    const now = new Date();
+    const nowWeek = getWeekNumber(now);
+    const matchCurrent = weeks.find(wk => wk.week === nowWeek && wk.year === now.getFullYear());
+    if (matchCurrent) {
+      weekSel.value = matchCurrent.week;
+    } else {
+      weekSel.value = weeks[0] ? weeks[0].week : 1;
+    }
+  }
+}
+
+// ─── BLOCO 3: MENSAL ───────────────────────────────────
+function updateBlocoMensal() {
+  const selectedMonth = parseInt(document.getElementById('mesSelector').value);
+  const selectedYear = parseInt(document.getElementById('anoMensalSelector').value);
+
+  console.log('=== DEBUG BLOCO 3 ===');
+  console.log('Filtros mensal:', {selectedYear, selectedMonth});
+  console.log('Total deals na base:', allDealsData.length);
+
+  const mensalDeals = allDealsData.filter(d => {
+    const matchAno = d.ano === selectedYear;
+    const matchMes = d.mes === selectedMonth;
+    const isPago = norm(d.status_fechamento).includes('pago');
+    
+    return matchAno && matchMes && isPago;
+  });
+
+  console.log('Deals mensais PAGO encontrados:', mensalDeals.length);
+  
+  const m = calcMetrics(mensalDeals);
+  const yieldOperacaoMes = m.parcelasMedio > 0 ? m.yieldTotal / m.parcelasMedio : 0;
+
+  document.getElementById('resultMensal').textContent = fmtBRL(m.total);
+  document.getElementById('yieldMensalTotal').textContent = fmtPct(m.yieldTotal);
+  document.getElementById('casosMensal').textContent = m.clientesUnicos;
+  document.getElementById('parcelasMensal').textContent = fmtDec(m.parcelasMedio, 3);
+  document.getElementById('yieldMensalMes').textContent = fmtPct(yieldOperacaoMes);
+
+  // ─── HISTÓRICO: últimos 3 meses anteriores ao selecionado (ordem antiga → recente) ───
+  const mesesNomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const periods = [];
+  
+  for (let i = 3; i >= 1; i--) {
+    let mm = selectedMonth - i;
+    let yy = selectedYear;
+    while (mm <= 0) { mm += 12; yy -= 1; }
+    
+    const monthDeals = allDealsData.filter(d => {
+      const isPago = norm(d.status_fechamento).includes('pago');
+      return isPago && d.ano === yy && d.mes === mm;
+    });
+    
+    periods.push({
+      label: mesesNomes[mm - 1],
+      sublabel: String(yy),
+      deals: monthDeals,
+      isCurrent: false
+    });
+  }
+  
+  document.getElementById('historyMonthly').innerHTML = renderHistoryTable(periods, true);
+
+  // ─── COMPARATIVO: mês atual vs média dos 3 meses + vs mês anterior ───
+  const compEl = document.getElementById('compMensal');
+  let compHtml = '';
+  const mediaHistorica = historyAverage(periods);
+  if (mediaHistorica > 0 && m.total > 0) {
+    const t = calcTrend(m.total, mediaHistorica);
+    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs média 3 meses</span>`;
+  }
+  const prevPeriod = periods[periods.length - 1]; // mês imediatamente anterior
+  if (prevPeriod) {
+    const prevM = calcMetrics(prevPeriod.deals);
+    if (prevM.total > 0 && m.total > 0) {
+      const t = calcTrend(m.total, prevM.total);
+      compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs ${prevPeriod.label.toLowerCase()}</span>`;
+    }
+  }
+  compEl.innerHTML = compHtml;
+
+  updateProgress('mensal', m.total);
+}
+
+// ─── PROGRESS BARS ─────────────────────────────────────
+function updateProgress(tipo, valor) {
+  const metaId = tipo === 'diaria' ? 'metaDiaria' : 
+                 tipo === 'semanal' ? 'metaSemanal' : 'metaMensal';
+  const progressId = `progress${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`;
+  const textId = `${progressId}Text`;
+
+  const meta = unmaskMoneyBR(document.getElementById(metaId).value) || 1;
+  const percent = Math.min(100, (valor / meta) * 100);
+
+  const fillEl = document.getElementById(progressId);
+  fillEl.style.width = percent + '%';
+  fillEl.classList.toggle('over', percent >= 100);
+
+  const label = tipo === 'diaria' ? 'diária' : 
+                tipo === 'semanal' ? 'semanal' : 'mensal';
+  document.getElementById(textId).textContent = 
+    `${percent.toFixed(1)}% da meta ${label}`;
+}
+
+// ─── SAMPLE DATA ───────────────────────────────────────
+const SAMPLE = `Ano,Mês,Semana,Semana Fechamento,Data Fechamento,Mês Fechamento,Cliente,Deságio Total,Valor Total,Status Fechamento,Status do Contrato,Yield Operação (Total),Yield Operação (Mês),Parcelas Antecipadas
+2026,4,16,16,,,Alpha Logística SA,82000.00,820000.00,Em aberto,Assinado,10.5,8.2,12.5
+2026,4,16,16,,,Brava Agro Ltda,151800.00,1450000.00,Aguardando aprovação,Enviado,11.2,9.1,18.2  
+2026,4,16,,,,Cipreste Varejo,29750.00,340000.00,Em aberto,Em revisão,9.8,7.5,8.1
+2026,4,15,15,10/04/2026,4,Delta Serviços,42000.00,580000.00,Pago,Assinado,12.1,10.2,15.3
+2026,4,16,16,,,Égide Saúde,231000.00,2100000.00,Incluir banco,Assinado,10.8,8.9,24.7
+2026,4,16,,,,Fortuna Indústria,62625.00,675000.00,Em aberto,Enviar,9.5,7.8,10.4
+2026,3,12,12,20/03/2026,3,Gaivota Têxtil,42000.00,420000.00,Pago,Assinado,11.5,9.8,12.8
+2026,4,15,,,,Horizonte Tech,15000.00,980000.00,Aguardando aprovação,Análise de crédito,8.2,6.1,6.2
+2026,4,16,16,,,Ibira Construtora,125000.00,1250000.00,Em aberto,Assinado,10.2,8.5,20.1
+2026,4,16,,,,Jaguar Alimentos,51480.00,520000.00,Incluir banco,Em revisão,9.9,8.1,14.6
+2026,4,15,15,08/04/2026,4,Kirin Farma,88000.00,760000.00,Pago,Assinado,10.8,8.7,16.3
+2026,4,16,16,15/04/2026,4,Luar Energia,195000.00,1800000.00,Pago,Assinado,11.3,9.2,22.9`;
+
+// ─── EVENT HANDLERS ─────────────────────────────────────
+let currentCSVData = '';
+
+document.getElementById('processBtn').addEventListener('click', () => {
+  const csvText = document.getElementById('csvInput').value;
+  currentCSVData = csvText;
+  processCSV(csvText);
+});
+
+document.getElementById('sampleBtn').addEventListener('click', () => {
+  document.getElementById('csvInput').value = SAMPLE;
+  currentCSVData = SAMPLE;
+  processCSV(SAMPLE);
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('csvInput').value = '';
+  currentCSVData = '';
+  allDealsData = [];
+  document.getElementById('errorMsg').textContent = '';
+  document.getElementById('initialMsg').style.display = 'block';
+  document.getElementById('blocoDaily').style.display = 'none';
+  document.getElementById('blocoSemanal').style.display = 'none';
+  document.getElementById('blocoMensal').style.display = 'none';
+  
+  const zone = document.getElementById('inputZone');
+  const body = document.getElementById('inputBody');
+  zone.classList.remove('collapsed');
+  body.style.display = 'block';
+  document.getElementById('toggleInput').style.display = 'none';
+});
+
+document.getElementById('toggleInput').addEventListener('click', () => {
+  const zone = document.getElementById('inputZone');
+  const body = document.getElementById('inputBody');
+  const btn = document.getElementById('toggleInput');
+  if (zone.classList.contains('collapsed')) {
+    zone.classList.remove('collapsed');
+    body.style.display = 'block';
+    btn.textContent = 'Recolher';
+  } else {
+    zone.classList.add('collapsed');
+    body.style.display = 'none';
+    btn.textContent = 'Editar CSV';
+  }
+});
+
+['metaDiaria', 'metaSemanal', 'metaMensal'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', e => {
+    // Aplica máscara em tempo real e mantém cursor no final
+    const masked = maskMoneyBR(e.target.value);
+    e.target.value = masked;
+    // Recalcula blocos se já tem dados
+    if (allDealsData.length) {
+      updateBlocoDaily();
+      updateBlocoSemanal();
+      updateBlocoMensal();
+    }
+  });
+  el.addEventListener('focus', e => {
+    // Ao focar, move cursor pro final
+    setTimeout(() => {
+      const len = e.target.value.length;
+      e.target.setSelectionRange(len, len);
+    }, 0);
+  });
+});
+
+document.getElementById('csvInput').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    const csvText = e.target.value;
+    currentCSVData = csvText;
+    processCSV(csvText);
+  }
+});
+
+// Initialize selectors with current date and dynamic year options
+(function initializeSelectors() {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  
+  // Populate year selectors dynamically
+  ['anoSemanalSelector', 'anoMensalSelector'].forEach(id => {
+    const sel = document.getElementById(id);
+    for (let y = currentYear - 1; y <= currentYear + 1; y++) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      if (y === currentYear) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  });
+  
+  document.getElementById('mesSelector').value = now.getMonth() + 1;
+  document.getElementById('mesSemanalSelector').value = now.getMonth() + 1;
+  
+  // Popular seletor de semanas com as semanas do mês selecionado
+  refreshWeekSelector();
+  
+  // Listeners: ao mudar mês ou ano do Bloco 2, repopula o seletor de semanas
+  document.getElementById('mesSemanalSelector').addEventListener('change', () => {
+    refreshWeekSelector();
+    if (allDealsData.length) updateBlocoSemanal();
+  });
+  document.getElementById('anoSemanalSelector').addEventListener('change', () => {
+    refreshWeekSelector();
+    if (allDealsData.length) updateBlocoSemanal();
+  });
+  document.getElementById('semanaSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoSemanal();
+  });
+  
+  // Listeners: ao mudar mês ou ano do Bloco 3, atualiza direto
+  document.getElementById('mesSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoMensal();
+  });
+  document.getElementById('anoMensalSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoMensal();
+  });
+})();
+</script>
+
+</body></html>
