@@ -203,6 +203,84 @@
   .sync-status.success { border-color: var(--green); color: var(--green); background: var(--green-soft); }
   .sync-status.error { border-color: var(--coral); color: var(--coral); background: var(--coral-soft); }
 
+  /* ─── SYNC BAR (sempre visível no topo) ──────────── */
+  .sync-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink-mute);
+  }
+
+  .sync-bar.ok { border-left-color: var(--green); }
+  .sync-bar.pending { border-left-color: var(--amber); }
+  .sync-bar.fail { border-left-color: var(--coral); }
+  .sync-bar.hidden { display: none; }
+
+  .sync-bar-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sync-bar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ink-mute);
+    flex-shrink: 0;
+  }
+
+  .sync-bar.ok .sync-bar-dot { background: var(--green); }
+  .sync-bar.pending .sync-bar-dot { 
+    background: var(--amber); 
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .sync-bar.fail .sync-bar-dot { background: var(--coral); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .sync-bar-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+
+  .sync-bar-sub {
+    color: var(--ink-mute);
+  }
+
+  .sync-bar button {
+    font-size: 10px;
+    padding: 6px 12px;
+    background: var(--coral);
+    color: white;
+    border-color: var(--coral);
+    flex-shrink: 0;
+  }
+
+  .sync-bar button:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .sync-bar button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   @media (max-width: 700px) {
     .source-row { flex-direction: column; align-items: stretch; }
     .source-row label { min-width: 0; }
@@ -276,6 +354,20 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     flex: 1;
+  }
+
+  .bloco-desc {
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    line-height: 1.55;
+  }
+
+  .bloco-desc b {
+    color: var(--ink);
+    font-weight: 700;
   }
 
   .bloco-selector {
@@ -461,6 +553,123 @@
     color: var(--ink-soft);
   }
 
+  /* ─── DISTRIBUIÇÃO (barras horizontais) ────────────── */
+  .distrib-container {
+    padding: 20px;
+    background: white;
+  }
+
+  .distrib-empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--ink-mute);
+    font-size: 11px;
+  }
+
+  .distrib-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 180px;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .distrib-row:last-child {
+    border-bottom: none;
+  }
+
+  .distrib-row.total {
+    border-top: 2px solid var(--ink);
+    border-bottom: none;
+    padding-top: 12px;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+
+  .distrib-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+
+  .distrib-bar-wrap {
+    position: relative;
+    height: 24px;
+    background: var(--paper-2);
+  }
+
+  .distrib-bar {
+    height: 100%;
+    background: var(--coral);
+    transition: width 0.3s ease;
+    position: relative;
+  }
+
+  .distrib-bar.muted { background: var(--ink-mute); opacity: 0.4; }
+
+  .distrib-bar-label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+    white-space: nowrap;
+  }
+
+  .distrib-bar-label.outside {
+    color: var(--ink);
+    text-shadow: none;
+    left: auto;
+    right: -6px;
+    transform: translate(100%, -50%);
+    padding-left: 6px;
+  }
+
+  .distrib-stats {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    font-size: 11px;
+    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    color: var(--ink-soft);
+  }
+
+  .distrib-stats .count {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  @media (max-width: 700px) {
+    .distrib-row { grid-template-columns: 80px 1fr; }
+    .distrib-stats { grid-column: 1 / -1; justify-content: flex-start; padding-left: 96px; }
+  }
+  .line-chart-container {
+    padding: 24px 24px 12px;
+    background: white;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .line-chart-empty {
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-mute);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .line-chart-container svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+
   /* ─── HISTORY TABLE ────────────────────────────────── */
   .history-section {
     border-top: 1px solid var(--line);
@@ -568,6 +777,33 @@
     font-weight: 400;
   }
 
+  /* Outliers: desvio significativo vs média histórica */
+  .history-table tr.outlier-up td,
+  .history-table tr.outlier-down td {
+    background: var(--paper);
+  }
+  .history-table tr.outlier-up td.label::before,
+  .history-table tr.outlier-down td.label::before {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    margin-right: 8px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .history-table tr.outlier-up td.label::before {
+    content: "PICO";
+    background: var(--green-soft);
+    color: var(--green);
+  }
+  .history-table tr.outlier-down td.label::before {
+    content: "BAIXA";
+    background: var(--coral-soft);
+    color: var(--coral);
+  }
+
   /* ─── TRENDS ───────────────────────────────────────── */
   .trend {
     display: inline-block;
@@ -665,6 +901,17 @@
   </div>
 </header>
 
+<div id="syncBar" class="sync-bar hidden">
+  <div class="sync-bar-info">
+    <div class="sync-bar-dot"></div>
+    <div>
+      <span class="sync-bar-label" id="syncBarLabel">Sem conexão</span>
+      <span class="sync-bar-sub" id="syncBarSub"></span>
+    </div>
+  </div>
+  <button id="syncBarBtn">⟳ Atualizar dados</button>
+</div>
+
 <div id="inputZone" class="input-zone">
   <div class="input-zone-header">
     <div class="input-zone-title">Fonte de dados</div>
@@ -715,6 +962,9 @@
     <div class="bloco-number">01</div>
     <div class="bloco-title">Resultado Diário</div>
   </div>
+  <div class="bloco-desc">
+    Visão operacional de hoje. <b>Projeção do dia</b> = o que já fechou hoje + o que está em aberto com contrato em andamento (com chance de fechar). Os cards abaixo detalham cada componente. O histórico mostra o realizado nos últimos 5 dias pra comparação.
+  </div>
 
   <div class="result-panel primary">
     <div class="result-label">Projeção do dia</div>
@@ -760,6 +1010,7 @@
 
   <div class="history-section">
     <div class="history-header">Últimos 5 dias · fechados</div>
+    <div id="chartDaily"></div>
     <table class="history-table">
       <thead>
         <tr>
@@ -788,6 +1039,7 @@
     <div class="bloco-selector">
       <select id="anoSemanalSelector"></select>
       <select id="mesSemanalSelector">
+        <option value="0">Todos os meses</option>
         <option value="1">Janeiro</option>
         <option value="2">Fevereiro</option>
         <option value="3">Março</option>
@@ -803,6 +1055,9 @@
       </select>
       <select id="semanaSelector"></select>
     </div>
+  </div>
+  <div class="bloco-desc">
+    Consolidado por semana. <b>Yield Total</b> = rentabilidade bruta (deságio ÷ valor do contrato). <b>Yield Mês</b> = rentabilidade ajustada pelo prazo das parcelas. O histórico compara a semana atual com as 4 anteriores — linhas com <b>PICO</b> ou <b>BAIXA</b> indicam desvio maior que 30% vs média.
   </div>
 
   <div class="result-panel">
@@ -846,7 +1101,8 @@
   </div>
 
   <div class="history-section">
-    <div class="history-header">Semanas do mês selecionado</div>
+    <div class="history-header">Últimas 5 semanas</div>
+    <div id="chartWeekly"></div>
     <table class="history-table">
       <thead>
         <tr>
@@ -872,6 +1128,7 @@
     <div class="bloco-title">Análise Mensal</div>
     <div class="bloco-selector">
       <select id="mesSelector">
+        <option value="0">Todos os meses</option>
         <option value="1">Janeiro</option>
         <option value="2">Fevereiro</option>
         <option value="3">Março</option>
@@ -887,6 +1144,9 @@
       </select>
       <select id="anoMensalSelector"></select>
     </div>
+  </div>
+  <div class="bloco-desc">
+    Consolidado por mês. Mesmas métricas do semanal, mas em escala mensal. O histórico mostra os 3 meses anteriores pra comparação — linhas com <b>PICO</b> ou <b>BAIXA</b> sinalizam meses que destoam significativamente da média.
   </div>
 
   <div class="result-panel">
@@ -931,6 +1191,7 @@
 
   <div class="history-section">
     <div class="history-header">Últimos 3 meses</div>
+    <div id="chartMonthly"></div>
     <table class="history-table">
       <thead>
         <tr>
@@ -944,6 +1205,89 @@
       </thead>
       <tbody id="historyMonthly"></tbody>
     </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 4: DISTRIBUIÇÃO DE DESÁGIOS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="blocoDistrib" class="bloco" style="display: none;">
+  <div class="bloco-header">
+    <div class="bloco-number">04</div>
+    <div class="bloco-title">Distribuição de Deságios</div>
+    <div class="bloco-selector">
+      <select id="mesDistribSelector">
+        <option value="0">Todos os meses</option>
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+      <select id="anoDistribSelector"></select>
+    </div>
+  </div>
+  <div class="bloco-desc">
+    Como as operações pagas se distribuem por <b>faixa de Yield Total</b>. Mostra onde está concentrado o volume e a rentabilidade — útil pra identificar se a operação depende de poucas transações gordas ou de muitas menores.
+  </div>
+  
+  <div class="distrib-container" id="distribContainer"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 5: VELOCIDADE DE FECHAMENTO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="blocoVelocidade" class="bloco" style="display: none;">
+  <div class="bloco-header">
+    <div class="bloco-number">05</div>
+    <div class="bloco-title">Velocidade de Fechamento</div>
+    <div class="bloco-selector">
+      <select id="mesVelocSelector">
+        <option value="0">Todos os meses</option>
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+      <select id="anoVelocSelector"></select>
+    </div>
+  </div>
+  <div class="bloco-desc">
+    Tempo entre a <b>abertura</b> do deal e o <b>pagamento</b>. Média e mediana medem o ciclo típico da operação — quanto menor, mais rápido seu pipeline está girando. A distribuição mostra quanto % dos deals fecha em cada faixa de tempo.
+  </div>
+  
+  <div id="velocidadeMissing" class="line-chart-empty" style="display:none;">
+    Sem dados de Data Abertura na planilha. Adicione uma coluna "Data Abertura" para habilitar esta análise.
+  </div>
+  
+  <div id="velocidadeContent" style="display:none;">
+    <div class="result-panel primary">
+      <div class="result-label">Tempo médio até fechar</div>
+      <div class="result-value">
+        <span id="velocMediaDias">0</span><span style="font-size:16px;color:var(--ink-soft);font-weight:400;margin-left:6px;">dias</span>
+      </div>
+      <div class="result-breakdown">
+        <div>Mediana <span id="velocMedianaDias">0</span> dias</div>
+        <div><span id="velocNCasos">0</span> operações analisadas</div>
+      </div>
+    </div>
+    
+    <div class="distrib-container" id="velocContainer"></div>
   </div>
 </div>
 
@@ -1095,6 +1439,8 @@ function mapHeaders(headerRow) {
       mapping.desagio_total = i;
     } else if (n === 'datafechamento' || (n.includes('data') && n.includes('fechamento') && !n.includes('status'))) {
       mapping.data_fechamento = i;
+    } else if (n === 'dataabertura' || (n.includes('data') && (n.includes('abertura') || n.includes('criacao') || n.includes('entrada')))) {
+      mapping.data_abertura = i;
     } else if (n === 'mesfechamento' || (n.includes('mes') && n.includes('fechamento') && !n.includes('status') && !n.includes('semana') && !n.includes('data'))) {
       mapping.mes_fechamento = i;
     } else if ((n.includes('status') && n.includes('fechamento')) || 
@@ -1205,6 +1551,8 @@ function processCSV(text) {
     // Colunas mestras: Mês Fechamento e Data Fechamento
     const dataFechStr = get('data_fechamento');
     const dataFech = parseDate(dataFechStr);
+    const dataAberturaStr = get('data_abertura');
+    const dataAbertura = parseDate(dataAberturaStr);
     const mesFechamentoRaw = parseNum(get('mes_fechamento'));
     
     // Prioridade pra mês: 1) Mês Fechamento  2) Data Fechamento  3) Mês
@@ -1231,6 +1579,8 @@ function processCSV(text) {
       dia: fech_dia,
       data_fechamento: dataFech,
       data_fechamento_str: dataFechStr,
+      data_abertura: dataAbertura,
+      data_abertura_str: dataAberturaStr,
       mes_fechamento_raw: mesFechamentoRaw,
       valor_contrato: parseNum(get('valor_contrato')) || 0,
     };
@@ -1248,6 +1598,8 @@ function processCSV(text) {
   document.getElementById('blocoDaily').style.display = 'block';
   document.getElementById('blocoSemanal').style.display = 'block';
   document.getElementById('blocoMensal').style.display = 'block';
+  document.getElementById('blocoDistrib').style.display = 'block';
+  document.getElementById('blocoVelocidade').style.display = 'block';
 
   const zone = document.getElementById('inputZone');
   const body = document.getElementById('inputBody');
@@ -1260,6 +1612,8 @@ function processCSV(text) {
   updateBlocoDaily();
   updateBlocoSemanal();
   updateBlocoMensal();
+  updateBlocoDistrib();
+  updateBlocoVelocidade();
 }
 
 // ─── HELPERS: MÉTRICAS, TENDÊNCIAS E HISTÓRICO ─────────
@@ -1295,20 +1649,37 @@ function renderHistoryTable(periods, orderRecentFirst) {
   // periods: SEMPRE em ordem cronológica (antiga → recente)
   // orderRecentFirst: se true, inverte a ordem de EXIBIÇÃO (mas mantém tendências corretas)
   const rows = [];
-  const allMetrics = [];
+  const allMetrics = periods.map(p => calcMetrics(p.deals));
+  
+  // Calcular média dos períodos com dados pra detectar outliers
+  const nonZeroMetrics = allMetrics.filter(m => m.total > 0);
+  const avgForOutlier = nonZeroMetrics.length > 0 
+    ? nonZeroMetrics.reduce((s, m) => s + m.total, 0) / nonZeroMetrics.length 
+    : 0;
+  // Threshold: 30% de desvio vs média é considerado outlier (apenas quando há 3+ períodos com dados)
+  const OUTLIER_THRESHOLD = 0.30;
+  const enableOutliers = nonZeroMetrics.length >= 3 && avgForOutlier > 0;
   
   periods.forEach((p, i) => {
-    const m = calcMetrics(p.deals);
-    allMetrics.push(m);
+    const m = allMetrics[i];
     
     const isZero = p.deals.length === 0;
     const zeroClass = isZero ? ' zero' : '';
-    const trClass = p.isCurrent ? ' class="current"' : '';
     const subHtml = p.sublabel ? `<span class="sub">${p.sublabel}</span>` : '';
     
     // Tendência comparando com período cronologicamente anterior
     const prevM = i > 0 ? allMetrics[i - 1] : null;
     const trendHtml = prevM ? renderTrendHtml(m.total, prevM.total) : '';
+    
+    // Detecção de outlier vs média histórica
+    let rowClasses = [];
+    if (p.isCurrent) rowClasses.push('current');
+    if (enableOutliers && !isZero) {
+      const deviation = (m.total - avgForOutlier) / avgForOutlier;
+      if (deviation > OUTLIER_THRESHOLD) rowClasses.push('outlier-up');
+      else if (deviation < -OUTLIER_THRESHOLD) rowClasses.push('outlier-down');
+    }
+    const trClass = rowClasses.length ? ` class="${rowClasses.join(' ')}"` : '';
     
     rows.push(`<tr${trClass}>
       <td class="label${zeroClass}">${p.label}${subHtml}</td>
@@ -1323,16 +1694,15 @@ function renderHistoryTable(periods, orderRecentFirst) {
   if (orderRecentFirst) rows.reverse();
   
   // Linha de média (sempre no final)
-  const nonZero = allMetrics.filter(m => m.total > 0);
-  if (nonZero.length > 0) {
-    const avgTotal = nonZero.reduce((s, m) => s + m.total, 0) / nonZero.length;
-    const avgYield = nonZero.reduce((s, m) => s + m.yieldTotal, 0) / nonZero.length;
-    const avgYieldMes = nonZero.reduce((s, m) => s + m.yieldMes, 0) / nonZero.length;
-    const avgCasos = nonZero.reduce((s, m) => s + m.clientesUnicos, 0) / nonZero.length;
-    const avgParcelas = nonZero.reduce((s, m) => s + m.parcelasMedio, 0) / nonZero.length;
+  if (nonZeroMetrics.length > 0) {
+    const avgTotal = avgForOutlier;
+    const avgYield = nonZeroMetrics.reduce((s, m) => s + m.yieldTotal, 0) / nonZeroMetrics.length;
+    const avgYieldMes = nonZeroMetrics.reduce((s, m) => s + m.yieldMes, 0) / nonZeroMetrics.length;
+    const avgCasos = nonZeroMetrics.reduce((s, m) => s + m.clientesUnicos, 0) / nonZeroMetrics.length;
+    const avgParcelas = nonZeroMetrics.reduce((s, m) => s + m.parcelasMedio, 0) / nonZeroMetrics.length;
     
     rows.push(`<tr class="summary">
-      <td class="label">Média<span class="sub">${nonZero.length} de ${periods.length} períodos com dados</span></td>
+      <td class="label">Média<span class="sub">${nonZeroMetrics.length} de ${periods.length} períodos com dados</span></td>
       <td class="num">R$ ${fmtBRL(avgTotal)}</td>
       <td class="num">${fmtPct(avgYield)}</td>
       <td class="num">${fmtPct(avgYieldMes)}</td>
@@ -1352,6 +1722,148 @@ function historyAverage(periods) {
   return nonZero.reduce((s, m) => s + m.total, 0) / nonZero.length;
 }
 
+// ─── GRÁFICO DE LINHA (tendência) ──────────────────────
+function renderLineChart(periods) {
+  // periods: SEMPRE em ordem cronológica (antiga → recente)
+  const metrics = periods.map(p => calcMetrics(p.deals));
+  const values = metrics.map(m => m.total);
+  const nonZero = values.filter(v => v > 0);
+  
+  if (nonZero.length < 2) {
+    return '<div class="line-chart-empty">Poucos dados para gerar gráfico de tendência</div>';
+  }
+  
+  const maxVal = Math.max(...values);
+  const minVal = Math.min(...nonZero);
+  const avg = nonZero.reduce((s, v) => s + v, 0) / nonZero.length;
+  
+  // Escala com margem visual (10% acima do max)
+  const yMax = maxVal * 1.1;
+  const yMin = 0;
+  
+  const W = 700, H = 180;
+  const PAD = { top: 28, right: 60, bottom: 40, left: 50 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = H - PAD.top - PAD.bottom;
+  
+  const xStep = periods.length > 1 ? chartW / (periods.length - 1) : 0;
+  const yScale = v => PAD.top + chartH - ((v - yMin) / (yMax - yMin)) * chartH;
+  const xPos = i => PAD.left + i * xStep;
+  
+  // Grid horizontal (3 linhas de referência)
+  const gridLines = [0.25, 0.5, 0.75, 1].map(frac => {
+    const y = PAD.top + chartH - frac * chartH;
+    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#E5DFD4" stroke-width="1" />`;
+  }).join('');
+  
+  // Labels do eixo Y (valor nos gridlines principais)
+  const yLabels = [0, 0.5, 1].map(frac => {
+    const y = PAD.top + chartH - frac * chartH;
+    const val = frac * yMax;
+    const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(0)}k` : `R$ ${Math.round(val)}`;
+    return `<text x="${PAD.left - 8}" y="${(y + 3).toFixed(1)}" font-size="10" fill="#8A847B" text-anchor="end" font-family="Monaco, monospace">${valStr}</text>`;
+  }).join('');
+  
+  // Linha de média (pontilhada)
+  const avgY = yScale(avg);
+  const avgLine = `<line x1="${PAD.left}" y1="${avgY.toFixed(1)}" x2="${W-PAD.right}" y2="${avgY.toFixed(1)}" stroke="#8A847B" stroke-dasharray="2,3" stroke-width="1" />`;
+  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="9" fill="#8A847B" text-anchor="start" font-weight="700" letter-spacing="1">MÉDIA</text>`;
+  
+  // Path da linha + área preenchida (gradient suave)
+  let linePath = '';
+  let areaPath = '';
+  let started = false;
+  let firstX = 0, lastX = 0;
+  
+  periods.forEach((p, i) => {
+    const v = metrics[i].total;
+    if (v > 0) {
+      const x = xPos(i);
+      const y = yScale(v);
+      if (!started) {
+        linePath += `M ${x.toFixed(1)} ${y.toFixed(1)} `;
+        areaPath += `M ${x.toFixed(1)} ${(PAD.top + chartH).toFixed(1)} L ${x.toFixed(1)} ${y.toFixed(1)} `;
+        firstX = x;
+        started = true;
+      } else {
+        linePath += `L ${x.toFixed(1)} ${y.toFixed(1)} `;
+        areaPath += `L ${x.toFixed(1)} ${y.toFixed(1)} `;
+      }
+      lastX = x;
+    } else if (started) {
+      // Fechar área parcial e resetar
+      areaPath += `L ${lastX.toFixed(1)} ${(PAD.top + chartH).toFixed(1)} Z `;
+      started = false;
+    }
+  });
+  if (started) {
+    areaPath += `L ${lastX.toFixed(1)} ${(PAD.top + chartH).toFixed(1)} Z`;
+  }
+  
+  const gradientDef = `
+    <defs>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#D37B5A" stop-opacity="0.18" />
+        <stop offset="100%" stop-color="#D37B5A" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+  `;
+  const areaShape = areaPath ? `<path d="${areaPath.trim()}" fill="url(#areaGrad)" />` : '';
+  const lineShape = linePath ? `<path d="${linePath.trim()}" stroke="#D37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round" />` : '';
+  
+  // Pontos (todos na mesma cor coral — destaque por tamanho)
+  const dots = periods.map((p, i) => {
+    const v = metrics[i].total;
+    if (v === 0) return '';
+    const y = yScale(v);
+    const x = xPos(i);
+    // Destaque por tamanho: current maior, demais iguais
+    const r = p.isCurrent ? 6 : 4.5;
+    const strokeW = p.isCurrent ? 2.5 : 2;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#D37B5A" stroke="white" stroke-width="${strokeW}" />`;
+  }).join('');
+  
+  // Valor em destaque do período atual
+  let currentValueLabel = '';
+  const currentIdx = periods.findIndex(p => p.isCurrent);
+  if (currentIdx >= 0 && metrics[currentIdx].total > 0) {
+    const x = xPos(currentIdx);
+    const y = yScale(metrics[currentIdx].total);
+    const val = metrics[currentIdx].total;
+    const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(1)}k` : `R$ ${Math.round(val)}`;
+    currentValueLabel = `<text x="${x.toFixed(1)}" y="${(y - 12).toFixed(1)}" font-size="11" font-weight="700" fill="#1A1816" text-anchor="middle">${valStr}</text>`;
+  }
+  
+  // Labels do eixo X
+  const xLabels = periods.map((p, i) => {
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="10" fill="#4A453F" text-anchor="middle" font-weight="700">${p.label}</text>`;
+  }).join('');
+  
+  // Sub-labels (se existir)
+  const subLabels = periods.map((p, i) => {
+    if (!p.sublabel) return '';
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 2}" font-size="9" fill="#8A847B" text-anchor="middle">${p.sublabel}</text>`;
+  }).join('');
+  
+  return `
+    <div class="line-chart-container">
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="height:${H}px;">
+        ${gradientDef}
+        ${gridLines}
+        ${yLabels}
+        ${areaShape}
+        ${avgLine}
+        ${avgLabel}
+        ${lineShape}
+        ${dots}
+        ${currentValueLabel}
+        ${xLabels}
+        ${subLabels}
+      </svg>
+    </div>
+  `;
+}
+
 function sameDay(d1, d2) {
   if (!d1 || !d2) return false;
   return d1.getFullYear() === d2.getFullYear() &&
@@ -1368,20 +1880,38 @@ function prevIsoWeek(year, week) {
 }
 
 // Semanas ISO que contêm pelo menos um dia do mês especificado
+// Se month === 0: retorna todas as semanas do ano
 function getWeeksOfMonth(year, month) {
-  const weekMap = new Map(); // key: "year-week" → {year, week}
-  const daysInMonth = new Date(year, month, 0).getDate();
-  for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(year, month - 1, d);
-    const w = getWeekNumber(date);
-    // Anos podem diferir (ex: 1/jan pode estar na semana 52 do ano anterior)
-    let wYear = date.getFullYear();
-    if (month === 1 && w >= 52) wYear = year - 1;
-    else if (month === 12 && w === 1) wYear = year + 1;
-    else wYear = year;
-    const key = `${wYear}-${w}`;
-    if (!weekMap.has(key)) weekMap.set(key, { year: wYear, week: w });
+  const weekMap = new Map();
+  
+  if (month === 0) {
+    // Todas as semanas do ano
+    for (let m = 1; m <= 12; m++) {
+      const daysInM = new Date(year, m, 0).getDate();
+      for (let d = 1; d <= daysInM; d++) {
+        const date = new Date(year, m - 1, d);
+        const w = getWeekNumber(date);
+        let wYear = year;
+        if (m === 1 && w >= 52) wYear = year - 1;
+        else if (m === 12 && w === 1) wYear = year + 1;
+        const key = `${wYear}-${w}`;
+        if (!weekMap.has(key)) weekMap.set(key, { year: wYear, week: w });
+      }
+    }
+  } else {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month - 1, d);
+      const w = getWeekNumber(date);
+      let wYear = date.getFullYear();
+      if (month === 1 && w >= 52) wYear = year - 1;
+      else if (month === 12 && w === 1) wYear = year + 1;
+      else wYear = year;
+      const key = `${wYear}-${w}`;
+      if (!weekMap.has(key)) weekMap.set(key, { year: wYear, week: w });
+    }
   }
+  
   return Array.from(weekMap.values()).sort((a, b) => 
     a.year !== b.year ? a.year - b.year : a.week - b.week
   );
@@ -1474,6 +2004,7 @@ function updateBlocoDaily() {
   }
   
   document.getElementById('historyDaily').innerHTML = renderHistoryTable(periods, true);
+  document.getElementById('chartDaily').innerHTML = renderLineChart(periods);
 
   // ─── COMPARATIVOS ───
   const mediaHistorica = historyAverage(periods);
@@ -1496,13 +2027,14 @@ function updateBlocoSemanal() {
   const selectedYear = parseInt(document.getElementById('anoSemanalSelector').value);
   const selectedMonth = parseInt(document.getElementById('mesSemanalSelector').value);
   const selectedWeek = parseInt(document.getElementById('semanaSelector').value);
+  const isAllMonths = selectedMonth === 0;
 
   console.log('=== DEBUG BLOCO 2 ===');
-  console.log('Filtros semanal:', {selectedYear, selectedMonth, selectedWeek});
+  console.log('Filtros semanal:', {selectedYear, selectedMonth, selectedWeek, isAllMonths});
   
   const semanalDeals = allDealsData.filter(d => {
     const matchAno = d.ano === selectedYear;
-    const matchMes = d.mes === selectedMonth;
+    const matchMes = isAllMonths ? true : d.mes === selectedMonth;
     const matchSemana = d.semana_fechamento === selectedWeek;
     const isPago = norm(d.status_fechamento).includes('pago');
     
@@ -1544,6 +2076,7 @@ function updateBlocoSemanal() {
   });
   
   document.getElementById('historyWeekly').innerHTML = renderHistoryTable(periods, true);
+  document.getElementById('chartWeekly').innerHTML = renderLineChart(periods);
 
   // ─── COMPARATIVO: semana atual vs média das 5 semanas + vs semana anterior ───
   const compEl = document.getElementById('compSemanal');
@@ -1605,23 +2138,32 @@ function refreshWeekSelector() {
 function updateBlocoMensal() {
   const selectedMonth = parseInt(document.getElementById('mesSelector').value);
   const selectedYear = parseInt(document.getElementById('anoMensalSelector').value);
+  const isYearly = selectedMonth === 0;
 
   console.log('=== DEBUG BLOCO 3 ===');
-  console.log('Filtros mensal:', {selectedYear, selectedMonth});
-  console.log('Total deals na base:', allDealsData.length);
+  console.log('Filtros mensal:', {selectedYear, selectedMonth, isYearly});
 
   const mensalDeals = allDealsData.filter(d => {
     const matchAno = d.ano === selectedYear;
-    const matchMes = d.mes === selectedMonth;
+    const matchMes = isYearly ? true : d.mes === selectedMonth;
     const isPago = norm(d.status_fechamento).includes('pago');
     
     return matchAno && matchMes && isPago;
   });
 
-  console.log('Deals mensais PAGO encontrados:', mensalDeals.length);
+  console.log('Deals encontrados:', mensalDeals.length);
   
   const m = calcMetrics(mensalDeals);
   const yieldOperacaoMes = m.parcelasMedio > 0 ? m.yieldTotal / m.parcelasMedio : 0;
+
+  // Atualizar label do painel principal conforme seleção
+  const mesesNomesCurto = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const panelLabel = document.querySelector('#blocoMensal .result-panel .result-label');
+  if (panelLabel) {
+    panelLabel.textContent = isYearly 
+      ? `Deságio do ano · ${selectedYear}` 
+      : `Deságio do mês · ${mesesNomesCurto[selectedMonth]}/${selectedYear}`;
+  }
 
   document.getElementById('resultMensal').textContent = fmtBRL(m.total);
   document.getElementById('yieldMensalTotal').textContent = fmtPct(m.yieldTotal);
@@ -1629,50 +2171,242 @@ function updateBlocoMensal() {
   document.getElementById('parcelasMensal').textContent = fmtDec(m.parcelasMedio, 3);
   document.getElementById('yieldMensalMes').textContent = fmtPct(yieldOperacaoMes);
 
-  // ─── HISTÓRICO: últimos 3 meses anteriores ao selecionado (ordem antiga → recente) ───
+  // ─── HISTÓRICO ───
+  // Se visão anual: mostra TODOS os meses do ano (1-12)
+  // Se mensal: últimos 3 meses anteriores ao selecionado
   const mesesNomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   const periods = [];
   
-  for (let i = 3; i >= 1; i--) {
-    let mm = selectedMonth - i;
-    let yy = selectedYear;
-    while (mm <= 0) { mm += 12; yy -= 1; }
-    
-    const monthDeals = allDealsData.filter(d => {
-      const isPago = norm(d.status_fechamento).includes('pago');
-      return isPago && d.ano === yy && d.mes === mm;
-    });
-    
-    periods.push({
-      label: mesesNomes[mm - 1],
-      sublabel: String(yy),
-      deals: monthDeals,
-      isCurrent: false
-    });
+  if (isYearly) {
+    // Todos os 12 meses do ano, cronológicos
+    for (let mm = 1; mm <= 12; mm++) {
+      const monthDeals = allDealsData.filter(d => {
+        const isPago = norm(d.status_fechamento).includes('pago');
+        return isPago && d.ano === selectedYear && d.mes === mm;
+      });
+      periods.push({
+        label: mesesNomes[mm - 1],
+        sublabel: String(selectedYear),
+        deals: monthDeals,
+        isCurrent: false
+      });
+    }
+    // Atualizar header do histórico
+    const histHeader = document.querySelector('#blocoMensal .history-header');
+    if (histHeader) histHeader.textContent = `Todos os meses de ${selectedYear}`;
+  } else {
+    for (let i = 3; i >= 1; i--) {
+      let mm = selectedMonth - i;
+      let yy = selectedYear;
+      while (mm <= 0) { mm += 12; yy -= 1; }
+      
+      const monthDeals = allDealsData.filter(d => {
+        const isPago = norm(d.status_fechamento).includes('pago');
+        return isPago && d.ano === yy && d.mes === mm;
+      });
+      
+      periods.push({
+        label: mesesNomes[mm - 1],
+        sublabel: String(yy),
+        deals: monthDeals,
+        isCurrent: false
+      });
+    }
+    const histHeader = document.querySelector('#blocoMensal .history-header');
+    if (histHeader) histHeader.textContent = 'Últimos 3 meses';
   }
   
   document.getElementById('historyMonthly').innerHTML = renderHistoryTable(periods, true);
+  document.getElementById('chartMonthly').innerHTML = renderLineChart(periods);
 
-  // ─── COMPARATIVO: mês atual vs média dos 3 meses + vs mês anterior ───
+  // ─── COMPARATIVO ───
   const compEl = document.getElementById('compMensal');
   let compHtml = '';
-  const mediaHistorica = historyAverage(periods);
-  if (mediaHistorica > 0 && m.total > 0) {
-    const t = calcTrend(m.total, mediaHistorica);
-    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs média 3 meses</span>`;
-  }
-  const prevPeriod = periods[periods.length - 1]; // mês imediatamente anterior
-  if (prevPeriod) {
-    const prevM = calcMetrics(prevPeriod.deals);
-    if (prevM.total > 0 && m.total > 0) {
-      const t = calcTrend(m.total, prevM.total);
-      compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs ${prevPeriod.label.toLowerCase()}</span>`;
+  if (!isYearly) {
+    const mediaHistorica = historyAverage(periods);
+    if (mediaHistorica > 0 && m.total > 0) {
+      const t = calcTrend(m.total, mediaHistorica);
+      compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs média 3 meses</span>`;
+    }
+    const prevPeriod = periods[periods.length - 1];
+    if (prevPeriod) {
+      const prevM = calcMetrics(prevPeriod.deals);
+      if (prevM.total > 0 && m.total > 0) {
+        const t = calcTrend(m.total, prevM.total);
+        compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">${t.icon} ${t.text} vs ${prevPeriod.label.toLowerCase()}</span>`;
+      }
     }
   }
   compEl.innerHTML = compHtml;
 
   updateProgress('mensal', m.total);
+}
+
+// ─── BLOCO 4: DISTRIBUIÇÃO DE DESÁGIOS ─────────────────
+function updateBlocoDistrib() {
+  const selectedMonth = parseInt(document.getElementById('mesDistribSelector').value);
+  const selectedYear = parseInt(document.getElementById('anoDistribSelector').value);
+  
+  // Filtrar deals pagos (todos ou do mês/ano selecionado)
+  let deals = allDealsData.filter(d => norm(d.status_fechamento).includes('pago'));
+  if (selectedMonth > 0) {
+    deals = deals.filter(d => d.ano === selectedYear && d.mes === selectedMonth);
+  } else {
+    deals = deals.filter(d => d.ano === selectedYear);
+  }
+  
+  // Faixas de yield total (em %)
+  const bins = [
+    { label: '< 5%', min: 0, max: 5 },
+    { label: '5% – 10%', min: 5, max: 10 },
+    { label: '10% – 15%', min: 10, max: 15 },
+    { label: '15% – 20%', min: 15, max: 20 },
+    { label: '20% – 25%', min: 20, max: 25 },
+    { label: '≥ 25%', min: 25, max: Infinity },
+  ];
+  
+  // Agrupar deals por faixa
+  bins.forEach(b => { b.deals = []; });
+  deals.forEach(d => {
+    const y = d.yield_operacao_total || 0;
+    const bin = bins.find(b => y >= b.min && y < b.max);
+    if (bin) bin.deals.push(d);
+  });
+  
+  const totalCount = deals.length;
+  const totalValue = deals.reduce((s, d) => s + d.desagio_total, 0);
+  const maxBinValue = Math.max(...bins.map(b => b.deals.reduce((s, d) => s + d.desagio_total, 0)));
+  
+  const container = document.getElementById('distribContainer');
+  if (totalCount === 0) {
+    container.innerHTML = '<div class="distrib-empty">Sem operações pagas no período selecionado</div>';
+    return;
+  }
+  
+  // Renderizar cada faixa
+  const rows = bins.map(b => {
+    const count = b.deals.length;
+    const sum = b.deals.reduce((s, d) => s + d.desagio_total, 0);
+    const pctCount = totalCount > 0 ? (count / totalCount) * 100 : 0;
+    const pctValue = totalValue > 0 ? (sum / totalValue) * 100 : 0;
+    const barW = maxBinValue > 0 ? (sum / maxBinValue) * 100 : 0;
+    
+    const emptyClass = count === 0 ? ' muted' : '';
+    const labelPosition = barW > 20 ? '' : ' outside';
+    const barLabel = count > 0 ? `<span class="distrib-bar-label${labelPosition}">${count} ${count === 1 ? 'caso' : 'casos'}</span>` : '';
+    
+    return `<div class="distrib-row">
+      <div class="distrib-label">${b.label}</div>
+      <div class="distrib-bar-wrap">
+        <div class="distrib-bar${emptyClass}" style="width:${barW}%;">${barLabel}</div>
+      </div>
+      <div class="distrib-stats">
+        <span>R$ ${fmtBRL(sum)}</span>
+        <span class="count">${fmtDec(pctValue, 1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+  
+  container.innerHTML = rows + `<div class="distrib-row total">
+    <div class="distrib-label">Total</div>
+    <div class="distrib-bar-wrap" style="background:transparent;"></div>
+    <div class="distrib-stats">
+      <span>R$ ${fmtBRL(totalValue)}</span>
+      <span class="count">${totalCount} casos</span>
+    </div>
+  </div>`;
+}
+
+// ─── BLOCO 5: VELOCIDADE DE FECHAMENTO ─────────────────
+function updateBlocoVelocidade() {
+  const selectedMonth = parseInt(document.getElementById('mesVelocSelector').value);
+  const selectedYear = parseInt(document.getElementById('anoVelocSelector').value);
+  
+  // Verificar se temos data_abertura nos dados
+  const temDataAbertura = allDealsData.some(d => d.data_abertura);
+  if (!temDataAbertura) {
+    document.getElementById('velocidadeMissing').style.display = 'block';
+    document.getElementById('velocidadeContent').style.display = 'none';
+    return;
+  }
+  document.getElementById('velocidadeMissing').style.display = 'none';
+  document.getElementById('velocidadeContent').style.display = 'block';
+  
+  // Filtrar deals pagos com ambas as datas
+  let deals = allDealsData.filter(d => 
+    norm(d.status_fechamento).includes('pago') &&
+    d.data_abertura && d.data_fechamento
+  );
+  if (selectedMonth > 0) {
+    deals = deals.filter(d => d.ano === selectedYear && d.mes === selectedMonth);
+  } else {
+    deals = deals.filter(d => d.ano === selectedYear);
+  }
+  
+  // Calcular dias entre abertura e fechamento pra cada deal
+  const durations = deals.map(d => {
+    const diffMs = d.data_fechamento - d.data_abertura;
+    return Math.max(0, Math.round(diffMs / 86400000));
+  }).filter(v => v >= 0);
+  
+  if (durations.length === 0) {
+    document.getElementById('velocMediaDias').textContent = '—';
+    document.getElementById('velocMedianaDias').textContent = '—';
+    document.getElementById('velocNCasos').textContent = '0';
+    document.getElementById('velocContainer').innerHTML = '<div class="distrib-empty">Sem operações no período selecionado</div>';
+    return;
+  }
+  
+  // Média e mediana
+  const media = durations.reduce((s, v) => s + v, 0) / durations.length;
+  const sorted = [...durations].sort((a, b) => a - b);
+  const mediana = sorted.length % 2 === 0
+    ? (sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2
+    : sorted[Math.floor(sorted.length/2)];
+  
+  document.getElementById('velocMediaDias').textContent = fmtDec(media, 1);
+  document.getElementById('velocMedianaDias').textContent = fmtDec(mediana, 0);
+  document.getElementById('velocNCasos').textContent = durations.length;
+  
+  // Distribuição por faixa de dias
+  const bins = [
+    { label: '0 – 7 dias', min: 0, max: 7 },
+    { label: '8 – 15 dias', min: 8, max: 15 },
+    { label: '16 – 30 dias', min: 16, max: 30 },
+    { label: '31 – 60 dias', min: 31, max: 60 },
+    { label: '61 – 90 dias', min: 61, max: 90 },
+    { label: '> 90 dias', min: 91, max: Infinity },
+  ];
+  
+  bins.forEach(b => { b.count = 0; });
+  durations.forEach(dur => {
+    const bin = bins.find(b => dur >= b.min && dur <= b.max);
+    if (bin) bin.count++;
+  });
+  
+  const totalCount = durations.length;
+  const maxBinCount = Math.max(...bins.map(b => b.count));
+  
+  const rows = bins.map(b => {
+    const pct = totalCount > 0 ? (b.count / totalCount) * 100 : 0;
+    const barW = maxBinCount > 0 ? (b.count / maxBinCount) * 100 : 0;
+    const emptyClass = b.count === 0 ? ' muted' : '';
+    const labelPosition = barW > 20 ? '' : ' outside';
+    const barLabel = b.count > 0 ? `<span class="distrib-bar-label${labelPosition}">${b.count} ${b.count === 1 ? 'caso' : 'casos'}</span>` : '';
+    
+    return `<div class="distrib-row">
+      <div class="distrib-label">${b.label}</div>
+      <div class="distrib-bar-wrap">
+        <div class="distrib-bar${emptyClass}" style="width:${barW}%;">${barLabel}</div>
+      </div>
+      <div class="distrib-stats">
+        <span class="count">${fmtDec(pct, 1)}%</span>
+      </div>
+    </div>`;
+  }).join('');
+  
+  document.getElementById('velocContainer').innerHTML = rows;
 }
 
 // ─── PROGRESS BARS ─────────────────────────────────────
@@ -1696,19 +2430,22 @@ function updateProgress(tipo, valor) {
 }
 
 // ─── SAMPLE DATA ───────────────────────────────────────
-const SAMPLE = `Ano,Mês,Semana,Semana Fechamento,Data Fechamento,Mês Fechamento,Cliente,Deságio Total,Valor Total,Status Fechamento,Status do Contrato,Yield Operação (Total),Yield Operação (Mês),Parcelas Antecipadas
-2026,4,16,16,,,Alpha Logística SA,82000.00,820000.00,Em aberto,Assinado,10.5,8.2,12.5
-2026,4,16,16,,,Brava Agro Ltda,151800.00,1450000.00,Aguardando aprovação,Enviado,11.2,9.1,18.2  
-2026,4,16,,,,Cipreste Varejo,29750.00,340000.00,Em aberto,Em revisão,9.8,7.5,8.1
-2026,4,15,15,10/04/2026,4,Delta Serviços,42000.00,580000.00,Pago,Assinado,12.1,10.2,15.3
-2026,4,16,16,,,Égide Saúde,231000.00,2100000.00,Incluir banco,Assinado,10.8,8.9,24.7
-2026,4,16,,,,Fortuna Indústria,62625.00,675000.00,Em aberto,Enviar,9.5,7.8,10.4
-2026,3,12,12,20/03/2026,3,Gaivota Têxtil,42000.00,420000.00,Pago,Assinado,11.5,9.8,12.8
-2026,4,15,,,,Horizonte Tech,15000.00,980000.00,Aguardando aprovação,Análise de crédito,8.2,6.1,6.2
-2026,4,16,16,,,Ibira Construtora,125000.00,1250000.00,Em aberto,Assinado,10.2,8.5,20.1
-2026,4,16,,,,Jaguar Alimentos,51480.00,520000.00,Incluir banco,Em revisão,9.9,8.1,14.6
-2026,4,15,15,08/04/2026,4,Kirin Farma,88000.00,760000.00,Pago,Assinado,10.8,8.7,16.3
-2026,4,16,16,15/04/2026,4,Luar Energia,195000.00,1800000.00,Pago,Assinado,11.3,9.2,22.9`;
+const SAMPLE = `Ano,Mês,Semana,Semana Fechamento,Data Abertura,Data Fechamento,Mês Fechamento,Cliente,Deságio Total,Valor Total,Status Fechamento,Status do Contrato,Yield Operação (Total),Yield Operação (Mês),Parcelas Antecipadas
+2026,4,16,16,05/04/2026,,,Alpha Logística SA,82000.00,820000.00,Em aberto,Assinado,10.5,8.2,12.5
+2026,4,16,16,08/04/2026,,,Brava Agro Ltda,151800.00,1450000.00,Aguardando aprovação,Enviado,11.2,9.1,18.2  
+2026,4,16,,10/04/2026,,,Cipreste Varejo,29750.00,340000.00,Em aberto,Em revisão,9.8,7.5,8.1
+2026,4,15,15,02/04/2026,10/04/2026,4,Delta Serviços,42000.00,580000.00,Pago,Assinado,7.2,10.2,15.3
+2026,4,16,16,06/04/2026,,,Égide Saúde,231000.00,2100000.00,Incluir banco,Assinado,10.8,8.9,24.7
+2026,4,16,,12/04/2026,,,Fortuna Indústria,62625.00,675000.00,Em aberto,Enviar,9.5,7.8,10.4
+2026,3,12,12,08/03/2026,20/03/2026,3,Gaivota Têxtil,42000.00,420000.00,Pago,Assinado,10.0,9.8,12.8
+2026,4,15,,14/04/2026,,,Horizonte Tech,15000.00,980000.00,Aguardando aprovação,Análise de crédito,1.5,6.1,6.2
+2026,4,16,16,07/04/2026,,,Ibira Construtora,125000.00,1250000.00,Em aberto,Assinado,10.2,8.5,20.1
+2026,4,16,,14/04/2026,,,Jaguar Alimentos,51480.00,520000.00,Incluir banco,Em revisão,9.9,8.1,14.6
+2026,4,15,15,25/03/2026,08/04/2026,4,Kirin Farma,88000.00,760000.00,Pago,Assinado,11.6,8.7,16.3
+2026,4,16,16,01/04/2026,15/04/2026,4,Luar Energia,195000.00,1800000.00,Pago,Assinado,10.8,9.2,22.9
+2026,3,11,11,22/02/2026,15/03/2026,3,Madrepérola Co,38000.00,450000.00,Pago,Assinado,8.4,9.5,11.5
+2026,2,7,7,15/01/2026,14/02/2026,2,Núcleo Soluções,67000.00,820000.00,Pago,Assinado,8.2,7.8,18.0
+2026,1,3,3,28/12/2025,18/01/2026,1,Oliva Grupo,52000.00,610000.00,Pago,Assinado,8.5,8.9,14.5`;
 
 // ─── EVENT HANDLERS ─────────────────────────────────────
 let currentCSVData = '';
@@ -1723,6 +2460,20 @@ function setSyncStatus(state, text) {
 
 function hideSyncStatus() {
   document.getElementById('syncStatus').className = 'sync-status';
+}
+
+function setSyncBar(state, label, sub) {
+  const bar = document.getElementById('syncBar');
+  bar.className = 'sync-bar ' + state;
+  document.getElementById('syncBarLabel').textContent = label || '';
+  document.getElementById('syncBarSub').textContent = sub ? ' · ' + sub : '';
+  const btn = document.getElementById('syncBarBtn');
+  btn.disabled = (state === 'pending');
+  btn.textContent = state === 'pending' ? 'Sincronizando…' : '⟳ Atualizar dados';
+}
+
+function hideSyncBar() {
+  document.getElementById('syncBar').className = 'sync-bar hidden';
 }
 
 async function fetchCsvWithFallback(url) {
@@ -1784,6 +2535,7 @@ async function connectAndSync(url, isAutoReload = false) {
   }
   
   setSyncStatus('loading', isAutoReload ? 'Sincronizando dados salvos…' : 'Conectando ao Sheets…');
+  setSyncBar('pending', 'Sincronizando…', isAutoReload ? 'dados salvos' : 'conectando ao Sheets');
   
   try {
     const result = await fetchCsvWithFallback(url);
@@ -1799,11 +2551,13 @@ async function connectAndSync(url, isAutoReload = false) {
     const mm = String(now.getMinutes()).padStart(2,'0');
     const rotaInfo = result.via === 'direto' ? '' : ` · via ${result.via}`;
     setSyncStatus('success', `✓ Sincronizado às ${hh}:${mm} — ${allDealsData.length} deals${rotaInfo}`);
+    setSyncBar('ok', `Sincronizado às ${hh}:${mm}`, `${allDealsData.length} deals carregados${rotaInfo}`);
     
     document.getElementById('refreshBtn').style.display = 'inline-block';
     
   } catch (e) {
     setSyncStatus('error', '✗ Falha na sincronização');
+    setSyncBar('fail', 'Falha na sincronização', 'clique em Atualizar pra tentar novamente');
     err.innerHTML = `
       <strong>Erro ao conectar:</strong> ${e.message}<br><br>
       <strong>Checklist:</strong><br>
@@ -1830,6 +2584,17 @@ document.getElementById('sheetUrl').addEventListener('keydown', e => {
 
 document.getElementById('refreshBtn').addEventListener('click', () => {
   const url = document.getElementById('sheetUrl').value.trim();
+  connectAndSync(url, false);
+});
+
+document.getElementById('syncBarBtn').addEventListener('click', () => {
+  const url = document.getElementById('sheetUrl').value.trim()
+            || localStorage.getItem(STORAGE_KEY_URL);
+  if (!url) {
+    // Se não tem URL configurada, destaca o campo
+    document.getElementById('sheetUrl').focus();
+    return;
+  }
   connectAndSync(url, false);
 });
 
@@ -1874,8 +2639,11 @@ document.getElementById('clearBtn').addEventListener('click', () => {
   document.getElementById('blocoDaily').style.display = 'none';
   document.getElementById('blocoSemanal').style.display = 'none';
   document.getElementById('blocoMensal').style.display = 'none';
+  document.getElementById('blocoDistrib').style.display = 'none';
+  document.getElementById('blocoVelocidade').style.display = 'none';
   document.getElementById('refreshBtn').style.display = 'none';
   hideSyncStatus();
+  hideSyncBar();
   
   const zone = document.getElementById('inputZone');
   const body = document.getElementById('inputBody');
@@ -1935,7 +2703,7 @@ document.getElementById('csvInput').addEventListener('keydown', e => {
   const currentYear = now.getFullYear();
   
   // Populate year selectors dynamically
-  ['anoSemanalSelector', 'anoMensalSelector'].forEach(id => {
+  ['anoSemanalSelector', 'anoMensalSelector', 'anoDistribSelector', 'anoVelocSelector'].forEach(id => {
     const sel = document.getElementById(id);
     for (let y = currentYear - 1; y <= currentYear + 1; y++) {
       const opt = document.createElement('option');
@@ -1948,11 +2716,13 @@ document.getElementById('csvInput').addEventListener('keydown', e => {
   
   document.getElementById('mesSelector').value = now.getMonth() + 1;
   document.getElementById('mesSemanalSelector').value = now.getMonth() + 1;
+  document.getElementById('mesDistribSelector').value = 0; // "Todos os meses" por padrão
+  document.getElementById('mesVelocSelector').value = 0;
   
   // Popular seletor de semanas com as semanas do mês selecionado
   refreshWeekSelector();
   
-  // Listeners: ao mudar mês ou ano do Bloco 2, repopula o seletor de semanas
+  // Listeners: Bloco 2
   document.getElementById('mesSemanalSelector').addEventListener('change', () => {
     refreshWeekSelector();
     if (allDealsData.length) updateBlocoSemanal();
@@ -1965,12 +2735,28 @@ document.getElementById('csvInput').addEventListener('keydown', e => {
     if (allDealsData.length) updateBlocoSemanal();
   });
   
-  // Listeners: ao mudar mês ou ano do Bloco 3, atualiza direto
+  // Listeners: Bloco 3
   document.getElementById('mesSelector').addEventListener('change', () => {
     if (allDealsData.length) updateBlocoMensal();
   });
   document.getElementById('anoMensalSelector').addEventListener('change', () => {
     if (allDealsData.length) updateBlocoMensal();
+  });
+  
+  // Listeners: Bloco 4 (distribuição)
+  document.getElementById('mesDistribSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoDistrib();
+  });
+  document.getElementById('anoDistribSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoDistrib();
+  });
+  
+  // Listeners: Bloco 5 (velocidade)
+  document.getElementById('mesVelocSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoVelocidade();
+  });
+  document.getElementById('anoVelocSelector').addEventListener('change', () => {
+    if (allDealsData.length) updateBlocoVelocidade();
   });
   
   // Auto-load: se tem URL salva, carrega automaticamente
