@@ -74,14 +74,6 @@
     </svg>
     Distribuição
   </button>
-  <button class="main-tab" data-block="blocoVelocidade" role="tab">
-    <svg class="main-tab-icon" viewBox="0 0 24 24">
-      <path d="M 4 17 A 8 8 0 0 1 20 17"/>
-      <line x1="12" y1="17" x2="8.5" y2="10.5"/>
-      <circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none"/>
-    </svg>
-    Velocidade
-  </button>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════ -->
@@ -382,60 +374,6 @@
   </div>
   
   <div class="distrib-container" id="distribContainer"></div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- BLOCO 5: VELOCIDADE DE FECHAMENTO -->
-<!-- ═══════════════════════════════════════════════════════ -->
-<div id="blocoVelocidade" class="bloco" style="display: none;">
-  <div class="bloco-header">
-    <div class="bloco-number">05</div>
-    <div class="bloco-title">Velocidade de Fechamento</div>
-  </div>
-  <div class="bloco-desc">
-    Tempo entre a <b>abertura</b> do deal e o <b>pagamento</b>. Média e mediana medem o ciclo típico da operação — quanto menor, mais rápido seu pipeline está girando. A distribuição mostra quanto % dos deals fecha em cada faixa de tempo.
-  </div>
-  <div class="bloco-filter">
-    <div class="filter-main">
-      <select id="mesVelocSelector">
-        <option value="0">Todos</option>
-        <option value="1">Jan</option>
-        <option value="2">Fev</option>
-        <option value="3">Mar</option>
-        <option value="4">Abr</option>
-        <option value="5">Mai</option>
-        <option value="6">Jun</option>
-        <option value="7">Jul</option>
-        <option value="8">Ago</option>
-        <option value="9">Set</option>
-        <option value="10">Out</option>
-        <option value="11">Nov</option>
-        <option value="12">Dez</option>
-      </select>
-    </div>
-    <div class="filter-side">
-      <select id="anoVelocSelector" class="filter-inline-select"></select>
-    </div>
-  </div>
-  
-  <div id="velocidadeMissing" class="line-chart-empty" style="display:none;">
-    Sem dados de Data Abertura na planilha. Adicione uma coluna "Data Abertura" para habilitar esta análise.
-  </div>
-  
-  <div id="velocidadeContent" style="display:none;">
-    <div class="result-panel primary">
-      <div class="result-label">Tempo médio até fechar</div>
-      <div class="result-value">
-        <span id="velocMediaDias">0</span><span style="font-size:16px;color:var(--ink-soft);font-weight:400;margin-left:6px;">dias</span>
-      </div>
-      <div class="result-breakdown">
-        <div>Mediana <span id="velocMedianaDias">0</span> dias</div>
-        <div><span id="velocNCasos">0</span> operações analisadas</div>
-      </div>
-    </div>
-    
-    <div class="distrib-container" id="velocContainer"></div>
-  </div>
 </div>
 
 <script src="app.js"></script>

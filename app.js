@@ -191,7 +191,6 @@ function processRows(rows) {
   updateBlocoSemanal();
   updateBlocoMensal();
   updateBlocoDistrib();
-  updateBlocoVelocidade();
 }
 
 // ─── DATA ───────────────────────────────────────────────
@@ -305,7 +304,7 @@ function historyAverage(periods) {
 
 // ─── TAB SELECTOR (transforma <select> em tab bar minimalista) ───
 // ─── SWITCH BLOCK (navegação entre abas) ──────────────
-const ALL_BLOCK_IDS = ['blocoDaily', 'blocoSemanal', 'blocoMensal', 'blocoDistrib', 'blocoVelocidade'];
+const ALL_BLOCK_IDS = ['blocoDaily', 'blocoSemanal', 'blocoMensal', 'blocoDistrib'];
 
 function switchToBlock(blockId) {
   ALL_BLOCK_IDS.forEach(id => {
@@ -898,6 +897,7 @@ function updateBlocoDistrib() {
   }
   
   // Faixas de yield total (em %)
+  // yield_operacao_total vem do Sheets como fração decimal (0.15 = 15%), converter pra %
   const bins = [
     { label: '< 5%', min: 0, max: 5 },
     { label: '5% – 10%', min: 5, max: 10 },
@@ -906,11 +906,11 @@ function updateBlocoDistrib() {
     { label: '20% – 25%', min: 20, max: 25 },
     { label: '≥ 25%', min: 25, max: Infinity },
   ];
-  
+
   // Agrupar deals por faixa
   bins.forEach(b => { b.deals = []; });
   deals.forEach(d => {
-    const y = d.yield_operacao_total || 0;
+    const y = (d.yield_operacao_total || 0) * 100;
     const bin = bins.find(b => y >= b.min && y < b.max);
     if (bin) bin.deals.push(d);
   });
@@ -957,97 +957,6 @@ function updateBlocoDistrib() {
       <span class="count">${totalCount} casos</span>
     </div>
   </div>`;
-}
-
-// ─── BLOCO 5: VELOCIDADE DE FECHAMENTO ─────────────────
-function updateBlocoVelocidade() {
-  const selectedMonth = parseInt(document.getElementById('mesVelocSelector').value);
-  const selectedYear = parseInt(document.getElementById('anoVelocSelector').value);
-  
-  // Verificar se temos data_abertura nos dados
-  const temDataAbertura = allDealsData.some(d => d.data_abertura);
-  if (!temDataAbertura) {
-    document.getElementById('velocidadeMissing').style.display = 'block';
-    document.getElementById('velocidadeContent').style.display = 'none';
-    return;
-  }
-  document.getElementById('velocidadeMissing').style.display = 'none';
-  document.getElementById('velocidadeContent').style.display = 'block';
-  
-  // Filtrar deals pagos com ambas as datas
-  let deals = allDealsData.filter(d => 
-    norm(d.status_fechamento).includes('pago') &&
-    d.data_abertura && d.data_fechamento
-  );
-  if (selectedMonth > 0) {
-    deals = deals.filter(d => d.ano === selectedYear && d.mes === selectedMonth);
-  } else {
-    deals = deals.filter(d => d.ano === selectedYear);
-  }
-  
-  // Calcular dias entre abertura e fechamento pra cada deal
-  const durations = deals.map(d => {
-    const diffMs = d.data_fechamento - d.data_abertura;
-    return Math.max(0, Math.round(diffMs / 86400000));
-  }).filter(v => v >= 0);
-  
-  if (durations.length === 0) {
-    document.getElementById('velocMediaDias').textContent = '—';
-    document.getElementById('velocMedianaDias').textContent = '—';
-    document.getElementById('velocNCasos').textContent = '0';
-    document.getElementById('velocContainer').innerHTML = '<div class="distrib-empty">Sem operações no período selecionado</div>';
-    return;
-  }
-  
-  // Média e mediana
-  const media = durations.reduce((s, v) => s + v, 0) / durations.length;
-  const sorted = [...durations].sort((a, b) => a - b);
-  const mediana = sorted.length % 2 === 0
-    ? (sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2
-    : sorted[Math.floor(sorted.length/2)];
-  
-  document.getElementById('velocMediaDias').textContent = fmtDec(media, 1);
-  document.getElementById('velocMedianaDias').textContent = fmtDec(mediana, 0);
-  document.getElementById('velocNCasos').textContent = durations.length;
-  
-  // Distribuição por faixa de dias
-  const bins = [
-    { label: '0 – 7 dias', min: 0, max: 7 },
-    { label: '8 – 15 dias', min: 8, max: 15 },
-    { label: '16 – 30 dias', min: 16, max: 30 },
-    { label: '31 – 60 dias', min: 31, max: 60 },
-    { label: '61 – 90 dias', min: 61, max: 90 },
-    { label: '> 90 dias', min: 91, max: Infinity },
-  ];
-  
-  bins.forEach(b => { b.count = 0; });
-  durations.forEach(dur => {
-    const bin = bins.find(b => dur >= b.min && dur <= b.max);
-    if (bin) bin.count++;
-  });
-  
-  const totalCount = durations.length;
-  const maxBinCount = Math.max(...bins.map(b => b.count));
-  
-  const rows = bins.map(b => {
-    const pct = totalCount > 0 ? (b.count / totalCount) * 100 : 0;
-    const barW = maxBinCount > 0 ? (b.count / maxBinCount) * 100 : 0;
-    const emptyClass = b.count === 0 ? ' muted' : '';
-    const labelPosition = barW > 20 ? '' : ' outside';
-    const barLabel = b.count > 0 ? `<span class="distrib-bar-label${labelPosition}">${b.count} ${b.count === 1 ? 'caso' : 'casos'}</span>` : '';
-    
-    return `<div class="distrib-row">
-      <div class="distrib-label">${b.label}</div>
-      <div class="distrib-bar-wrap">
-        <div class="distrib-bar${emptyClass}" style="width:${barW}%;">${barLabel}</div>
-      </div>
-      <div class="distrib-stats">
-        <span class="count">${fmtDec(pct, 1)}%</span>
-      </div>
-    </div>`;
-  }).join('');
-  
-  document.getElementById('velocContainer').innerHTML = rows;
 }
 
 // ─── PROGRESS BARS ─────────────────────────────────────
@@ -1116,7 +1025,7 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
   const currentYear = now.getFullYear();
   
   // Populate year selectors dynamically
-  ['anoSemanalSelector', 'anoMensalSelector', 'anoDistribSelector', 'anoVelocSelector'].forEach(id => {
+  ['anoSemanalSelector', 'anoMensalSelector', 'anoDistribSelector'].forEach(id => {
     const sel = document.getElementById(id);
     for (let y = currentYear - 1; y <= currentYear + 1; y++) {
       const opt = document.createElement('option');
@@ -1129,15 +1038,14 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
   
   document.getElementById('mesSelector').value = now.getMonth() + 1;
   document.getElementById('mesSemanalSelector').value = now.getMonth() + 1;
-  document.getElementById('mesDistribSelector').value = 0; // "Todos os meses" por padrão
-  document.getElementById('mesVelocSelector').value = 0;
+  document.getElementById('mesDistribSelector').value = 0;
   
   // Popular seletor de semanas com as semanas do mês selecionado
   refreshWeekSelector();
   
   // Transformar selects de MÊS em tabs horizontais (UX friendly)
   // Ano e Semana ficam como dropdown inline minimalista
-  ['mesSelector', 'mesSemanalSelector', 'mesDistribSelector', 'mesVelocSelector']
+  ['mesSelector', 'mesSemanalSelector', 'mesDistribSelector']
     .forEach(id => makeTabSelector(document.getElementById(id)));
   
   // Listeners: Bloco 2
@@ -1167,14 +1075,6 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
   });
   document.getElementById('anoDistribSelector').addEventListener('change', () => {
     if (allDealsData.length) updateBlocoDistrib();
-  });
-  
-  // Listeners: Bloco 5 (velocidade)
-  document.getElementById('mesVelocSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoVelocidade();
-  });
-  document.getElementById('anoVelocSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoVelocidade();
   });
   
   // Listeners: abas principais (navegação entre blocos)

@@ -805,15 +805,6 @@
     border-bottom: 1px solid var(--line);
   }
 
-  .line-chart-empty {
-    padding: 30px 20px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--ink-mute);
-    background: var(--paper);
-    border-bottom: 1px solid var(--line);
-  }
-
   .line-chart-container svg {
     display: block;
     width: 100%;
