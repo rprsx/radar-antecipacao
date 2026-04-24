@@ -93,7 +93,7 @@
     <div class="bloco-title">Resultado Diário</div>
   </div>
   <div class="bloco-desc">
-    Visão operacional de hoje. <b>Projeção do dia</b> = o que já fechou hoje + o que está em aberto com contrato em andamento (com chance de fechar). Os cards abaixo detalham cada componente. O histórico mostra o realizado nos últimos 5 dias pra comparação.
+    Visão operacional de hoje. <b>Projeção do dia</b> = total em aberto com qualquer status de contrato definido. Os cards abaixo detalham cada componente. O histórico mostra o realizado nos últimos 5 dias úteis (fins de semana ignorados).
   </div>
 
   <div class="result-panel primary">
@@ -102,7 +102,7 @@
       <span class="currency">R$</span><span id="projecaoDia">0,00</span>
     </div>
     <div class="result-breakdown">
-      <div>pago hoje + em aberto trabalhando</div>
+      <div>em aberto com status de contrato definido</div>
     </div>
     <div class="comp-container" id="compDiario"></div>
   </div>
@@ -127,19 +127,19 @@
       <div class="info-sub"><span id="pagoHojeCount">0</span> casos fechados</div>
     </div>
     <div class="info-box">
-      <div class="info-label">Em aberto · trabalhando</div>
+      <div class="info-label">Oportunidades em aberto</div>
       <div class="info-value">R$ <span id="resultDiario">0,00</span></div>
       <div class="info-sub"><span id="countDiario">0</span> contratos · ticket <span id="ticketDiario">R$ 0</span></div>
     </div>
     <div class="info-box">
-      <div class="info-label">Em aberto · aguardando resposta</div>
+      <div class="info-label">Sem status de contrato</div>
       <div class="info-value">R$ <span id="semDataDesagio">0,00</span></div>
-      <div class="info-sub"><span id="semDataCount">0</span> aguardando retorno</div>
+      <div class="info-sub"><span id="semDataCount">0</span> sem status definido</div>
     </div>
   </div>
 
   <div class="history-section">
-    <div class="history-header">Últimos 5 dias · fechados</div>
+    <div class="history-header">Últimos 5 dias úteis · fechados</div>
     <div id="chartDaily"></div>
     <table class="history-table">
       <thead>

@@ -578,31 +578,19 @@ function getWeeksOfMonth(year, month) {
 function updateBlocoDaily() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
 
-  // Status Contrato considerados "com visão" (trabalhando):
-  // assinado, enviado, enviar, gerar, em revisão
-  const statusContTrabalhando = ['assinado', 'enviado', 'enviar', 'gerar', 'emrevisao', 'revisao'];
-  
   const isEmAberto = d => {
     const sf = norm(d.status_fechamento);
     return sf === 'emaberto' || sf === 'aberto';
   };
-  
-  const isContratoTrabalhando = d => {
-    const sc = norm(d.status_contrato);
-    if (!sc) return false;
-    return statusContTrabalhando.some(v => sc.includes(v));
-  };
 
-  // TRABALHANDO: em aberto + contrato em um dos 5 status definidos
-  const trabalhandoDeals = allDealsData.filter(d => 
-    isEmAberto(d) && isContratoTrabalhando(d)
+  // OPORTUNIDADES: em aberto + qualquer status_contrato não vazio
+  const oportunidadesDeals = allDealsData.filter(d =>
+    isEmAberto(d) && norm(d.status_contrato) !== ''
   );
-  const totalTrabalhando = trabalhandoDeals.reduce((s, d) => s + d.desagio_total, 0);
-  const clientesTrabalhando = new Set(trabalhandoDeals.map(d => d.cliente)).size;
-  const ticketTrabalhando = clientesTrabalhando > 0 ? totalTrabalhando / clientesTrabalhando : 0;
+  const totalOportunidades = oportunidadesDeals.reduce((s, d) => s + d.desagio_total, 0);
+  const clientesOportunidades = new Set(oportunidadesDeals.map(d => d.cliente)).size;
+  const ticketOportunidades = clientesOportunidades > 0 ? totalOportunidades / clientesOportunidades : 0;
 
   // PAGO HOJE: status = pago + data_fechamento = hoje
   const pagoHojeDeals = allDealsData.filter(d => {
@@ -612,54 +600,50 @@ function updateBlocoDaily() {
   const totalPagoHoje = pagoHojeDeals.reduce((s, d) => s + d.desagio_total, 0);
   const pagoHojeCasos = new Set(pagoHojeDeals.map(d => d.cliente)).size;
 
-  // SEM VISÃO: em aberto + contrato NÃO está nos 5 status (vazio OU outros valores)
-  const semVisaoDeals = allDealsData.filter(d => 
-    isEmAberto(d) && !isContratoTrabalhando(d)
+  // SEM STATUS: em aberto + status_contrato vazio
+  const semStatusDeals = allDealsData.filter(d =>
+    isEmAberto(d) && norm(d.status_contrato) === ''
   );
-  const totalSemVisao = semVisaoDeals.reduce((s, d) => s + d.desagio_total, 0);
-  const semVisaoCasos = new Set(semVisaoDeals.map(d => d.cliente)).size;
+  const totalSemStatus = semStatusDeals.reduce((s, d) => s + d.desagio_total, 0);
+  const semStatusCasos = new Set(semStatusDeals.map(d => d.cliente)).size;
 
-  // Total em aberto (trabalhando + aguardando resposta) — pra sanity check
-  console.log('=== DEBUG BLOCO 1 ===');
-  console.log('Trabalhando:', trabalhandoDeals.length, 'deals · R$', fmtBRL(totalTrabalhando));
-  console.log('Aguardando resposta:', semVisaoDeals.length, 'deals · R$', fmtBRL(totalSemVisao));
-  console.log('Soma total em aberto:', fmtBRL(totalTrabalhando + totalSemVisao));
-  console.log('Pago hoje:', pagoHojeDeals.length, 'deals · R$', fmtBRL(totalPagoHoje));
-
-  document.getElementById('resultDiario').textContent = fmtBRL(totalTrabalhando);
-  document.getElementById('countDiario').textContent = clientesTrabalhando;
-  document.getElementById('ticketDiario').textContent = 'R$ ' + fmtInt(ticketTrabalhando);
+  document.getElementById('resultDiario').textContent = fmtBRL(totalOportunidades);
+  document.getElementById('countDiario').textContent = clientesOportunidades;
+  document.getElementById('ticketDiario').textContent = 'R$ ' + fmtInt(ticketOportunidades);
   document.getElementById('pagoHoje').textContent = fmtBRL(totalPagoHoje);
   document.getElementById('pagoHojeCount').textContent = pagoHojeCasos;
-  document.getElementById('projecaoDia').textContent = fmtBRL(totalTrabalhando + totalPagoHoje);
-  document.getElementById('semDataDesagio').textContent = fmtBRL(totalSemVisao);
-  document.getElementById('semDataCount').textContent = semVisaoCasos;
+  document.getElementById('projecaoDia').textContent = fmtBRL(totalOportunidades);
+  document.getElementById('semDataDesagio').textContent = fmtBRL(totalSemStatus);
+  document.getElementById('semDataCount').textContent = semStatusCasos;
 
-  document.getElementById('filtersDiario').textContent = 
-    `Trabalhando: Em aberto + contrato Assinado/Enviado/Enviar/Gerar/Em revisão • Aguardando resposta: Em aberto + demais valores de contrato`;
+  document.getElementById('filtersDiario').textContent =
+    `Oportunidades: Em aberto + qualquer status de contrato preenchido • Sem status: Em aberto + contrato sem status definido`;
 
-  // ─── HISTÓRICO: últimos 5 dias corridos anteriores (sem hoje) ───
-  // Calculo em ordem cronológica (antiga → recente) pra tendência ficar correta,
-  // mas exibo com o dia mais recente no topo (orderRecentFirst = true)
+  // ─── HISTÓRICO: últimos 5 dias úteis anteriores (pula fins de semana) ───
   const diasSemanaAbbr = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
   const mesesAbbr = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const periods = [];
-  
-  for (let i = 5; i >= 1; i--) {
+  let daysBack = 1;
+
+  while (periods.length < 5) {
     const refDate = new Date(today);
-    refDate.setDate(refDate.getDate() - i);
+    refDate.setDate(refDate.getDate() - daysBack);
     refDate.setHours(0, 0, 0, 0);
-    
+    daysBack++;
+
+    const dow = refDate.getDay();
+    if (dow === 0 || dow === 6) continue;
+
     const dayDeals = allDealsData.filter(d => {
       const isPago = norm(d.status_fechamento).includes('pago');
       return isPago && d.data_fechamento && sameDay(d.data_fechamento, refDate);
     });
-    
+
     const label = `${String(refDate.getDate()).padStart(2,'0')}/${mesesAbbr[refDate.getMonth()]}`;
     const sublabel = diasSemanaAbbr[refDate.getDay()];
-    periods.push({ label, sublabel, deals: dayDeals, isCurrent: false });
+    periods.unshift({ label, sublabel, deals: dayDeals, isCurrent: false });
   }
-  
+
   document.getElementById('historyDaily').innerHTML = renderHistoryTable(periods, true);
   document.getElementById('chartDaily').innerHTML = renderLineChart(periods);
 
@@ -669,14 +653,14 @@ function updateBlocoDaily() {
   let compHtml = '';
   if (mediaHistorica > 0 && totalPagoHoje > 0) {
     const t = calcTrend(totalPagoHoje, mediaHistorica);
-    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">Pago hoje ${t.icon} ${t.text} vs média 5 dias</span>`;
+    compHtml += `<span class="comp-badge ${t.cls.replace('trend-', '')}">Pago hoje ${t.icon} ${t.text} vs média</span>`;
   }
-  if (totalSemVisao > 0) {
-    compHtml += `<span class="comp-badge flat">${semVisaoCasos} aguardando resposta</span>`;
+  if (totalSemStatus > 0) {
+    compHtml += `<span class="comp-badge flat">${semStatusCasos} sem status de contrato</span>`;
   }
   compEl.innerHTML = compHtml;
 
-  updateProgress('diaria', totalTrabalhando + totalPagoHoje);
+  updateProgress('diaria', totalOportunidades);
 }
 
 // ─── BLOCO 2: SEMANAL ──────────────────────────────────
