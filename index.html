@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radar de Antecipação — 3 Blocos</title>
+<title>Radar de Antecipação</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -36,9 +35,58 @@
   <p>Carregando dados…</p>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- NAVEGAÇÃO ENTRE BLOCOS (abas) -->
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BARRA DE PERÍODO GLOBAL -->
+<div class="time-filter-bar" id="timeFilterBar">
+  <div class="time-presets">
+    <button class="preset-btn active" data-preset="this-month">Este mês</button>
+    <button class="preset-btn" data-preset="last-month">Mês passado</button>
+    <button class="preset-btn" data-preset="this-week">Esta semana</button>
+    <button class="preset-btn" data-preset="last-week">Sem. passada</button>
+    <button class="preset-btn" data-preset="q1">Q1</button>
+    <button class="preset-btn" data-preset="q2">Q2</button>
+    <button class="preset-btn" data-preset="q3">Q3</button>
+    <button class="preset-btn" data-preset="q4">Q4</button>
+    <button class="preset-btn" data-preset="2025">2025</button>
+    <button class="preset-btn" data-preset="2026">2026</button>
+    <button class="preset-btn" data-preset="all">Tudo</button>
+  </div>
+  <div class="time-custom">
+    <input type="date" id="customStart">
+    <span class="custom-sep">–</span>
+    <input type="date" id="customEnd">
+  </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-row" id="kpiRow">
+  <div class="kpi-card">
+    <div class="kpi-label">Deságio</div>
+    <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiDesagio">—</span></div>
+    <div class="kpi-change flat" id="kpiDesagioChange">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Yield Total</div>
+    <div class="kpi-value"><span id="kpiYieldTotal">—</span></div>
+    <div class="kpi-change flat" id="kpiYieldTotalChange">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Yield Mês</div>
+    <div class="kpi-value"><span id="kpiYieldMes">—</span></div>
+    <div class="kpi-change flat" id="kpiYieldMesChange">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Casos</div>
+    <div class="kpi-value"><span id="kpiCasos">—</span></div>
+    <div class="kpi-change flat" id="kpiCasosChange">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Ticket Médio</div>
+    <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiTicket">—</span></div>
+    <div class="kpi-change flat" id="kpiTicketChange">—</div>
+  </div>
+</div>
+
+<!-- ABAS PRINCIPAIS -->
 <nav class="main-tabs" id="mainTabs" role="tablist">
   <button class="main-tab active" data-block="blocoDaily" role="tab" aria-selected="true">
     <svg class="main-tab-icon" viewBox="0 0 24 24">
@@ -76,18 +124,8 @@
   </button>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- BLOCO 1: RESULTADO DIÁRIO -->
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 1: HOJE -->
 <div id="blocoDaily" class="bloco" style="display: none;">
-  <div class="bloco-header">
-    <div class="bloco-number">01</div>
-    <div class="bloco-title">Resultado Diário</div>
-  </div>
-  <div class="bloco-desc">
-    Visão operacional de hoje. <b>Projeção do dia</b> = total em aberto com qualquer status de contrato definido. Os cards abaixo detalham cada componente. O histórico mostra o realizado nos últimos 5 dias úteis (fins de semana ignorados).
-  </div>
-
   <div class="result-panel primary">
     <div class="result-label">Projeção do dia</div>
     <div class="result-value">
@@ -148,45 +186,11 @@
     </table>
   </div>
 
-  <div class="filters-applied" id="filtersDiario">Filtros: Aguard. aprovação + Incluir banco + Em aberto • Assinado + Enviado + Enviar + Em revisão</div>
+  <div class="filters-applied" id="filtersDiario">Oportunidades: Em aberto + qualquer status de contrato preenchido • Sem status: Em aberto + contrato sem status definido</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- BLOCO 2: ANÁLISE SEMANAL -->
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 2: SEMANAL -->
 <div id="blocoSemanal" class="bloco" style="display: none;">
-  <div class="bloco-header">
-    <div class="bloco-number">02</div>
-    <div class="bloco-title">Análise Semanal</div>
-  </div>
-  <div class="bloco-desc">
-    Consolidado por semana. <b>Yield Total</b> = rentabilidade bruta (deságio ÷ valor do contrato). <b>Yield Mês</b> = rentabilidade ajustada pelo prazo das parcelas. O histórico compara a semana atual com as 4 anteriores — linhas com <b>PICO</b> ou <b>BAIXA</b> indicam desvio maior que 30% vs média.
-  </div>
-  <div class="bloco-filter">
-    <div class="filter-main">
-      <select id="mesSemanalSelector">
-        <option value="0">Todos</option>
-        <option value="1">Jan</option>
-        <option value="2">Fev</option>
-        <option value="3">Mar</option>
-        <option value="4">Abr</option>
-        <option value="5">Mai</option>
-        <option value="6">Jun</option>
-        <option value="7">Jul</option>
-        <option value="8">Ago</option>
-        <option value="9">Set</option>
-        <option value="10">Out</option>
-        <option value="11">Nov</option>
-        <option value="12">Dez</option>
-      </select>
-    </div>
-    <div class="filter-side">
-      <select id="semanaSelector" class="filter-inline-select"></select>
-      <div class="filter-separator"></div>
-      <select id="anoSemanalSelector" class="filter-inline-select"></select>
-    </div>
-  </div>
-
   <div class="result-panel">
     <div class="result-label">Deságio da semana</div>
     <div class="result-value">
@@ -246,40 +250,8 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- BLOCO 3: ANÁLISE MENSAL -->
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 3: MENSAL -->
 <div id="blocoMensal" class="bloco" style="display: none;">
-  <div class="bloco-header">
-    <div class="bloco-number">03</div>
-    <div class="bloco-title">Análise Mensal</div>
-  </div>
-  <div class="bloco-desc">
-    Consolidado por mês. Mesmas métricas do semanal, mas em escala mensal. O histórico mostra os 3 meses anteriores pra comparação — linhas com <b>PICO</b> ou <b>BAIXA</b> sinalizam meses que destoam significativamente da média.
-  </div>
-  <div class="bloco-filter">
-    <div class="filter-main">
-      <select id="mesSelector">
-        <option value="0">Todos</option>
-        <option value="1">Jan</option>
-        <option value="2">Fev</option>
-        <option value="3">Mar</option>
-        <option value="4">Abr</option>
-        <option value="5">Mai</option>
-        <option value="6">Jun</option>
-        <option value="7">Jul</option>
-        <option value="8">Ago</option>
-        <option value="9">Set</option>
-        <option value="10">Out</option>
-        <option value="11">Nov</option>
-        <option value="12">Dez</option>
-      </select>
-    </div>
-    <div class="filter-side">
-      <select id="anoMensalSelector" class="filter-inline-select"></select>
-    </div>
-  </div>
-
   <div class="result-panel">
     <div class="result-label">Deságio do mês</div>
     <div class="result-value">
@@ -339,40 +311,8 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- BLOCO 4: DISTRIBUIÇÃO DE DESÁGIOS -->
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- BLOCO 4: DISTRIBUIÇÃO -->
 <div id="blocoDistrib" class="bloco" style="display: none;">
-  <div class="bloco-header">
-    <div class="bloco-number">04</div>
-    <div class="bloco-title">Distribuição de Deságios</div>
-  </div>
-  <div class="bloco-desc">
-    Como as operações pagas se distribuem por <b>faixa de Yield Total</b>. Mostra onde está concentrado o volume e a rentabilidade — útil pra identificar se a operação depende de poucas transações gordas ou de muitas menores.
-  </div>
-  <div class="bloco-filter">
-    <div class="filter-main">
-      <select id="mesDistribSelector">
-        <option value="0">Todos</option>
-        <option value="1">Jan</option>
-        <option value="2">Fev</option>
-        <option value="3">Mar</option>
-        <option value="4">Abr</option>
-        <option value="5">Mai</option>
-        <option value="6">Jun</option>
-        <option value="7">Jul</option>
-        <option value="8">Ago</option>
-        <option value="9">Set</option>
-        <option value="10">Out</option>
-        <option value="11">Nov</option>
-        <option value="12">Dez</option>
-      </select>
-    </div>
-    <div class="filter-side">
-      <select id="anoDistribSelector" class="filter-inline-select"></select>
-    </div>
-  </div>
-  
   <div class="distrib-container" id="distribContainer"></div>
 </div>
 

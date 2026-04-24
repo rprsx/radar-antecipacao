@@ -180,6 +180,9 @@ function processRows(rows) {
 
   document.getElementById('initialMsg').style.display = 'none';
   document.getElementById('mainTabs').classList.add('visible');
+  document.getElementById('timeFilterBar').classList.add('visible');
+  document.getElementById('kpiRow').classList.add('visible');
+
   const activeTab     = document.querySelector('.main-tab.active');
   const activeBlockId = activeTab ? activeTab.dataset.block : 'blocoDaily';
   ALL_BLOCK_IDS.forEach(id => {
@@ -187,6 +190,7 @@ function processRows(rows) {
     if (el) el.style.display = (id === activeBlockId) ? 'block' : 'none';
   });
 
+  updateKPI();
   updateBlocoDaily();
   updateBlocoSemanal();
   updateBlocoMensal();
@@ -664,24 +668,14 @@ function updateBlocoDaily() {
 
 // ─── BLOCO 2: SEMANAL ──────────────────────────────────
 function updateBlocoSemanal() {
-  const selectedYear = parseInt(document.getElementById('anoSemanalSelector').value);
-  const selectedMonth = parseInt(document.getElementById('mesSemanalSelector').value);
-  const selectedWeek = parseInt(document.getElementById('semanaSelector').value);
-  const isAllMonths = selectedMonth === 0;
+  const ref          = (periodEnd && !isNaN(periodEnd.getTime())) ? periodEnd : new Date();
+  const selectedYear = ref.getFullYear();
+  const selectedWeek = getWeekNumber(ref);
 
-  console.log('=== DEBUG BLOCO 2 ===');
-  console.log('Filtros semanal:', {selectedYear, selectedMonth, selectedWeek, isAllMonths});
-  
   const semanalDeals = allDealsData.filter(d => {
-    const matchAno = d.ano === selectedYear;
-    const matchMes = isAllMonths ? true : d.mes === selectedMonth;
-    const matchSemana = d.semana_fechamento === selectedWeek;
     const isPago = norm(d.status_fechamento).includes('pago');
-    
-    return matchAno && matchMes && matchSemana && isPago;
+    return isPago && d.ano === selectedYear && d.semana_fechamento === selectedWeek;
   });
-
-  console.log('Deals semanal encontrados:', semanalDeals.length);
 
   const m = calcMetrics(semanalDeals);
   const yieldOperacaoMes = m.parcelasMedio > 0 ? m.yieldTotal / m.parcelasMedio : 0;
@@ -776,22 +770,17 @@ function refreshWeekSelector() {
 
 // ─── BLOCO 3: MENSAL ───────────────────────────────────
 function updateBlocoMensal() {
-  const selectedMonth = parseInt(document.getElementById('mesSelector').value);
-  const selectedYear = parseInt(document.getElementById('anoMensalSelector').value);
-  const isYearly = selectedMonth === 0;
-
-  console.log('=== DEBUG BLOCO 3 ===');
-  console.log('Filtros mensal:', {selectedYear, selectedMonth, isYearly});
+  const ref            = (periodEnd && !isNaN(periodEnd.getTime())) ? periodEnd : new Date();
+  const selectedYear   = ref.getFullYear();
+  const selectedMonth  = ref.getMonth() + 1;
+  const isYearly       = periodType === 'year' || periodType === 'all';
 
   const mensalDeals = allDealsData.filter(d => {
+    const isPago = norm(d.status_fechamento).includes('pago');
     const matchAno = d.ano === selectedYear;
     const matchMes = isYearly ? true : d.mes === selectedMonth;
-    const isPago = norm(d.status_fechamento).includes('pago');
-    
-    return matchAno && matchMes && isPago;
+    return isPago && matchAno && matchMes;
   });
-
-  console.log('Deals encontrados:', mensalDeals.length);
   
   const m = calcMetrics(mensalDeals);
   const yieldOperacaoMes = m.parcelasMedio > 0 ? m.yieldTotal / m.parcelasMedio : 0;
@@ -885,16 +874,14 @@ function updateBlocoMensal() {
 
 // ─── BLOCO 4: DISTRIBUIÇÃO DE DESÁGIOS ─────────────────
 function updateBlocoDistrib() {
-  const selectedMonth = parseInt(document.getElementById('mesDistribSelector').value);
-  const selectedYear = parseInt(document.getElementById('anoDistribSelector').value);
-  
-  // Filtrar deals pagos (todos ou do mês/ano selecionado)
-  let deals = allDealsData.filter(d => norm(d.status_fechamento).includes('pago'));
-  if (selectedMonth > 0) {
-    deals = deals.filter(d => d.ano === selectedYear && d.mes === selectedMonth);
-  } else {
-    deals = deals.filter(d => d.ano === selectedYear);
-  }
+  const pStart = periodStart || new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const pEnd   = periodEnd   || new Date();
+
+  let deals = allDealsData.filter(d => {
+    if (!norm(d.status_fechamento).includes('pago')) return false;
+    if (d.data_fechamento) return d.data_fechamento >= pStart && d.data_fechamento <= pEnd;
+    return d.ano === pEnd.getFullYear() && d.mes === pEnd.getMonth() + 1;
+  });
   
   // Faixas de yield total (em %)
   // yield_operacao_total vem do Sheets como fração decimal (0.15 = 15%), converter pra %
@@ -1000,10 +987,7 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
 ['metaDiaria', 'metaSemanal', 'metaMensal'].forEach(id => {
   const el = document.getElementById(id);
   el.addEventListener('input', e => {
-    // Aplica máscara em tempo real e mantém cursor no final
-    const masked = maskMoneyBR(e.target.value);
-    e.target.value = masked;
-    // Recalcula blocos se já tem dados
+    e.target.value = maskMoneyBR(e.target.value);
     if (allDealsData.length) {
       updateBlocoDaily();
       updateBlocoSemanal();
@@ -1011,7 +995,6 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
     }
   });
   el.addEventListener('focus', e => {
-    // Ao focar, move cursor pro final
     setTimeout(() => {
       const len = e.target.value.length;
       e.target.setSelectionRange(len, len);
@@ -1019,70 +1002,153 @@ document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAP
   });
 });
 
-// Initialize selectors with current date and dynamic year options
-(function initializeSelectors() {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  
-  // Populate year selectors dynamically
-  ['anoSemanalSelector', 'anoMensalSelector', 'anoDistribSelector'].forEach(id => {
-    const sel = document.getElementById(id);
-    for (let y = currentYear - 1; y <= currentYear + 1; y++) {
-      const opt = document.createElement('option');
-      opt.value = y;
-      opt.textContent = y;
-      if (y === currentYear) opt.selected = true;
-      sel.appendChild(opt);
+// ─── PERÍODO GLOBAL ─────────────────────────────────────
+let periodStart = null;
+let periodEnd   = null;
+let periodType  = 'month';
+
+function getPresetDates(preset) {
+  const now   = new Date();
+  const year  = now.getFullYear();
+  const month = now.getMonth();
+  const today = new Date(year, month, now.getDate());
+
+  switch (preset) {
+    case 'this-week': {
+      const dow = (now.getDay() + 6) % 7;
+      const mon = new Date(today); mon.setDate(today.getDate() - dow);
+      return { start: mon, end: today, type: 'week' };
     }
+    case 'last-week': {
+      const dow = (now.getDay() + 6) % 7;
+      const mon = new Date(today); mon.setDate(today.getDate() - dow - 7);
+      const sun = new Date(mon);   sun.setDate(mon.getDate() + 6);
+      return { start: mon, end: sun, type: 'week' };
+    }
+    case 'this-month':  return { start: new Date(year, month, 1), end: today, type: 'month' };
+    case 'last-month': {
+      const lm = month === 0 ? 11 : month - 1;
+      const ly = month === 0 ? year - 1 : year;
+      return { start: new Date(ly, lm, 1), end: new Date(ly, lm + 1, 0), type: 'month' };
+    }
+    case 'q1': return { start: new Date(year, 0, 1),  end: new Date(year, 2, 31),  type: 'quarter' };
+    case 'q2': return { start: new Date(year, 3, 1),  end: new Date(year, 5, 30),  type: 'quarter' };
+    case 'q3': return { start: new Date(year, 6, 1),  end: new Date(year, 8, 30),  type: 'quarter' };
+    case 'q4': return { start: new Date(year, 9, 1),  end: new Date(year, 11, 31), type: 'quarter' };
+    case '2025': return { start: new Date(2025, 0, 1), end: new Date(2025, 11, 31), type: 'year' };
+    case '2026': return { start: new Date(2026, 0, 1), end: year >= 2026 ? today : new Date(2026, 11, 31), type: 'year' };
+    case 'all':  return { start: new Date(2020, 0, 1), end: today, type: 'all' };
+    default:     return { start: new Date(year, month, 1), end: today, type: 'month' };
+  }
+}
+
+function fmtDateInput(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function setPeriod(start, end, activePreset) {
+  periodStart = start;
+  periodEnd   = end;
+  periodType  = getPresetDates(activePreset).type || 'month';
+
+  document.querySelectorAll('.preset-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.preset === activePreset)
+  );
+  document.getElementById('customStart').value = fmtDateInput(start);
+  document.getElementById('customEnd').value   = fmtDateInput(end);
+
+  if (allDealsData.length) {
+    updateKPI();
+    updateBlocoSemanal();
+    updateBlocoMensal();
+    updateBlocoDistrib();
+  }
+}
+
+function applyCustomDates() {
+  const sv = document.getElementById('customStart').value;
+  const ev = document.getElementById('customEnd').value;
+  if (!sv || !ev) return;
+  const start = new Date(sv + 'T00:00:00');
+  const end   = new Date(ev + 'T00:00:00');
+  if (isNaN(start) || isNaN(end) || start > end) return;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  periodStart = start; periodEnd = end; periodType = 'custom';
+  if (allDealsData.length) {
+    updateKPI(); updateBlocoSemanal(); updateBlocoMensal(); updateBlocoDistrib();
+  }
+}
+
+// ─── KPI CARDS ──────────────────────────────────────────
+function updateKPI() {
+  const pStart = periodStart;
+  const pEnd   = periodEnd;
+
+  const deals = allDealsData.filter(d => {
+    if (!norm(d.status_fechamento).includes('pago')) return false;
+    if (d.data_fechamento) return d.data_fechamento >= pStart && d.data_fechamento <= pEnd;
+    if (periodType === 'year' || periodType === 'all') return d.ano === pEnd.getFullYear();
+    return d.ano === pEnd.getFullYear() && d.mes === pEnd.getMonth() + 1;
   });
-  
-  document.getElementById('mesSelector').value = now.getMonth() + 1;
-  document.getElementById('mesSemanalSelector').value = now.getMonth() + 1;
-  document.getElementById('mesDistribSelector').value = 0;
-  
-  // Popular seletor de semanas com as semanas do mês selecionado
-  refreshWeekSelector();
-  
-  // Transformar selects de MÊS em tabs horizontais (UX friendly)
-  // Ano e Semana ficam como dropdown inline minimalista
-  ['mesSelector', 'mesSemanalSelector', 'mesDistribSelector']
-    .forEach(id => makeTabSelector(document.getElementById(id)));
-  
-  // Listeners: Bloco 2
-  document.getElementById('mesSemanalSelector').addEventListener('change', () => {
-    refreshWeekSelector();
-    if (allDealsData.length) updateBlocoSemanal();
+
+  const duration = pEnd - pStart;
+  const prevEnd   = new Date(pStart.getTime() - 86400000);
+  const prevStart = new Date(prevEnd.getTime() - duration);
+  const prevDeals = allDealsData.filter(d => {
+    if (!norm(d.status_fechamento).includes('pago')) return false;
+    if (d.data_fechamento) return d.data_fechamento >= prevStart && d.data_fechamento <= prevEnd;
+    return false;
   });
-  document.getElementById('anoSemanalSelector').addEventListener('change', () => {
-    refreshWeekSelector();
-    if (allDealsData.length) updateBlocoSemanal();
-  });
-  document.getElementById('semanaSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoSemanal();
-  });
-  
-  // Listeners: Bloco 3
-  document.getElementById('mesSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoMensal();
-  });
-  document.getElementById('anoMensalSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoMensal();
-  });
-  
-  // Listeners: Bloco 4 (distribuição)
-  document.getElementById('mesDistribSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoDistrib();
-  });
-  document.getElementById('anoDistribSelector').addEventListener('change', () => {
-    if (allDealsData.length) updateBlocoDistrib();
-  });
-  
-  // Listeners: abas principais (navegação entre blocos)
-  document.querySelectorAll('.main-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      switchToBlock(tab.dataset.block);
+
+  const m  = calcMetrics(deals);
+  const pm = calcMetrics(prevDeals);
+  const ticket     = m.clientesUnicos  > 0 ? m.total  / m.clientesUnicos  : 0;
+  const prevTicket = pm.clientesUnicos > 0 ? pm.total / pm.clientesUnicos : 0;
+
+  function setChange(id, curr, prev) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!prev || prev === 0 || !curr) { el.className = 'kpi-change flat'; el.textContent = '—'; return; }
+    const pct = ((curr - prev) / prev) * 100;
+    const cls = pct > 1 ? 'up' : pct < -1 ? 'down' : 'flat';
+    const arrow = cls === 'up' ? '↑' : cls === 'down' ? '↓' : '→';
+    el.className = `kpi-change ${cls}`;
+    el.textContent = `${arrow} ${pct >= 0 ? '+' : ''}${pct.toFixed(0)}% vs anterior`;
+  }
+
+  document.getElementById('kpiDesagio').textContent    = fmtBRL(m.total);
+  document.getElementById('kpiYieldTotal').textContent = fmtPct(m.yieldTotal);
+  document.getElementById('kpiYieldMes').textContent   = fmtPct(m.yieldMes);
+  document.getElementById('kpiCasos').textContent      = m.clientesUnicos;
+  document.getElementById('kpiTicket').textContent     = fmtBRL(ticket);
+
+  setChange('kpiDesagioChange',    m.total,           pm.total);
+  setChange('kpiYieldTotalChange', m.yieldTotal,      pm.yieldTotal);
+  setChange('kpiYieldMesChange',   m.yieldMes,        pm.yieldMes);
+  setChange('kpiCasosChange',      m.clientesUnicos,  pm.clientesUnicos);
+  setChange('kpiTicketChange',     ticket,            prevTicket);
+}
+
+// ─── INICIALIZAÇÃO ──────────────────────────────────────
+(function initializeSelectors() {
+  const { start, end } = getPresetDates('this-month');
+  periodStart = start; periodEnd = end; periodType = 'month';
+  document.getElementById('customStart').value = fmtDateInput(start);
+  document.getElementById('customEnd').value   = fmtDateInput(end);
+
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const d = getPresetDates(btn.dataset.preset);
+      setPeriod(d.start, d.end, btn.dataset.preset);
     });
   });
-  
+
+  document.getElementById('customStart').addEventListener('change', applyCustomDates);
+  document.getElementById('customEnd').addEventListener('change', applyCustomDates);
+
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchToBlock(tab.dataset.block));
+  });
+
   loadFromAPI();
 })();
