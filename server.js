@@ -24,15 +24,6 @@ function basicAuth(req, res, next) {
   res.status(401).send('Unauthorized');
 }
 
-app.get('/_debug_env', (req, res) => {
-  res.json({
-    AUTH_USER_LEN: (process.env.AUTH_USER || '').length,
-    AUTH_PASS_LEN: (process.env.AUTH_PASS || '').length,
-    AUTH_USER_VAL: process.env.AUTH_USER || '(vazio)',
-    AUTH_PASS_VAL: process.env.AUTH_PASS || '(vazio)',
-  });
-});
-
 app.use(basicAuth);
 app.use(express.static(path.join(__dirname)));
 
