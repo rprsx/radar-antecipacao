@@ -616,10 +616,15 @@ function updateMainView() {
   // Mostra/esconde projeção conforme o período
   document.querySelector('.today-summary-grid').classList.toggle('hide-proj', !isDay);
 
+  // No seletor HOJE, "Oportunidades em aberto" é redundante com "Projeção do dia" — esconde
+  document.getElementById('boxOprtd').style.display = isDay ? 'none' : '';
+  document.querySelector('.today-summary-grid').classList.toggle('hide-oprtd', isDay);
+
   // Adaptive labels
   const pagoLabels = { day: 'Pago hoje', week: 'Pago na semana', month: 'Pago no mês', 'last-quarter': 'Pago no período', 'last-12-months': 'Pago nos 12 meses', year: 'Pago no ano', all: 'Pago total', custom: 'Pago no período' };
 
   document.getElementById('mainProjLabel').textContent = 'Projeção do dia';
+  document.getElementById('mainProjSub').textContent = 'ofertas aceitas pelos clientes, aguardando pagamento';
   document.getElementById('mainProj').textContent = fmtBRL(totalOprtd);
   document.getElementById('mainPagoLabel').textContent = pagoLabels[periodType] || 'Pago';
   document.getElementById('mainPago').textContent = fmtBRL(totalPago);
@@ -630,10 +635,10 @@ function updateMainView() {
   document.getElementById('mainSemStatus').textContent = fmtBRL(totalSemStatus);
   document.getElementById('mainSemStatusCount').textContent = semStatusCasos;
 
-  // Aviso no rodapé: dia sem fechamentos mostra zeros nos KPIs
+  // Aviso no rodapé
   document.getElementById('mainFilters').textContent = isDay
-    ? 'Os KPIs mostram apenas operações fechadas hoje · se nada foi pago ainda, os valores aparecem zerados · Oportunidades e sem status refletem o pipeline atual'
-    : 'Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido';
+    ? 'Projeção: em aberto com aceite do cliente (status de contrato definido), ainda não pagos · Sem aceite: em aberto sem status de contrato definido'
+    : 'Oportunidades em aberto: em aberto com aceite do cliente · Sem aceite do cliente: em aberto sem status de contrato definido';
 
   // History
   const periods = buildHistoryPeriods();
@@ -648,7 +653,7 @@ function updateMainView() {
     compHtml += `<span class="comp-badge ${t.cls.replace('trend-','')} ">${t.icon} ${t.text} vs média</span>`;
   }
   if (totalSemStatus > 0) {
-    compHtml += `<span class="comp-badge flat">${semStatusCasos} sem status de contrato</span>`;
+    compHtml += `<span class="comp-badge flat">${semStatusCasos} aguardando resposta do cliente</span>`;
   }
   document.getElementById('mainComp').innerHTML = compHtml;
 }
