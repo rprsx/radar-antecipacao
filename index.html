@@ -38,16 +38,13 @@
 <!-- BARRA DE PERÍODO GLOBAL -->
 <div class="time-filter-bar" id="timeFilterBar">
   <div class="time-presets">
-    <button class="preset-btn active" data-preset="this-month">Este mês</button>
-    <button class="preset-btn" data-preset="last-month">Mês passado</button>
+    <button class="preset-btn" data-preset="today">Hoje</button>
+    <span class="preset-sep"></span>
     <button class="preset-btn" data-preset="this-week">Esta semana</button>
-    <button class="preset-btn" data-preset="last-week">Sem. passada</button>
-    <button class="preset-btn" data-preset="q1">Q1</button>
-    <button class="preset-btn" data-preset="q2">Q2</button>
-    <button class="preset-btn" data-preset="q3">Q3</button>
-    <button class="preset-btn" data-preset="q4">Q4</button>
-    <button class="preset-btn" data-preset="2025">2025</button>
-    <button class="preset-btn" data-preset="2026">2026</button>
+    <button class="preset-btn" data-preset="this-month">Este mês</button>
+    <span class="preset-sep"></span>
+    <button class="preset-btn" data-preset="last-quarter">Último quarter</button>
+    <button class="preset-btn" data-preset="last-12-months">Últimos 12 meses</button>
     <button class="preset-btn" data-preset="all">Tudo</button>
   </div>
   <div class="time-custom">
@@ -86,95 +83,44 @@
   </div>
 </div>
 
-<!-- ABAS PRINCIPAIS -->
-<nav class="main-tabs" id="mainTabs" role="tablist">
-  <button class="main-tab active" data-block="blocoDaily" role="tab" aria-selected="true">
-    <svg class="main-tab-icon" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="9"/>
-      <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
-    </svg>
-    Hoje
-  </button>
-  <button class="main-tab" data-block="blocoSemanal" role="tab">
-    <svg class="main-tab-icon" viewBox="0 0 24 24">
-      <circle cx="4" cy="12" r="1.3" fill="currentColor" stroke="none"/>
-      <circle cx="8" cy="12" r="1.3" fill="currentColor" stroke="none"/>
-      <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/>
-      <circle cx="16" cy="12" r="1.3" fill="currentColor" stroke="none"/>
-      <circle cx="20" cy="12" r="1.3" fill="currentColor" stroke="none"/>
-    </svg>
-    Semana
-  </button>
-  <button class="main-tab" data-block="blocoMensal" role="tab">
-    <svg class="main-tab-icon" viewBox="0 0 24 24">
-      <rect x="3" y="5" width="18" height="16" rx="2"/>
-      <line x1="3" y1="10" x2="21" y2="10"/>
-      <line x1="8" y1="3" x2="8" y2="7"/>
-      <line x1="16" y1="3" x2="16" y2="7"/>
-    </svg>
-    Mês
-  </button>
-  <button class="main-tab" data-block="blocoDistrib" role="tab">
-    <svg class="main-tab-icon" viewBox="0 0 24 24">
-      <rect x="4" y="14" width="3.5" height="7" rx="0.5"/>
-      <rect x="10.25" y="9" width="3.5" height="12" rx="0.5"/>
-      <rect x="16.5" y="4" width="3.5" height="17" rx="0.5"/>
-    </svg>
-    Distribuição
-  </button>
-</nav>
 
-<!-- BLOCO 1: HOJE -->
-<div id="blocoDaily" class="bloco" style="display: none;">
-  <div class="result-panel primary">
-    <div class="result-label">Projeção do dia</div>
-    <div class="result-value">
-      <span class="currency">R$</span><span id="projecaoDia">0,00</span>
-    </div>
-    <div class="result-breakdown">
-      <div>em aberto com status de contrato definido</div>
-    </div>
-    <div class="comp-container" id="compDiario"></div>
-  </div>
-
-  <div class="meta-input-row">
-    <div class="meta-input">
-      <label>Meta diária</label>
-      <input type="text" inputmode="numeric" id="metaDiaria" placeholder="0,00" value="">
-    </div>
-    <div class="progress-section">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressDiaria" style="width: 0%;"></div>
+<!-- BLOCO PRINCIPAL -->
+<div id="blocoMain" class="bloco" style="display: none;">
+  <div class="today-summary-grid">
+    <div class="today-main">
+      <div class="result-label" id="mainProjLabel">Projeção</div>
+      <div class="result-value">
+        <span class="currency">R$</span><span id="mainProj">0,00</span>
       </div>
-      <div class="progress-text" id="progressDiariaText">0.0% da meta diária</div>
+      <div class="result-breakdown">
+        <div id="mainProjSub">em aberto com status de contrato definido</div>
+      </div>
+      <div class="comp-container" id="mainComp"></div>
     </div>
-  </div>
-
-  <div class="info-grid">
     <div class="info-box">
-      <div class="info-label">Pago hoje · confirmado</div>
-      <div class="info-value">R$ <span id="pagoHoje">0,00</span></div>
-      <div class="info-sub"><span id="pagoHojeCount">0</span> casos fechados</div>
+      <div class="info-label" id="mainPagoLabel">Pago</div>
+      <div class="info-value">R$ <span id="mainPago">0,00</span></div>
+      <div class="info-sub"><span id="mainPagoCount">0</span> casos fechados</div>
     </div>
     <div class="info-box">
       <div class="info-label">Oportunidades em aberto</div>
-      <div class="info-value">R$ <span id="resultDiario">0,00</span></div>
-      <div class="info-sub"><span id="countDiario">0</span> contratos · ticket <span id="ticketDiario">R$ 0</span></div>
+      <div class="info-value">R$ <span id="mainOprtd">0,00</span></div>
+      <div class="info-sub"><span id="mainOprtdCount">0</span> contratos · ticket <span id="mainOprtdTicket">R$ 0</span></div>
     </div>
     <div class="info-box">
       <div class="info-label">Sem status de contrato</div>
-      <div class="info-value">R$ <span id="semDataDesagio">0,00</span></div>
-      <div class="info-sub"><span id="semDataCount">0</span> sem status definido</div>
+      <div class="info-value">R$ <span id="mainSemStatus">0,00</span></div>
+      <div class="info-sub"><span id="mainSemStatusCount">0</span> sem status definido</div>
     </div>
   </div>
 
   <div class="history-section">
-    <div class="history-header">Últimos 5 dias úteis · fechados</div>
-    <div id="chartDaily"></div>
+    <div class="history-header" id="mainHistHeader">Histórico</div>
+    <div id="mainChart"></div>
     <table class="history-table">
       <thead>
         <tr>
-          <th>Dia</th>
+          <th>Período</th>
           <th class="num">Deságio</th>
           <th class="num">Yield Total</th>
           <th class="num">Yield Mês</th>
@@ -182,138 +128,11 @@
           <th class="num">Parcelas</th>
         </tr>
       </thead>
-      <tbody id="historyDaily"></tbody>
+      <tbody id="mainHistory"></tbody>
     </table>
   </div>
 
-  <div class="filters-applied" id="filtersDiario">Oportunidades: Em aberto + qualquer status de contrato preenchido • Sem status: Em aberto + contrato sem status definido</div>
-</div>
-
-<!-- BLOCO 2: SEMANAL -->
-<div id="blocoSemanal" class="bloco" style="display: none;">
-  <div class="result-panel">
-    <div class="result-label">Deságio da semana</div>
-    <div class="result-value">
-      <span class="currency">R$</span><span id="resultSemanal">0,00</span>
-    </div>
-    <div class="comp-container" id="compSemanal"></div>
-  </div>
-
-  <div class="meta-input-row">
-    <div class="meta-input">
-      <label>Meta semanal</label>
-      <input type="text" inputmode="numeric" id="metaSemanal" placeholder="0,00" value="">
-    </div>
-    <div class="progress-section">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressSemanal" style="width: 0%;"></div>
-      </div>
-      <div class="progress-text" id="progressSemanalText">0.0% da meta semanal</div>
-    </div>
-  </div>
-
-  <div class="info-grid">
-    <div class="info-box">
-      <div class="info-label">Yield Total</div>
-      <div class="info-value"><span id="yieldSemanalTotal">0,00%</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Yield Mês</div>
-      <div class="info-value"><span id="yieldSemanalMes">0,00%</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Casos</div>
-      <div class="info-value"><span id="casosSemanal">0</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Parcelas Média</div>
-      <div class="info-value"><span id="parcelasSemanal">0,000</span></div>
-    </div>
-  </div>
-
-  <div class="history-section">
-    <div class="history-header">Últimas 5 semanas</div>
-    <div id="chartWeekly"></div>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>Semana</th>
-          <th class="num">Deságio</th>
-          <th class="num">Yield Total</th>
-          <th class="num">Yield Mês</th>
-          <th class="num">Casos</th>
-          <th class="num">Parcelas</th>
-        </tr>
-      </thead>
-      <tbody id="historyWeekly"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- BLOCO 3: MENSAL -->
-<div id="blocoMensal" class="bloco" style="display: none;">
-  <div class="result-panel">
-    <div class="result-label">Deságio do mês</div>
-    <div class="result-value">
-      <span class="currency">R$</span><span id="resultMensal">0,00</span>
-    </div>
-    <div class="comp-container" id="compMensal"></div>
-  </div>
-
-  <div class="meta-input-row">
-    <div class="meta-input">
-      <label>Meta mensal</label>
-      <input type="text" inputmode="numeric" id="metaMensal" placeholder="0,00" value="">
-    </div>
-    <div class="progress-section">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressMensal" style="width: 0%;"></div>
-      </div>
-      <div class="progress-text" id="progressMensalText">0.0% da meta mensal</div>
-    </div>
-  </div>
-
-  <div class="info-grid">
-    <div class="info-box">
-      <div class="info-label">Yield Total</div>
-      <div class="info-value"><span id="yieldMensalTotal">0,00%</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Yield Mês</div>
-      <div class="info-value"><span id="yieldMensalMes">0,00%</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Casos</div>
-      <div class="info-value"><span id="casosMensal">0</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label">Parcelas Média</div>
-      <div class="info-value"><span id="parcelasMensal">0,000</span></div>
-    </div>
-  </div>
-
-  <div class="history-section">
-    <div class="history-header">Últimos 3 meses</div>
-    <div id="chartMonthly"></div>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>Mês</th>
-          <th class="num">Deságio</th>
-          <th class="num">Yield Total</th>
-          <th class="num">Yield Mês</th>
-          <th class="num">Casos</th>
-          <th class="num">Parcelas</th>
-        </tr>
-      </thead>
-      <tbody id="historyMonthly"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- BLOCO 4: DISTRIBUIÇÃO -->
-<div id="blocoDistrib" class="bloco" style="display: none;">
-  <div class="distrib-container" id="distribContainer"></div>
+  <div class="filters-applied" id="mainFilters">Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido</div>
 </div>
 
 <script src="app.js"></script>
