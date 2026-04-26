@@ -990,15 +990,59 @@
 
   /* ─── RESPONSIVE ───────────────────────────────────── */
   @media (max-width: 700px) {
-    body { padding: 16px; }
+    body { padding: 12px 14px 40px; }
+
+    /* Header empilha */
+    header {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .masthead-title { font-size: 22px; }
+    .masthead-meta { text-align: left; }
+
+    /* Sync bar empilha */
+    .sync-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .sync-bar button { width: 100%; text-align: center; }
+
+    /* Filtros de período */
+    .time-filter-bar { margin-bottom: 12px; gap: 4px; }
+    .time-presets { gap: 4px; }
+
+    /* KPI: padding menor */
+    .kpi-card { padding: 12px 10px; }
+
+    /* Blocos */
     .bloco-header { flex-direction: column; gap: 12px; align-items: flex-start; }
     .result-breakdown { flex-direction: column; gap: 8px; }
     .meta-input-row { flex-direction: column; align-items: stretch; }
-    .today-summary-grid { grid-template-columns: 1fr; }
+
+    /* Today grid: empilha tudo */
+    .today-summary-grid,
+    .today-summary-grid.hide-oprtd { grid-template-columns: 1fr !important; }
     .today-main { border-right: none; border-bottom: 1px solid var(--line); }
     .info-grid { grid-template-columns: 1fr; }
     .info-box { border-right: none; border-bottom: 1px solid var(--line); }
     .info-box:last-child { border-bottom: none; }
+
+    /* Tabela de histórico: scroll horizontal */
+    .history-section { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .history-table { min-width: 480px; }
+    .history-table th,
+    .history-table td { padding: 8px 12px; }
+
+    /* Gráfico: padding menor */
+    .line-chart-container { padding: 12px 8px 8px; }
+
+    /* Distrib */
+    .distrib-row { grid-template-columns: 80px 1fr; }
+    .distrib-stats { grid-column: 1 / -1; justify-content: flex-start; padding-left: 96px; }
+
+    /* Comp badges */
+    .comp-container { flex-direction: column; gap: 4px; align-items: center; }
+
+    /* Filtros aplicados */
+    .filters-applied { font-size: 10px; padding: 8px 14px; }
   }
 
   /* ─── TIME FILTER BAR ─────────────────────────────────── */
@@ -1134,5 +1178,11 @@
   @media (max-width: 600px) {
     .kpi-row { grid-template-columns: repeat(2, 1fr); }
     .time-custom { display: none; }
-    .preset-btn { padding: 5px 9px; font-size: 10px; }
+    .preset-btn { padding: 5px 8px; font-size: 10px; }
+  }
+
+  @media (max-width: 400px) {
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+    .masthead-title { font-size: 19px; }
+    .preset-btn { padding: 4px 7px; font-size: 9px; }
   }
