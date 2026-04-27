@@ -811,7 +811,7 @@ let metasMonth = new Date().getMonth() + 1;
 const MESES_METAS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                      'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let goalsFromAPI = {}; // "ano_mes" → valor mensal
+let goalsFromAPI = {}; // "ano_mes" → { mensal, sem: [v1..v5] }
 
 async function loadMetasFromAPI() {
   try {
@@ -819,8 +819,8 @@ async function loadMetasFromAPI() {
     if (!res.ok) return;
     const data = await res.json();
     goalsFromAPI = {};
-    data.forEach(({ ano, mes, valor }) => {
-      goalsFromAPI[`${ano}_${mes}`] = valor;
+    data.forEach(({ ano, mes, valor, sem }) => {
+      goalsFromAPI[`${ano}_${mes}`] = { mensal: valor, sem: sem || [] };
     });
     updateMetasView();
   } catch(e) {
@@ -911,9 +911,23 @@ const MANUAL_WEEKLY = {
 };
 
 function loadGoals(y, m) {
-  const metaMensal = goalsFromAPI[`${y}_${m}`] || 0;
+  const entry = goalsFromAPI[`${y}_${m}`];
+  const metaMensal = entry ? entry.mensal : 0;
   if (metaMensal === 0) return { meta_mensal: 0, semanas: {} };
 
+  // Sheet weekly overrides take highest priority (sem1…sem5 colunas na planilha)
+  const apiSem = (entry && entry.sem) ? entry.sem : [];
+  if (apiSem.some(v => v != null && v > 0)) {
+    const weeks = getWeeksOfMonth(y, m);
+    const semanas = {};
+    weeks.forEach((wk, i) => {
+      const val = apiSem[i];
+      if (val != null && val > 0) semanas[wk.week] = val;
+    });
+    return { meta_mensal: metaMensal, semanas };
+  }
+
+  // Manual overrides para meses já reportados
   const manual = MANUAL_WEEKLY[`${y}_${m}`];
   if (manual) {
     const semanas = {};
@@ -921,6 +935,7 @@ function loadGoals(y, m) {
     return { meta_mensal: metaMensal, semanas };
   }
 
+  // Algoritmo de distribuição por dias úteis + curva de ramp
   const weeks = getWeeksOfMonth(y, m);
   const weekData = weeks.map((wk, i) => {
     const biz = bizDaysInWeekOfMonth(wk.year, wk.week, m, y);

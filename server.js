@@ -32,14 +32,16 @@ const MES_PT = { jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,no
 app.get('/api/metas', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT ano, mes, valor FROM sheets_antecipacao.metas_web ORDER BY _row ASC'
+      'SELECT * FROM sheets_antecipacao.metas_web ORDER BY _row ASC'
     );
     const parsed = rows.map(r => {
       const parts = String(r.mes || '').toLowerCase().split('-');
       const abbr  = parts[1] ? parts[1].replace('.', '').trim() : '';
       const mes   = MES_PT[abbr] || null;
       const ano   = parseInt(r.ano);
-      return { ano, mes, valor: parseFloat(r.valor) || 0 };
+      const sem   = [r.sem1, r.sem2, r.sem3, r.sem4, r.sem5]
+                      .map(v => (v != null && v !== '') ? (parseFloat(v) || null) : null);
+      return { ano, mes, valor: parseFloat(r.valor) || 0, sem };
     }).filter(r => r.mes && !isNaN(r.ano));
     res.json(parsed);
   } catch (err) {
