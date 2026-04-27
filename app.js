@@ -1010,10 +1010,19 @@ function updateMetasView() {
   const metaMensal  = goals.meta_mensal || 0;
   const atingimento = metaMensal > 0 ? (totalRealizado / metaMensal) * 100 : null;
 
+  // Determine month context
+  const _today = new Date();
+  const _ty = _today.getFullYear(), _tm = _today.getMonth() + 1;
+  const isPastMonth    = metasYear < _ty || (metasYear === _ty && metasMonth < _tm);
+  const isFutureMonth  = metasYear > _ty || (metasYear === _ty && metasMonth > _tm);
+
   // Gap: acum real vs acum meta at end of last completed week
   const gap  = hasPast ? lastPastAccumReal - lastPastAccumMeta : null;
   const falta = metaMensal > 0 ? Math.max(0, metaMensal - totalRealizado) : null;
-  const bizDays = remainingBizDays(metasYear, metasMonth);
+
+  const bizDays = isFutureMonth
+    ? bizDaysInMonth(metasYear, metasMonth)
+    : remainingBizDays(metasYear, metasMonth);
   const porDia  = (falta != null && bizDays > 0) ? falta / bizDays : null;
 
   // ── Month label ──
@@ -1021,22 +1030,28 @@ function updateMetasView() {
     `${MESES_METAS[metasMonth - 1]} ${metasYear}`;
 
   // ── Hero vals ──
+  const heroPrefix = isPastMonth ? 'Fechamos com' : 'Estamos hoje com';
   document.getElementById('metasHeroVals').innerHTML = metaMensal > 0
-    ? `Estamos hoje com <strong style="color:var(--coral)">R$ ${fmtBRL(totalRealizado)}</strong> de <strong>R$ ${fmtBRL(metaMensal)}</strong>`
+    ? `${heroPrefix} <strong style="color:var(--coral)">R$ ${fmtBRL(totalRealizado)}</strong> de <strong>R$ ${fmtBRL(metaMensal)}</strong>`
     : '<em style="color:var(--ink-mute)">Meta não definida para este mês</em>';
 
   // ── Bar ──
-  const fillPct  = metaMensal > 0 ? Math.min((totalRealizado / metaMensal) * 100, 100) : 0;
+  const rawPct   = metaMensal > 0 ? (totalRealizado / metaMensal) * 100 : 0;
+  const exceeded = rawPct > 100;
+  const fillPct  = Math.min(rawPct, 130);
   const fillEl   = document.getElementById('metasBarFill');
   fillEl.style.width = fillPct + '%';
+  fillEl.classList.toggle('exceeded', exceeded);
 
   const nowEl    = document.getElementById('metasBarNow');
   const nowPctEl = document.getElementById('metasBarNowPct');
   if (metaMensal > 0) {
-    nowEl.style.left    = fillPct + '%';
-    nowEl.style.display = 'block';
+    nowEl.style.left       = fillPct + '%';
+    nowEl.style.display    = 'block';
+    nowEl.style.background = exceeded ? '#4a9e6b' : 'var(--coral)';
     nowPctEl.style.left    = fillPct + '%';
-    nowPctEl.innerHTML     = `${Math.round(fillPct)}%<span class="mbar-sub">realizado</span>`;
+    nowPctEl.innerHTML     = `${Math.round(rawPct)}%<span class="mbar-sub">realizado</span>`;
+    nowPctEl.style.color   = exceeded ? '#4a9e6b' : 'var(--coral)';
     nowPctEl.style.display = 'block';
   } else {
     nowEl.style.display    = 'none';
@@ -1065,10 +1080,15 @@ function updateMetasView() {
   }
 
   const remWeeks = weekRows.filter(w => w.status !== 'past').length;
-  document.getElementById('metasHeroSub').textContent =
-    bizDays > 0
-      ? `Ainda restam ${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} e ${remWeeks} semana${remWeeks !== 1 ? 's' : ''}`
-      : 'Mês encerrado';
+  let heroSub;
+  if (isFutureMonth) {
+    heroSub = `${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} e ${remWeeks} semana${remWeeks !== 1 ? 's' : ''} neste mês`;
+  } else if (bizDays > 0) {
+    heroSub = `Ainda restam ${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} e ${remWeeks} semana${remWeeks !== 1 ? 's' : ''}`;
+  } else {
+    heroSub = 'Mês encerrado';
+  }
+  document.getElementById('metasHeroSub').textContent = heroSub;
 
   // ── Callout ──
   if (falta == null) {

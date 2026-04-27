@@ -1280,13 +1280,18 @@
     height: 28px;
     background: var(--line);
     margin-bottom: 120px;
+    overflow: visible;
   }
 
   .metas-bar-fill {
     height: 100%;
     background: var(--coral);
     transition: width 0.4s ease;
-    max-width: 100%;
+    max-width: 130%;
+  }
+
+  .metas-bar-fill.exceeded {
+    background: #4a9e6b;
   }
 
   .metas-bar-now {
