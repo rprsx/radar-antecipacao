@@ -828,12 +828,46 @@ async function loadMetasFromAPI() {
   }
 }
 
+function easterDate(year) {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day   = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+function brHolidays(year) {
+  const easter = easterDate(year);
+  const offset = (days) => { const d = new Date(easter); d.setDate(easter.getDate() + days); return d; };
+  const fixed = [
+    [0, 1], [3, 21], [4, 1], [8, 7], [9, 12], [10, 2], [10, 15], [10, 20], [11, 25],
+  ].map(([mo, da]) => new Date(year, mo, da));
+  const movable = [offset(-48), offset(-47), offset(-2), offset(60)]; // carnaval seg/ter, sexta-feira santa, corpus christi
+  return new Set([...fixed, ...movable].map(d => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`));
+}
+
+const _holidayCache = {};
+function getHolidays(year) {
+  if (!_holidayCache[year]) _holidayCache[year] = brHolidays(year);
+  return _holidayCache[year];
+}
+
+function isBizDay(date) {
+  const dow = date.getDay();
+  if (dow === 0 || dow === 6) return false;
+  return !getHolidays(date.getFullYear()).has(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`);
+}
+
 function bizDaysInMonth(year, month) {
   const days = new Date(year, month, 0).getDate();
   let count = 0;
   for (let d = 1; d <= days; d++) {
-    const dow = new Date(year, month - 1, d).getDay();
-    if (dow !== 0 && dow !== 6) count++;
+    if (isBizDay(new Date(year, month - 1, d))) count++;
   }
   return count;
 }
@@ -845,8 +879,7 @@ function bizDaysInWeekOfMonth(wkYear, week, month, year) {
     const d = new Date(mon);
     d.setDate(mon.getDate() + i);
     if (d.getFullYear() !== year || d.getMonth() + 1 !== month) continue;
-    const dow = d.getDay();
-    if (dow !== 0 && dow !== 6) count++;
+    if (isBizDay(d)) count++;
   }
   return count;
 }
