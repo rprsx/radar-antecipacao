@@ -112,6 +112,7 @@ async function loadFromAPI() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const rows = await res.json();
     processRows(rows);
+    updateMetasView();
     const now = new Date();
     const hh = String(now.getHours()).padStart(2,'0');
     const mm = String(now.getMinutes()).padStart(2,'0');
@@ -952,7 +953,7 @@ function updateMetasView() {
   // ── Hero vals ──
   document.getElementById('metasHeroVals').innerHTML = metaMensal > 0
     ? `Estamos hoje com <strong style="color:var(--coral)">R$ ${fmtBRL(totalRealizado)}</strong> de <strong>R$ ${fmtBRL(metaMensal)}</strong>`
-    : '<em style="color:var(--ink-mute)">Meta não definida — clique em ⚙ Editar metas</em>';
+    : '<em style="color:var(--ink-mute)">Meta não definida para este mês</em>';
 
   // ── Bar ──
   const fillPct  = metaMensal > 0 ? Math.min((totalRealizado / metaMensal) * 100, 100) : 0;
