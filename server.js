@@ -27,6 +27,27 @@ function basicAuth(req, res, next) {
 app.use(basicAuth);
 app.use(express.static(path.join(__dirname)));
 
+const MES_PT = { jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12 };
+
+app.get('/api/metas', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT ano, mes, valor FROM sheets_antecipacao.metas_web ORDER BY _row ASC'
+    );
+    const parsed = rows.map(r => {
+      const parts = String(r.mes || '').toLowerCase().split('-');
+      const abbr  = parts[1] ? parts[1].replace('.', '').trim() : '';
+      const mes   = MES_PT[abbr] || null;
+      const ano   = parseInt(r.ano);
+      return { ano, mes, valor: parseFloat(r.valor) || 0 };
+    }).filter(r => r.mes && !isNaN(r.ano));
+    res.json(parsed);
+  } catch (err) {
+    console.error('[api/metas]', err.message);
+    res.status(500).json({ error: 'Database query failed', detail: err.message });
+  }
+});
+
 app.get('/api/pipeline', async (req, res) => {
   try {
     const { rows } = await pool.query(

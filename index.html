@@ -30,6 +30,12 @@
 
 <div id="errorMsg" class="error-msg" style="margin-bottom:12px;"></div>
 
+<!-- VIEW TABS -->
+<div class="view-tabs" id="viewTabs" style="display:none">
+  <button class="view-tab" data-tab="metas">Metas</button>
+  <button class="view-tab active" data-tab="radar">Radar</button>
+</div>
+
 <div class="initial-msg" id="initialMsg">
   <h2>Painel de Antecipação</h2>
   <p>Carregando dados…</p>
@@ -135,6 +141,70 @@
   <div class="filters-applied" id="mainFilters">Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido</div>
 </div>
 
+<!-- METAS VIEW -->
+<div id="viewMetas" style="display:none">
+
+  <div class="metas-topbar">
+    <div class="metas-nav">
+      <button class="ghost metas-nav-btn" id="metasPrevMonth">&#9664;</button>
+      <span class="metas-month-label" id="metasMonthLabel">—</span>
+      <button class="ghost metas-nav-btn" id="metasNextMonth">&#9654;</button>
+    </div>
+  </div>
+
+  <div class="metas-hero">
+    <div class="metas-hero-vals" id="metasHeroVals">—</div>
+    <div class="metas-bar-wrap">
+      <div class="metas-bar-track" id="metasBarTrack">
+        <div class="metas-bar-fill" id="metasBarFill"></div>
+        <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
+        <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
+      </div>
+    </div>
+    <div class="metas-hero-sub" id="metasHeroSub"></div>
+  </div>
+
+  <div class="metas-callout">
+    <div class="myb-row">
+      <span class="myb-label">Gap total para bater a meta</span>
+      <span class="myb-rs">R$</span>
+      <div class="myb-val-col">
+        <span class="myb-val" id="metasFalta">—</span>
+      </div>
+    </div>
+    <div class="myb-row">
+      <span class="myb-label">Gap diário para bater a meta</span>
+      <span class="myb-rs">R$</span>
+      <div class="myb-val-col">
+        <span class="myb-val" id="metasPorDia">—</span>
+        <span class="myb-val-days" id="metasDiasLabel"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="metas-bottom">
+    <div class="metas-chart-wrap" id="metasChart"></div>
+    <div class="metas-table-scroll">
+      <table class="metas-tbl">
+        <thead>
+          <tr>
+            <th>Semana</th>
+            <th class="r">Resultado</th>
+            <th class="r">Meta</th>
+            <th class="r">Acum. Real</th>
+            <th class="r">Acum. Meta</th>
+            <th class="r">Var. Acum.</th>
+            <th class="r">Var. %</th>
+          </tr>
+        </thead>
+        <tbody id="metasBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div id="chartTooltip" class="chart-tooltip"></div>
 <script src="app.js"></script>
 
 </body></html>

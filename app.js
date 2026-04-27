@@ -179,6 +179,7 @@ function processRows(rows) {
   }).filter(d => d.cliente !== '—' || d.status_fechamento || d.desagio_total > 0);
 
   document.getElementById('initialMsg').style.display = 'none';
+  document.getElementById('viewTabs').style.display = 'flex';
   document.getElementById('timeFilterBar').classList.add('visible');
   document.getElementById('kpiRow').classList.add('visible');
   document.getElementById('blocoMain').style.display = 'block';
@@ -335,13 +336,13 @@ function renderLineChart(periods) {
     const y = PAD.top + chartH - frac * chartH;
     const val = frac * yMax;
     const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(0)}k` : `R$ ${Math.round(val)}`;
-    return `<text x="${PAD.left - 8}" y="${(y + 3).toFixed(1)}" font-size="10" fill="#8A847B" text-anchor="end" font-family="Monaco, monospace">${valStr}</text>`;
+    return `<text x="${PAD.left - 8}" y="${(y + 3).toFixed(1)}" font-size="11" fill="#8A847B" text-anchor="end">${valStr}</text>`;
   }).join('');
   
   // Linha de média (pontilhada)
   const avgY = yScale(avg);
   const avgLine = `<line x1="${PAD.left}" y1="${avgY.toFixed(1)}" x2="${W-PAD.right}" y2="${avgY.toFixed(1)}" stroke="#8A847B" stroke-dasharray="2,3" stroke-width="1" />`;
-  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="9" fill="#8A847B" text-anchor="start" font-weight="700" letter-spacing="1">MÉDIA</text>`;
+  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="10" fill="#8A847B" text-anchor="start" font-weight="700" letter-spacing="1">MÉDIA</text>`;
   
   // Path da linha + área preenchida (gradient suave)
   let linePath = '';
@@ -391,10 +392,13 @@ function renderLineChart(periods) {
     if (v === 0) return '';
     const y = yScale(v);
     const x = xPos(i);
-    // Destaque por tamanho: current maior, demais iguais
     const r = p.isCurrent ? 6 : 4.5;
     const strokeW = p.isCurrent ? 2.5 : 2;
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#D37B5A" stroke="white" stroke-width="${strokeW}" />`;
+    const tipLbl = p.sublabel ? `${p.label} ${p.sublabel}` : p.label;
+    const tipVal = `R$ ${fmtBRL(v)}`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#D37B5A" stroke="white" stroke-width="${strokeW}"/>
+<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tipLbl} · ${tipVal}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
   
   // Valor em destaque do período atual
@@ -405,18 +409,18 @@ function renderLineChart(periods) {
     const y = yScale(metrics[currentIdx].total);
     const val = metrics[currentIdx].total;
     const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(1)}k` : `R$ ${Math.round(val)}`;
-    currentValueLabel = `<text x="${x.toFixed(1)}" y="${(y - 12).toFixed(1)}" font-size="11" font-weight="700" fill="#1A1816" text-anchor="middle">${valStr}</text>`;
+    currentValueLabel = `<text x="${x.toFixed(1)}" y="${(y - 12).toFixed(1)}" font-size="12" font-weight="700" fill="#1A1816" text-anchor="middle">${valStr}</text>`;
   }
   
   // Labels do eixo X
   const xLabels = periods.map((p, i) => {
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="10" fill="#4A453F" text-anchor="middle" font-weight="700">${p.label}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="11" fill="#4A453F" text-anchor="middle" font-weight="700">${p.label}</text>`;
   }).join('');
-  
+
   // Sub-labels (se existir)
   const subLabels = periods.map((p, i) => {
     if (!p.sublabel) return '';
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 2}" font-size="9" fill="#8A847B" text-anchor="middle">${p.sublabel}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 2}" font-size="10" fill="#8A847B" text-anchor="middle">${p.sublabel}</text>`;
   }).join('');
   
   return `
@@ -519,11 +523,17 @@ function buildHistoryPeriods() {
     for (let i = 0; i < 4; i++) { const l = chain[chain.length-1]; chain.push(prevIsoWeek(l.year, l.week)); }
     chain.reverse();
     document.getElementById('mainHistHeader').textContent = 'Últimas 5 semanas';
-    return chain.map(wk => ({
-      label: `Semana ${wk.week}`, sublabel: String(wk.year),
-      deals: allDealsData.filter(d => isPago(d) && d.ano === wk.year && d.semana_fechamento === wk.week),
-      isCurrent: wk.year === sy && wk.week === sw
-    }));
+    return chain.map(wk => {
+      const thu = isoWeekMonday(wk.year, wk.week);
+      thu.setDate(thu.getDate() + 3);
+      const wkMes = thu.getMonth() + 1;
+      const wkAno = thu.getFullYear();
+      return {
+        label: `Semana ${wk.week}`, sublabel: String(wk.year),
+        deals: allDealsData.filter(d => isPago(d) && d.ano === wkAno && d.mes === wkMes && d.semana_fechamento === wk.week),
+        isCurrent: wk.year === sy && wk.week === sw
+      };
+    });
   }
 
   if (periodType === 'last-quarter') {
@@ -674,7 +684,7 @@ function hideSyncBar() {
   document.getElementById('syncBar').className = 'sync-bar hidden';
 }
 
-document.getElementById('syncBarBtn').addEventListener('click', () => loadFromAPI());
+document.getElementById('syncBarBtn').addEventListener('click', () => { loadFromAPI(); loadMetasFromAPI(); });
 
 
 // ─── PERÍODO GLOBAL ─────────────────────────────────────
@@ -793,6 +803,412 @@ function updateKPI() {
   setChange('kpiTicketChange',     ticket,            prevTicket);
 }
 
+// ─── METAS VIEW ─────────────────────────────────────────
+let metasYear  = new Date().getFullYear();
+let metasMonth = new Date().getMonth() + 1;
+
+const MESES_METAS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let goalsFromAPI = {}; // "ano_mes" → valor mensal
+
+async function loadMetasFromAPI() {
+  try {
+    const res = await fetch('/api/metas');
+    if (!res.ok) return;
+    const data = await res.json();
+    goalsFromAPI = {};
+    data.forEach(({ ano, mes, valor }) => {
+      goalsFromAPI[`${ano}_${mes}`] = valor;
+    });
+    updateMetasView();
+  } catch(e) {
+    console.warn('Falha ao carregar metas da API', e);
+  }
+}
+
+function bizDaysInMonth(year, month) {
+  const days = new Date(year, month, 0).getDate();
+  let count = 0;
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(year, month - 1, d).getDay();
+    if (dow !== 0 && dow !== 6) count++;
+  }
+  return count;
+}
+
+function bizDaysInWeekOfMonth(wkYear, week, month, year) {
+  const mon = isoWeekMonday(wkYear, week);
+  let count = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    if (d.getFullYear() !== year || d.getMonth() + 1 !== month) continue;
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+  }
+  return count;
+}
+
+function loadGoals(y, m) {
+  const metaMensal = goalsFromAPI[`${y}_${m}`] || 0;
+  if (metaMensal === 0) return { meta_mensal: 0, semanas: {} };
+  const weeks = getWeeksOfMonth(y, m);
+  const totalBiz = bizDaysInMonth(y, m);
+  const semanas = {};
+  weeks.forEach(wk => {
+    const wkBiz = bizDaysInWeekOfMonth(wk.year, wk.week, m, y);
+    if (wkBiz > 0 && totalBiz > 0)
+      semanas[wk.week] = metaMensal * (wkBiz / totalBiz);
+  });
+  return { meta_mensal: metaMensal, semanas };
+}
+
+// Monday of ISO week
+function isoWeekMonday(year, week) {
+  const jan4 = new Date(year, 0, 4);
+  const jan4Dow = (jan4.getDay() + 6) % 7; // 0=Mon
+  const d = new Date(year, 0, 4 - jan4Dow + (week - 1) * 7);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function isoWeekSunday(year, week) {
+  const d = isoWeekMonday(year, week);
+  d.setDate(d.getDate() + 6);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
+function weekStatus(year, week) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const mon = isoWeekMonday(year, week);
+  const sun = isoWeekSunday(year, week); sun.setHours(0, 0, 0, 0);
+  if (today > sun) return 'past';
+  if (today >= mon && today <= sun) return 'current';
+  return 'future';
+}
+
+
+function remainingBizDays(year, month) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const lastDay = new Date(year, month, 0); lastDay.setHours(0, 0, 0, 0);
+  if (lastDay < today) return 0;
+  let count = 0;
+  const d = new Date(today);
+  while (d <= lastDay) {
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+function updateMetasView() {
+  if (!allDealsData.length) return;
+
+  const goals  = loadGoals(metasYear, metasMonth);
+  const weeks  = getWeeksOfMonth(metasYear, metasMonth);
+  const isPago = d => norm(d.status_fechamento).includes('pago');
+
+  // Per-week results + accumulated totals
+  let accumReal = 0, accumMeta = 0;
+  let lastPastAccumReal = 0, lastPastAccumMeta = 0, hasPast = false;
+
+  const weekRows = weeks.map(wk => {
+    const resultado = allDealsData
+      .filter(d => isPago(d) && d.ano === metasYear && d.mes === metasMonth && d.semana_fechamento === wk.week)
+      .reduce((s, d) => s + d.desagio_total, 0);
+    const meta   = goals.semanas[wk.week] || 0;
+    accumReal   += resultado;
+    accumMeta   += meta;
+    const status = weekStatus(wk.year, wk.week);
+    if (status === 'past') {
+      lastPastAccumReal = accumReal;
+      lastPastAccumMeta = accumMeta;
+      hasPast = true;
+    }
+    return { week: wk.week, year: wk.year, resultado, meta, accumReal, accumMeta, status };
+  });
+
+  // Total realizado no mês
+  const totalRealizado = allDealsData
+    .filter(d => isPago(d) && d.ano === metasYear && d.mes === metasMonth)
+    .reduce((s, d) => s + d.desagio_total, 0);
+
+  const metaMensal  = goals.meta_mensal || 0;
+  const atingimento = metaMensal > 0 ? (totalRealizado / metaMensal) * 100 : null;
+
+  // Gap: acum real vs acum meta at end of last completed week
+  const gap  = hasPast ? lastPastAccumReal - lastPastAccumMeta : null;
+  const falta = metaMensal > 0 ? Math.max(0, metaMensal - totalRealizado) : null;
+  const bizDays = remainingBizDays(metasYear, metasMonth);
+  const porDia  = (falta != null && bizDays > 0) ? falta / bizDays : null;
+
+  // ── Month label ──
+  document.getElementById('metasMonthLabel').textContent =
+    `${MESES_METAS[metasMonth - 1]} ${metasYear}`;
+
+  // ── Hero vals ──
+  document.getElementById('metasHeroVals').innerHTML = metaMensal > 0
+    ? `Estamos hoje com <strong style="color:var(--coral)">R$ ${fmtBRL(totalRealizado)}</strong> de <strong>R$ ${fmtBRL(metaMensal)}</strong>`
+    : '<em style="color:var(--ink-mute)">Meta não definida — clique em ⚙ Editar metas</em>';
+
+  // ── Bar ──
+  const fillPct  = metaMensal > 0 ? Math.min((totalRealizado / metaMensal) * 100, 100) : 0;
+  const fillEl   = document.getElementById('metasBarFill');
+  fillEl.style.width = fillPct + '%';
+
+  const nowEl    = document.getElementById('metasBarNow');
+  const nowPctEl = document.getElementById('metasBarNowPct');
+  if (metaMensal > 0) {
+    nowEl.style.left    = fillPct + '%';
+    nowEl.style.display = 'block';
+    nowPctEl.style.left    = fillPct + '%';
+    nowPctEl.innerHTML     = `${Math.round(fillPct)}%<span class="mbar-sub">realizado</span>`;
+    nowPctEl.style.display = 'block';
+  } else {
+    nowEl.style.display    = 'none';
+    nowPctEl.style.display = 'none';
+  }
+
+  // ── Week milestone markers ──
+  const trackEl = document.getElementById('metasBarTrack');
+  trackEl.querySelectorAll('.metas-bar-wk').forEach(el => el.remove());
+  if (metaMensal > 0) {
+    const markers = weekRows
+      .filter(wk => wk.accumMeta > 0)
+      .map(wk => ({ wk, pct: Math.min((wk.accumMeta / metaMensal) * 100, 100) }));
+
+    const MIN_GAP = 14; // % threshold before staggering to row 2
+    markers.forEach(({ wk, pct }, i) => {
+      const prevPct = i > 0 ? markers[i - 1].pct : -Infinity;
+      const row = (pct - prevPct) < MIN_GAP ? 2 : 1;
+      const cls = wk.status === 'future' ? 'wk-future' : wk.status === 'current' ? 'wk-current' : 'wk-past';
+      const el  = document.createElement('div');
+      el.className  = `metas-bar-wk row-${row} ${cls}`;
+      el.style.left = pct + '%';
+      el.innerHTML  = `<span class="metas-bar-wk-num">Sem ${wk.week}</span><span class="metas-bar-wk-amt">R$ ${fmtBRL(wk.accumMeta)}</span>`;
+      trackEl.appendChild(el);
+    });
+  }
+
+  const remWeeks = weekRows.filter(w => w.status !== 'past').length;
+  document.getElementById('metasHeroSub').textContent =
+    bizDays > 0
+      ? `Ainda restam ${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} e ${remWeeks} semana${remWeeks !== 1 ? 's' : ''}`
+      : 'Mês encerrado';
+
+  // ── Callout ──
+  if (falta == null) {
+    document.getElementById('metasFalta').textContent  = '—';
+    document.getElementById('metasFalta').className    = 'myb-val';
+    document.getElementById('metasPorDia').textContent = '—';
+    document.getElementById('metasPorDia').className   = 'myb-val';
+    document.getElementById('metasDiasLabel').textContent = '';
+  } else if (falta === 0) {
+    document.getElementById('metasFalta').textContent  = 'Meta batida!';
+    document.getElementById('metasFalta').className    = 'myb-val goal-hit';
+    document.getElementById('metasPorDia').textContent = 'Meta batida!';
+    document.getElementById('metasPorDia').className   = 'myb-val goal-hit';
+    document.getElementById('metasDiasLabel').textContent = '';
+  } else {
+    document.getElementById('metasFalta').textContent  = fmtBRL(falta);
+    document.getElementById('metasFalta').className    = 'myb-val';
+    document.getElementById('metasPorDia').textContent = porDia != null ? fmtBRL(porDia) : '—';
+    document.getElementById('metasPorDia').className   = 'myb-val';
+    document.getElementById('metasDiasLabel').textContent =
+      bizDays > 0 ? `${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} restante${bizDays !== 1 ? 's' : ''}` : '';
+  }
+
+  // ── Table ──
+  document.getElementById('metasBody').innerHTML = weekRows.map(r => {
+    const varAccum   = r.accumReal - r.accumMeta;
+    const varPct     = r.accumMeta > 0 ? (varAccum / r.accumMeta) * 100 : null;
+    const varCls     = varAccum > 0 ? 'v-pos' : varAccum < 0 ? 'v-neg' : 'v-zero';
+    const varAccStr  = (r.accumMeta > 0 || r.accumReal > 0)
+      ? (varAccum >= 0 ? '+' : '-') + 'R$ ' + fmtBRL(Math.abs(varAccum))
+      : '—';
+    const varPctStr  = varPct != null
+      ? (varPct >= 0 ? '+' : '') + varPct.toFixed(0) + '%'
+      : '—';
+
+    const trCls      = r.status === 'current' ? 'wk-current' : r.status === 'future' ? 'wk-future' : '';
+    const resStr     = r.resultado > 0 ? 'R$ ' + fmtBRL(r.resultado)
+                     : r.status === 'future' ? '—' : 'R$ 0,00';
+    const resCls     = r.meta > 0 && r.status !== 'future'
+                     ? (r.resultado >= r.meta ? 'v-pos' : 'v-neg') : '';
+    const metaStr    = r.meta > 0 ? 'R$ ' + fmtBRL(r.meta) : '—';
+    const accMStr    = r.accumMeta > 0 ? 'R$ ' + fmtBRL(r.accumMeta) : '—';
+
+    return `<tr class="${trCls}">
+      <td class="wk">sem ${r.week}</td>
+      <td class="r ${resCls}">${resStr}</td>
+      <td class="r">${metaStr}</td>
+      <td class="r">R$ ${fmtBRL(r.accumReal)}</td>
+      <td class="r">${accMStr}</td>
+      <td class="r ${varCls}">${varAccStr}</td>
+      <td class="r ${varCls}">${varPctStr}</td>
+    </tr>`;
+  }).join('');
+
+  // ── Chart ──
+  document.getElementById('metasChart').innerHTML = renderMetasChart(weekRows, metaMensal);
+}
+
+function renderMetasChart(weekRows, metaMensal) {
+  if (!weekRows.length) return '';
+
+  const W = 700, H = 200;
+  const PAD = { top: 36, right: 80, bottom: 36, left: 60 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  const allVals = [
+    metaMensal,
+    ...weekRows.map(r => r.accumReal),
+    ...weekRows.map(r => r.accumMeta),
+  ].filter(v => v > 0);
+  if (!allVals.length) return '<div style="padding:24px;color:var(--ink-mute);font-size:11px;text-align:center">Sem dados para o gráfico</div>';
+
+  const maxVal = Math.max(...allVals) * 1.08;
+  const yS = v => PAD.top + cH - (v / maxVal) * cH;
+  const xP = i => weekRows.length > 1 ? PAD.left + i * (cW / (weekRows.length - 1)) : PAD.left + cW / 2;
+
+  // Grid
+  const grid = [0, 0.25, 0.5, 0.75, 1].map(f => {
+    const y = PAD.top + cH - f * cH;
+    const v = f * maxVal;
+    const lbl = v >= 1000 ? `R$${(v/1000).toFixed(0)}k` : `R$${Math.round(v)}`;
+    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#E5DFD4" stroke-width="1"/>
+            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" font-size="11" fill="#8A847B" text-anchor="end">${lbl}</text>`;
+  }).join('');
+
+  // Bars (weekly resultado, light fill)
+  const barW = Math.min(cW / weekRows.length * 0.4, 28);
+  const bars = weekRows.map((r, i) => {
+    if (r.resultado <= 0) return '';
+    const x = xP(i), bH = PAD.top + cH - yS(r.resultado);
+    const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}`;
+    return `<rect x="${(x - barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="#D37B5A" opacity="0.18" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+  }).join('');
+
+  // Meta line (dashed gray)
+  let metaPath = '';
+  weekRows.forEach((r, i) => {
+    if (r.accumMeta <= 0) return;
+    const cmd = (!metaPath || weekRows[i-1]?.accumMeta <= 0) ? 'M' : 'L';
+    metaPath += `${cmd} ${xP(i).toFixed(1)} ${yS(r.accumMeta).toFixed(1)} `;
+  });
+
+  // Real line (coral)
+  let realPath = '';
+  weekRows.forEach((r, i) => {
+    if (r.accumReal <= 0) return;
+    const cmd = (!realPath || weekRows[i-1]?.accumReal <= 0) ? 'M' : 'L';
+    realPath += `${cmd} ${xP(i).toFixed(1)} ${yS(r.accumReal).toFixed(1)} `;
+  });
+
+  // Dots on real line
+  const dots = weekRows.map((r, i) => {
+    if (r.accumReal <= 0) return '';
+    const x = xP(i), y = yS(r.accumReal);
+    const dotR = r.status === 'current' ? 5 : 3.5;
+    const tip = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#D37B5A" stroke="white" stroke-width="2"/>
+<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+  }).join('');
+
+  // End-of-line labels
+  const lastReal = [...weekRows].reverse().find(r => r.accumReal > 0);
+  const lastMeta = [...weekRows].reverse().find(r => r.accumMeta > 0);
+  let labelReal = '', labelMeta = '';
+  if (lastReal) {
+    const i = weekRows.indexOf(lastReal), x = xP(i), y = yS(lastReal.accumReal);
+    const v = lastReal.accumReal >= 1000 ? `R$${(lastReal.accumReal/1000).toFixed(0)}k` : `R$${Math.round(lastReal.accumReal)}`;
+    labelReal = `<text x="${(x+8).toFixed(1)}" y="${(y+4).toFixed(1)}" font-size="10" font-weight="700" fill="#D37B5A">${v}</text>`;
+  }
+  if (lastMeta) {
+    const i = weekRows.indexOf(lastMeta), x = xP(i), y = yS(lastMeta.accumMeta);
+    const v = lastMeta.accumMeta >= 1000 ? `R$${(lastMeta.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(lastMeta.accumMeta)}`;
+    labelMeta = `<text x="${(x+8).toFixed(1)}" y="${(y+4).toFixed(1)}" font-size="10" fill="#8A847B">${v}</text>`;
+  }
+
+  // X labels
+  const xLabels = weekRows.map((r, i) =>
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="11" fill="#4A453F" text-anchor="middle" font-weight="700">sem ${r.week}</text>`
+  ).join('');
+
+  // Legend
+  const lx = PAD.left, ly = 16;
+  const legend = `
+    <line x1="${lx}" y1="${ly}" x2="${lx+18}" y2="${ly}" stroke="#D37B5A" stroke-width="2.5"/>
+    <text x="${lx+22}" y="${ly+4}" font-size="11" fill="#4A453F">acum. real</text>
+    <line x1="${lx+100}" y1="${ly}" x2="${lx+118}" y2="${ly}" stroke="#8A847B" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="${lx+122}" y="${ly+4}" font-size="11" fill="#8A847B">acum. meta</text>
+    <rect x="${lx+216}" y="${ly-6}" width="14" height="10" fill="#D37B5A" opacity="0.3"/>
+    <text x="${lx+234}" y="${ly+4}" font-size="11" fill="#4A453F">resultado sem.</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="height:${H}px;">
+    ${grid}${bars}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8A847B" stroke-width="1.5" stroke-dasharray="5,3" fill="none"/>` : ''}
+    ${realPath ? `<path d="${realPath.trim()}" stroke="#D37B5A" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+    ${dots}${labelReal}${labelMeta}${xLabels}${legend}
+  </svg>`;
+}
+
+// ─── CHART TOOLTIP ──────────────────────────────────────
+function showChartTip(e, text) {
+  const tip = document.getElementById('chartTooltip');
+  tip.textContent = text;
+  tip.style.display = 'block';
+  tip.style.left = (e.clientX + 14) + 'px';
+  tip.style.top  = (e.clientY - 38) + 'px';
+}
+function moveChartTip(e) {
+  const tip = document.getElementById('chartTooltip');
+  if (tip.style.display === 'block') {
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top  = (e.clientY - 38) + 'px';
+  }
+}
+function hideChartTip() {
+  document.getElementById('chartTooltip').style.display = 'none';
+}
+
+
+// ─── TAB SWITCHING ───────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.view-tab').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === tab)
+  );
+  const isRadar = tab === 'radar';
+  document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
+  document.getElementById('kpiRow').classList.toggle('visible', isRadar);
+  document.getElementById('blocoMain').style.display  = isRadar ? 'block' : 'none';
+  document.getElementById('viewMetas').style.display  = isRadar ? 'none'  : 'block';
+  if (!isRadar) updateMetasView();
+}
+
+// ─── METAS INIT ──────────────────────────────────────────
+(function initMetas() {
+  document.getElementById('metasPrevMonth').addEventListener('click', () => {
+    metasMonth--;
+    if (metasMonth < 1) { metasMonth = 12; metasYear--; }
+    updateMetasView();
+  });
+  document.getElementById('metasNextMonth').addEventListener('click', () => {
+    metasMonth++;
+    if (metasMonth > 12) { metasMonth = 1; metasYear++; }
+    updateMetasView();
+  });
+  document.querySelectorAll('.view-tab').forEach(btn =>
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab))
+  );
+})();
+
 // ─── INICIALIZAÇÃO ──────────────────────────────────────
 (function initializeSelectors() {
   const { start, end } = getPresetDates('today');
@@ -812,4 +1228,5 @@ function updateKPI() {
   document.getElementById('customEnd').addEventListener('change', applyCustomDates);
 
   loadFromAPI();
+  loadMetasFromAPI();
 })();
