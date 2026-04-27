@@ -884,16 +884,39 @@ function bizDaysInWeekOfMonth(wkYear, week, month, year) {
   return count;
 }
 
+// Operational ramp: first weeks slow (pipeline building), middle weeks peak,
+// penultimate week winds down, last week = end-of-month push if enough days.
+function rampFactor(position, total, daysInWeek) {
+  if (total <= 2) {
+    if (position === 1 && daysInWeek <= 2) return 0.4;
+    return position === 1 ? 0.8 : 1.2;
+  }
+  if (position === 1 && daysInWeek <= 2) return 0.25; // partial start: barely open
+  if (position === 1)                    return 0.85;  // first full week: ramping up
+  if (position === total && daysInWeek <= 2) return 0.55; // last days: transitioning out
+  if (position === total)                return 1.20;  // last week: end-of-month push
+  if (total === 3 && position === 2)     return 1.20;  // only middle week
+  if (position === total - 1)            return 0.70;  // penultimate: wind-down
+  // inner middle weeks: smooth sine peak
+  const innerRange = Math.max(total - 3, 1);
+  const innerPos   = position - 1;
+  const t          = innerRange > 1 ? (innerPos - 0.5) / innerRange : 0.5;
+  return 1.0 + 0.3 * Math.sin(Math.PI * t);
+}
+
 function loadGoals(y, m) {
   const metaMensal = goalsFromAPI[`${y}_${m}`] || 0;
   if (metaMensal === 0) return { meta_mensal: 0, semanas: {} };
   const weeks = getWeeksOfMonth(y, m);
-  const totalBiz = bizDaysInMonth(y, m);
+  const weekData = weeks.map((wk, i) => {
+    const biz = bizDaysInWeekOfMonth(wk.year, wk.week, m, y);
+    return { wk, biz, factor: rampFactor(i + 1, weeks.length, biz) };
+  });
+  const weightedSum = weekData.reduce((s, w) => s + w.biz * w.factor, 0);
   const semanas = {};
-  weeks.forEach(wk => {
-    const wkBiz = bizDaysInWeekOfMonth(wk.year, wk.week, m, y);
-    if (wkBiz > 0 && totalBiz > 0)
-      semanas[wk.week] = metaMensal * (wkBiz / totalBiz);
+  weekData.forEach(({ wk, biz, factor }) => {
+    if (biz > 0 && weightedSum > 0)
+      semanas[wk.week] = metaMensal * (biz * factor) / weightedSum;
   });
   return { meta_mensal: metaMensal, semanas };
 }
