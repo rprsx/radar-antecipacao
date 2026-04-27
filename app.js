@@ -180,7 +180,7 @@ function processRows(rows) {
   }).filter(d => d.cliente !== '—' || d.status_fechamento || d.desagio_total > 0);
 
   document.getElementById('initialMsg').style.display = 'none';
-  document.getElementById('viewTabs').style.display = 'flex';
+  document.getElementById('sidebarNav').style.display = 'block';
   document.getElementById('timeFilterBar').classList.add('visible');
   document.getElementById('kpiRow').classList.add('visible');
   document.getElementById('blocoMain').style.display = 'block';
@@ -1287,7 +1287,7 @@ function hideChartTip() {
 
 // ─── TAB SWITCHING ───────────────────────────────────────
 function switchTab(tab) {
-  document.querySelectorAll('.view-tab').forEach(b =>
+  document.querySelectorAll('.sidebar-item[data-tab]').forEach(b =>
     b.classList.toggle('active', b.dataset.tab === tab)
   );
   const isRadar = tab === 'radar';
@@ -1310,7 +1310,7 @@ function switchTab(tab) {
     if (metasMonth > 12) { metasMonth = 1; metasYear++; }
     updateMetasView();
   });
-  document.querySelectorAll('.view-tab').forEach(btn =>
+  document.querySelectorAll('.sidebar-item[data-tab]').forEach(btn =>
     btn.addEventListener('click', () => switchTab(btn.dataset.tab))
   );
 })();

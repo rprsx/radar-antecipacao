@@ -6,204 +6,211 @@
 </head>
 <body>
 
-<header>
-  <div>
-    <div class="masthead-title">Radar de <span class="accent">Antecipação</span></div>
-    <div class="masthead-subtitle">Análise diária, semanal e mensal</div>
-  </div>
-  <div class="masthead-meta">
-    <div id="today" class="date-big"></div>
-    <div id="now"></div>
-  </div>
-</header>
+<div class="app-layout">
 
-<div id="syncBar" class="sync-bar hidden">
-  <div class="sync-bar-info">
-    <div class="sync-bar-dot"></div>
-    <div>
-      <span class="sync-bar-label" id="syncBarLabel">Sem conexão</span>
-      <span class="sync-bar-sub" id="syncBarSub"></span>
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">Radar de <span class="accent">Antecipação</span></div>
+      <div class="sidebar-sub">Análise de pipeline</div>
     </div>
-  </div>
-  <button id="syncBarBtn">⟳ Atualizar dados</button>
-</div>
-
-<div id="errorMsg" class="error-msg" style="margin-bottom:12px;"></div>
-
-<!-- VIEW TABS -->
-<div class="view-tabs" id="viewTabs" style="display:none">
-  <button class="view-tab" data-tab="metas">Metas</button>
-  <button class="view-tab active" data-tab="radar">Radar</button>
-</div>
-
-<div class="initial-msg" id="initialMsg">
-  <h2>Painel de Antecipação</h2>
-  <p>Carregando dados…</p>
-</div>
-
-<!-- BARRA DE PERÍODO GLOBAL -->
-<div class="time-filter-bar" id="timeFilterBar">
-  <div class="time-presets">
-    <button class="preset-btn" data-preset="today">Hoje</button>
-    <span class="preset-sep"></span>
-    <button class="preset-btn" data-preset="this-week">Esta semana</button>
-    <button class="preset-btn" data-preset="this-month">Este mês</button>
-    <span class="preset-sep"></span>
-    <button class="preset-btn" data-preset="last-quarter">Último quarter</button>
-    <button class="preset-btn" data-preset="last-12-months">Últimos 12 meses</button>
-    <button class="preset-btn" data-preset="all">Tudo</button>
-  </div>
-  <div class="time-custom">
-    <input type="date" id="customStart">
-    <span class="custom-sep">–</span>
-    <input type="date" id="customEnd">
-  </div>
-</div>
-
-<!-- KPI CARDS -->
-<div class="kpi-row" id="kpiRow">
-  <div class="kpi-card">
-    <div class="kpi-label">Deságio</div>
-    <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiDesagio">—</span></div>
-    <div class="kpi-change flat" id="kpiDesagioChange">—</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Yield Total</div>
-    <div class="kpi-value"><span id="kpiYieldTotal">—</span></div>
-    <div class="kpi-change flat" id="kpiYieldTotalChange">—</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Yield Mês</div>
-    <div class="kpi-value"><span id="kpiYieldMes">—</span></div>
-    <div class="kpi-change flat" id="kpiYieldMesChange">—</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Casos</div>
-    <div class="kpi-value"><span id="kpiCasos">—</span></div>
-    <div class="kpi-change flat" id="kpiCasosChange">—</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Ticket Médio</div>
-    <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiTicket">—</span></div>
-    <div class="kpi-change flat" id="kpiTicketChange">—</div>
-  </div>
-</div>
-
-
-<!-- BLOCO PRINCIPAL -->
-<div id="blocoMain" class="bloco" style="display: none;">
-  <div class="today-summary-grid">
-    <div class="today-main">
-      <div class="result-label" id="mainProjLabel">Projeção</div>
-      <div class="result-value">
-        <span class="currency">R$</span><span id="mainProj">0,00</span>
-      </div>
-      <div class="result-breakdown">
-        <div id="mainProjSub">em aberto com status de contrato definido</div>
-      </div>
-      <div class="comp-container" id="mainComp"></div>
+    <div class="sidebar-datetime">
+      <div id="today" class="date-big"></div>
+      <div id="now"></div>
     </div>
-    <div class="info-box">
-      <div class="info-label" id="mainPagoLabel">Pago</div>
-      <div class="info-value">R$ <span id="mainPago">0,00</span></div>
-      <div class="info-sub"><span id="mainPagoCount">0</span> casos fechados</div>
-    </div>
-    <div class="info-box" id="boxOprtd">
-      <div class="info-label">Oportunidades em aberto</div>
-      <div class="info-value">R$ <span id="mainOprtd">0,00</span></div>
-      <div class="info-sub"><span id="mainOprtdCount">0</span> contratos · ticket <span id="mainOprtdTicket">R$ 0</span></div>
-    </div>
-    <div class="info-box">
-      <div class="info-label" id="mainSemStatusLabel">Aguardando resposta do cliente</div>
-      <div class="info-value">R$ <span id="mainSemStatus">0,00</span></div>
-      <div class="info-sub"><span id="mainSemStatusCount">0</span> aguardando resposta</div>
-    </div>
-  </div>
-
-  <div class="history-section">
-    <div class="history-header" id="mainHistHeader">Histórico</div>
-    <div id="mainChart"></div>
-    <table class="history-table">
-      <thead>
-        <tr>
-          <th>Período</th>
-          <th class="num">Deságio</th>
-          <th class="num">Yield Total</th>
-          <th class="num">Yield Mês</th>
-          <th class="num">Casos</th>
-          <th class="num">Parcelas</th>
-        </tr>
-      </thead>
-      <tbody id="mainHistory"></tbody>
-    </table>
-  </div>
-
-  <div class="filters-applied" id="mainFilters">Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido</div>
-</div>
-
-<!-- METAS VIEW -->
-<div id="viewMetas" style="display:none">
-
-  <div class="metas-topbar">
-    <div class="metas-nav">
-      <button class="ghost metas-nav-btn" id="metasPrevMonth">&#9664;</button>
-      <span class="metas-month-label" id="metasMonthLabel">—</span>
-      <button class="ghost metas-nav-btn" id="metasNextMonth">&#9654;</button>
-    </div>
-  </div>
-
-  <div class="metas-hero">
-    <div class="metas-hero-vals" id="metasHeroVals">—</div>
-    <div class="metas-bar-wrap">
-      <div class="metas-bar-track" id="metasBarTrack">
-        <div class="metas-bar-fill" id="metasBarFill"></div>
-        <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
-        <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
+    <nav class="sidebar-nav" id="sidebarNav" style="display:none">
+      <div class="sidebar-section-label">Visualizações</div>
+      <button class="sidebar-item active" data-tab="radar">Radar</button>
+      <button class="sidebar-item" data-tab="metas">Metas</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div id="syncBar" class="sync-bar hidden">
+        <div class="sync-bar-info">
+          <div class="sync-bar-dot"></div>
+          <div>
+            <span class="sync-bar-label" id="syncBarLabel">Sem conexão</span>
+            <span class="sync-bar-sub" id="syncBarSub"></span>
+          </div>
+        </div>
+        <button id="syncBarBtn">⟳ Atualizar dados</button>
       </div>
     </div>
-    <div class="metas-hero-sub" id="metasHeroSub"></div>
-  </div>
+  </aside>
 
-  <div class="metas-callout">
-    <div class="myb-row">
-      <span class="myb-label">Gap total para bater a meta</span>
-      <span class="myb-rs">R$</span>
-      <div class="myb-val-col">
-        <span class="myb-val" id="metasFalta">—</span>
+  <main class="main-content">
+
+    <div id="errorMsg" class="error-msg" style="margin-bottom:12px;"></div>
+
+    <div class="initial-msg" id="initialMsg">
+      <h2>Painel de Antecipação</h2>
+      <p>Carregando dados…</p>
+    </div>
+
+    <!-- BARRA DE PERÍODO GLOBAL -->
+    <div class="time-filter-bar" id="timeFilterBar">
+      <div class="time-presets">
+        <button class="preset-btn" data-preset="today">Hoje</button>
+        <span class="preset-sep"></span>
+        <button class="preset-btn" data-preset="this-week">Esta semana</button>
+        <button class="preset-btn" data-preset="this-month">Este mês</button>
+        <span class="preset-sep"></span>
+        <button class="preset-btn" data-preset="last-quarter">Último quarter</button>
+        <button class="preset-btn" data-preset="last-12-months">Últimos 12 meses</button>
+        <button class="preset-btn" data-preset="all">Tudo</button>
+      </div>
+      <div class="time-custom">
+        <input type="date" id="customStart">
+        <span class="custom-sep">–</span>
+        <input type="date" id="customEnd">
       </div>
     </div>
-    <div class="myb-row">
-      <span class="myb-label">Gap diário para bater a meta</span>
-      <span class="myb-rs">R$</span>
-      <div class="myb-val-col">
-        <span class="myb-val" id="metasPorDia">—</span>
-        <span class="myb-val-days" id="metasDiasLabel"></span>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-row" id="kpiRow">
+      <div class="kpi-card">
+        <div class="kpi-label">Deságio</div>
+        <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiDesagio">—</span></div>
+        <div class="kpi-change flat" id="kpiDesagioChange">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Yield Total</div>
+        <div class="kpi-value"><span id="kpiYieldTotal">—</span></div>
+        <div class="kpi-change flat" id="kpiYieldTotalChange">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Yield Mês</div>
+        <div class="kpi-value"><span id="kpiYieldMes">—</span></div>
+        <div class="kpi-change flat" id="kpiYieldMesChange">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Casos</div>
+        <div class="kpi-value"><span id="kpiCasos">—</span></div>
+        <div class="kpi-change flat" id="kpiCasosChange">—</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ticket Médio</div>
+        <div class="kpi-value"><span class="kpi-currency">R$</span><span id="kpiTicket">—</span></div>
+        <div class="kpi-change flat" id="kpiTicketChange">—</div>
       </div>
     </div>
-  </div>
 
-  <div class="metas-bottom">
-    <div class="metas-chart-wrap" id="metasChart"></div>
-    <div class="metas-table-scroll">
-      <table class="metas-tbl">
-        <thead>
-          <tr>
-            <th>Semana</th>
-            <th class="r">Resultado</th>
-            <th class="r">Meta</th>
-            <th class="r">Acum. Real</th>
-            <th class="r">Acum. Meta</th>
-            <th class="r">Var. Acum.</th>
-            <th class="r">Var. %</th>
-          </tr>
-        </thead>
-        <tbody id="metasBody"></tbody>
-      </table>
+
+    <!-- BLOCO PRINCIPAL -->
+    <div id="blocoMain" class="bloco" style="display: none;">
+      <div class="today-summary-grid">
+        <div class="today-main">
+          <div class="result-label" id="mainProjLabel">Projeção</div>
+          <div class="result-value">
+            <span class="currency">R$</span><span id="mainProj">0,00</span>
+          </div>
+          <div class="result-breakdown">
+            <div id="mainProjSub">em aberto com status de contrato definido</div>
+          </div>
+          <div class="comp-container" id="mainComp"></div>
+        </div>
+        <div class="info-box">
+          <div class="info-label" id="mainPagoLabel">Pago</div>
+          <div class="info-value">R$ <span id="mainPago">0,00</span></div>
+          <div class="info-sub"><span id="mainPagoCount">0</span> casos fechados</div>
+        </div>
+        <div class="info-box" id="boxOprtd">
+          <div class="info-label">Oportunidades em aberto</div>
+          <div class="info-value">R$ <span id="mainOprtd">0,00</span></div>
+          <div class="info-sub"><span id="mainOprtdCount">0</span> contratos · ticket <span id="mainOprtdTicket">R$ 0</span></div>
+        </div>
+        <div class="info-box">
+          <div class="info-label" id="mainSemStatusLabel">Aguardando resposta do cliente</div>
+          <div class="info-value">R$ <span id="mainSemStatus">0,00</span></div>
+          <div class="info-sub"><span id="mainSemStatusCount">0</span> aguardando resposta</div>
+        </div>
+      </div>
+
+      <div class="history-section">
+        <div class="history-header" id="mainHistHeader">Histórico</div>
+        <div id="mainChart"></div>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Período</th>
+              <th class="num">Deságio</th>
+              <th class="num">Yield Total</th>
+              <th class="num">Yield Mês</th>
+              <th class="num">Casos</th>
+              <th class="num">Parcelas</th>
+            </tr>
+          </thead>
+          <tbody id="mainHistory"></tbody>
+        </table>
+      </div>
+
+      <div class="filters-applied" id="mainFilters">Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido</div>
     </div>
-  </div>
+
+    <!-- METAS VIEW -->
+    <div id="viewMetas" style="display:none">
+
+      <div class="metas-topbar">
+        <div class="metas-nav">
+          <button class="ghost metas-nav-btn" id="metasPrevMonth">&#9664;</button>
+          <span class="metas-month-label" id="metasMonthLabel">—</span>
+          <button class="ghost metas-nav-btn" id="metasNextMonth">&#9654;</button>
+        </div>
+      </div>
+
+      <div class="metas-hero">
+        <div class="metas-hero-vals" id="metasHeroVals">—</div>
+        <div class="metas-bar-wrap">
+          <div class="metas-bar-track" id="metasBarTrack">
+            <div class="metas-bar-fill" id="metasBarFill"></div>
+            <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
+            <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
+          </div>
+        </div>
+        <div class="metas-hero-sub" id="metasHeroSub"></div>
+      </div>
+
+      <div class="metas-callout">
+        <div class="myb-row">
+          <span class="myb-label">Gap total para bater a meta</span>
+          <span class="myb-rs">R$</span>
+          <div class="myb-val-col">
+            <span class="myb-val" id="metasFalta">—</span>
+          </div>
+        </div>
+        <div class="myb-row">
+          <span class="myb-label">Gap diário para bater a meta</span>
+          <span class="myb-rs">R$</span>
+          <div class="myb-val-col">
+            <span class="myb-val" id="metasPorDia">—</span>
+            <span class="myb-val-days" id="metasDiasLabel"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metas-bottom">
+        <div class="metas-chart-wrap" id="metasChart"></div>
+        <div class="metas-table-scroll">
+          <table class="metas-tbl">
+            <thead>
+              <tr>
+                <th>Semana</th>
+                <th class="r">Resultado</th>
+                <th class="r">Meta</th>
+                <th class="r">Acum. Real</th>
+                <th class="r">Acum. Meta</th>
+                <th class="r">Var. Acum.</th>
+                <th class="r">Var. %</th>
+              </tr>
+            </thead>
+            <tbody id="metasBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
 
 </div>
-
 <div id="chartTooltip" class="chart-tooltip"></div>
 <script src="app.js"></script>
 

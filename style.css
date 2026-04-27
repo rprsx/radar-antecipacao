@@ -26,9 +26,9 @@
 
   body {
     min-height: 100vh;
-    padding: 24px 32px 60px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0;
+    max-width: none;
+    margin: 0;
   }
 
   /* ─── HEADER ───────────────────────────────────────── */
@@ -204,7 +204,6 @@
     justify-content: space-between;
     gap: 16px;
     padding: 10px 16px;
-    margin-bottom: 20px;
     background: white;
     border: 1px solid var(--line);
     border-left: 3px solid var(--ink-mute);
@@ -988,20 +987,158 @@
     font-size: 13px;
   }
 
+  /* ─── APP LAYOUT ──────────────────────────────────────────── */
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: white;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sidebar-logo {
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo .accent { color: var(--coral); }
+
+  .sidebar-sub {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .sidebar-datetime {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+
+  .sidebar-datetime .date-big {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 8px 0;
+  }
+
+  .sidebar-section-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    padding: 8px 20px 4px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-soft);
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .sidebar-item:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+    border-color: transparent;
+  }
+
+  .sidebar-item.active {
+    background: var(--coral-soft);
+    color: var(--coral);
+    font-weight: 700;
+    border-left-color: var(--coral);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+  }
+
+  .sidebar-footer .sync-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 0;
+    border-left: none;
+    border-top: 3px solid var(--ink-mute);
+    border-right: none;
+    border-bottom: none;
+    padding: 12px 16px;
+    background: transparent;
+  }
+
+  .sidebar-footer .sync-bar.ok    { border-top-color: var(--green); }
+  .sidebar-footer .sync-bar.pending { border-top-color: var(--amber); }
+  .sidebar-footer .sync-bar.fail  { border-top-color: var(--coral); }
+  .sidebar-footer .sync-bar.hidden { display: none; }
+
+  .sidebar-footer .sync-bar .sync-bar-info {
+    flex-direction: row;
+  }
+
+  .sidebar-footer .sync-bar button {
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 32px 60px;
+    background: var(--paper);
+    overflow-y: auto;
+    height: 100vh;
+  }
+
   /* ─── RESPONSIVE ───────────────────────────────────── */
   @media (max-width: 700px) {
-    body { padding: 12px 14px 40px; }
 
-    /* Header empilha */
-    header {
-      grid-template-columns: 1fr;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-    .masthead-title { font-size: 22px; }
-    .masthead-meta { text-align: left; }
-
-    /* Sync bar empilha */
+    /* Sync bar empilha (fallback para contextos fora da sidebar) */
     .sync-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
     .sync-bar button { width: 100%; text-align: center; }
 
@@ -1043,6 +1180,59 @@
 
     /* Filtros aplicados */
     .filters-applied { font-size: 10px; padding: 8px 14px; }
+  }
+
+  /* ─── MOBILE SIDEBAR ──────────────────────────────────── */
+  @media (max-width: 768px) {
+    .app-layout { flex-direction: column; }
+    .main-content { height: auto; padding: 12px 14px 40px; }
+
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: static;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: nowrap;
+      padding: 10px 16px;
+      gap: 12px;
+      border-right: none;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .sidebar-brand { padding: 0; border-bottom: none; flex-shrink: 0; }
+    .sidebar-logo { font-size: 13px; }
+    .sidebar-sub { display: none; }
+    .sidebar-datetime { display: none; border-bottom: none; padding: 0; }
+    .sidebar-section-label { display: none; }
+    .sidebar-footer { display: none; }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 0;
+      display: flex !important;
+      flex-direction: row;
+      gap: 4px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .sidebar-item {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-left: none;
+      border-bottom: 2px solid transparent;
+      width: auto;
+    }
+
+    .sidebar-item:hover { border-color: transparent; border-bottom-color: var(--coral); }
+    .sidebar-item.active {
+      background: transparent;
+      color: var(--coral);
+      font-weight: 700;
+      border-left: none;
+      border-bottom: 2px solid var(--coral);
+    }
   }
 
   /* ─── TIME FILTER BAR ─────────────────────────────────── */
