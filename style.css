@@ -115,7 +115,7 @@
   textarea {
     width: 100%;
     height: 120px;
-    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
     font-size: 11px;
     background: var(--paper);
     border: 1px solid var(--line);
@@ -155,7 +155,7 @@
 
   .source-row input[type="url"] {
     flex: 1;
-    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
     font-size: 11px;
     padding: 8px 12px;
     border: 1px solid var(--line);
@@ -758,7 +758,7 @@
     gap: 12px;
     justify-content: flex-end;
     font-size: 11px;
-    font-family: "Monaco", "Menlo", "Courier New", monospace;
+    font-variant-numeric: tabular-nums;
     color: var(--ink-soft);
   }
 
@@ -847,8 +847,8 @@
 
   .history-table td.num {
     text-align: right;
-    font-family: "Monaco", "Menlo", "Courier New", monospace;
-    font-size: 11px;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
   }
 
   .history-table td.label {
@@ -1185,4 +1185,526 @@
     .kpi-row { grid-template-columns: 1fr 1fr; }
     .masthead-title { font-size: 19px; }
     .preset-btn { padding: 4px 7px; font-size: 9px; }
+  }
+
+  /* ─── VIEW TABS ──────────────────────────────────────── */
+  .view-tabs {
+    display: inline-flex;
+    background: var(--paper-2);
+    border: 1.5px solid var(--line);
+    margin-bottom: 24px;
+    gap: 0;
+    padding: 4px;
+  }
+
+  .view-tab {
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 9px 28px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .view-tab:hover {
+    color: var(--ink);
+    background: white;
+    border-bottom-color: transparent;
+  }
+
+  .view-tab.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom-color: transparent;
+  }
+
+  /* ─── METAS VIEW ─────────────────────────────────────── */
+  .metas-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .metas-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .metas-nav-btn {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-color: var(--line);
+    color: var(--ink-soft);
+  }
+
+  .metas-month-label {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    min-width: 160px;
+    text-align: center;
+  }
+
+  .metas-edit-btn {
+    font-size: 11px;
+    padding: 7px 14px;
+    border-color: var(--line);
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── HERO ───────────────────────────────────────────── */
+  .metas-hero {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 60px 56px 56px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* ── Progress bar ── */
+  .metas-bar-wrap {
+    max-width: 680px;
+    margin: 0 auto 20px;
+    padding-top: 64px;
+  }
+
+  .metas-bar-track {
+    position: relative;
+    height: 28px;
+    background: var(--line);
+    margin-bottom: 120px;
+  }
+
+  .metas-bar-fill {
+    height: 100%;
+    background: var(--coral);
+    transition: width 0.4s ease;
+    max-width: 100%;
+  }
+
+  .metas-bar-now {
+    position: absolute;
+    top: -8px;
+    width: 2px;
+    height: calc(100% + 16px);
+    background: var(--coral);
+    transform: translateX(-50%);
+    z-index: 3;
+  }
+
+  .metas-bar-now-pct {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--coral);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .mbar-sub {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .metas-bar-wk {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+
+  .metas-bar-wk.row-1 { top: calc(100% + 12px); }
+  .metas-bar-wk.row-2 { top: calc(100% + 66px); }
+
+  /* Tick line extending upward from the label to the bar */
+  .metas-bar-wk::before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    left: 50%;
+    bottom: 100%;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  .metas-bar-wk.row-1::before { height: 12px; }
+  .metas-bar-wk.row-2::before { height: 66px; }
+
+  .metas-bar-wk-num {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .metas-bar-wk-amt {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    opacity: 0.75;
+  }
+
+  .metas-bar-wk.wk-past    { color: var(--ink); }
+  .metas-bar-wk.wk-current { color: var(--ink); }
+  .metas-bar-wk.wk-future  { color: var(--ink-mute); }
+
+  .metas-bar-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-top: 14px;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mbl-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .mbl-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .mbl-tick {
+    display: inline-block;
+    width: 3px;
+    height: 12px;
+    background: var(--ink);
+    flex-shrink: 0;
+  }
+
+  .mbl-sep {
+    color: var(--line);
+  }
+
+  .metas-hero-vals {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .metas-hero-vals strong { color: var(--ink); font-weight: 700; }
+
+  .metas-hero-sub {
+    margin-top: 20px;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ─── STATUS CALLOUT ────────────────────────────────── */
+  .metas-callout {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--coral);
+    padding: 4px 24px;
+    margin-bottom: 24px;
+  }
+
+  .myb-row {
+    display: grid;
+    grid-template-columns: 1fr 28px 200px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .myb-row:last-child { border-bottom: none; }
+
+  .myb-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+  }
+
+  .myb-rs {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ink-mute);
+    text-align: right;
+  }
+
+  .myb-val-col {
+    text-align: right;
+  }
+
+  .myb-val {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--coral);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .myb-val-days {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  .myb-val.gap-ok   { color: var(--green); }
+  .myb-val.goal-hit { color: var(--green); }
+
+  #metasFalta {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── CHART TOOLTIP ──────────────────────────────────── */
+  .chart-tooltip {
+    position: fixed;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+    display: none;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─── BOTTOM: CHART + TABLE ──────────────────────────── */
+  .metas-bottom {
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+
+  .metas-chart-wrap {
+    border-bottom: 1px solid var(--line);
+    padding: 20px 20px 8px;
+  }
+
+  .metas-chart-wrap svg {
+    display: block;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .metas-table-scroll { overflow-x: auto; }
+
+  .metas-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .metas-tbl th {
+    padding: 8px 16px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    white-space: nowrap;
+  }
+
+  .metas-tbl th.r { text-align: right; }
+
+  .metas-tbl td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .metas-tbl tbody tr:last-child td { border-bottom: none; }
+
+  .metas-tbl td.r {
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metas-tbl td.wk { font-weight: 700; }
+
+  .metas-tbl tr.wk-current td { background: var(--coral-soft); }
+  .metas-tbl tr.wk-future  td { color: var(--ink-mute); }
+  .metas-tbl tr.wk-current td.wk::after { content: " ●"; color: var(--coral); font-size: 9px; }
+
+  .v-pos, td.v-pos { color: var(--green); font-weight: 700; }
+  .v-neg, td.v-neg { color: var(--coral); font-weight: 700; }
+  .v-zero, td.v-zero { color: var(--ink-mute); }
+
+  /* ─── SETTINGS MODAL ─────────────────────────────────── */
+  .metas-modal-wrap {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,24,22,0.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .metas-modal {
+    background: white;
+    border: 1px solid var(--line);
+    width: 100%;
+    max-width: 420px;
+    max-height: 88vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .metas-modal-hd {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .metas-modal-hd button {
+    background: transparent;
+    border: none;
+    color: var(--paper);
+    font-size: 16px;
+    padding: 0 4px;
+    line-height: 1;
+  }
+
+  .metas-modal-hd button:hover {
+    color: var(--coral);
+    background: transparent;
+    border: none;
+  }
+
+  .metas-modal-bd {
+    padding: 20px;
+    flex: 1;
+  }
+
+  .metas-modal-section {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    padding: 10px 0 12px;
+    border-top: 1px solid var(--line);
+    margin-top: 4px;
+  }
+
+  .metas-modal-section:first-child { border-top: none; padding-top: 0; }
+
+  .metas-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .metas-input-row label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    min-width: 72px;
+  }
+
+  .metas-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .metas-input-wrap span {
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+
+  .metas-input-wrap input {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    flex: 1;
+    text-align: right;
+    min-width: 0;
+  }
+
+  .metas-input-wrap input:focus {
+    outline: none;
+    border-color: var(--coral);
+  }
+
+  .metas-modal-ft {
+    padding: 14px 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+
+  /* ─── METAS RESPONSIVE ───────────────────────────────── */
+  @media (max-width: 700px) {
+    .metas-hero { padding: 24px 20px 20px; }
+    .metas-hero-vals { font-size: 16px; }
+    .myb-row { grid-template-columns: 1fr auto; gap: 12px; }
+    .myb-rs { display: none; }
+    .myb-val { font-size: 15px; }
+    #metasFalta { font-size: 20px; }
+    .myb-label { font-size: 12px; }
+    .metas-tbl { min-width: 500px; }
+    .metas-month-label { min-width: 130px; font-size: 17px; }
+  }
+
+  @media (max-width: 480px) {
+    .metas-hero-vals { font-size: 14px; }
+    .metas-callout { padding: 4px 16px; }
   }
