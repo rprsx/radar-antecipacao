@@ -904,9 +904,23 @@ function rampFactor(position, total, daysInWeek) {
   return 1.0 + 0.3 * Math.sin(Math.PI * t);
 }
 
+// Manual weekly distributions for months already reported (fractions of monthly meta)
+const MANUAL_WEEKLY = {
+  '2026_3': { 10: 0.200, 11: 0.300, 12: 0.300, 13: 0.150, 14: 0.050 },
+  '2026_4': { 14: 2500/130000, 15: 40000/130000, 16: 40000/130000, 17: 15000/130000, 18: 32500/130000 },
+};
+
 function loadGoals(y, m) {
   const metaMensal = goalsFromAPI[`${y}_${m}`] || 0;
   if (metaMensal === 0) return { meta_mensal: 0, semanas: {} };
+
+  const manual = MANUAL_WEEKLY[`${y}_${m}`];
+  if (manual) {
+    const semanas = {};
+    Object.entries(manual).forEach(([wk, frac]) => { semanas[parseInt(wk)] = metaMensal * frac; });
+    return { meta_mensal: metaMensal, semanas };
+  }
+
   const weeks = getWeeksOfMonth(y, m);
   const weekData = weeks.map((wk, i) => {
     const biz = bizDaysInWeekOfMonth(wk.year, wk.week, m, y);
