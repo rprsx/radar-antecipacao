@@ -1022,10 +1022,25 @@
     text-align: center;
   }
 
+  .metas-mid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 20px;
+    align-items: stretch;
+  }
+
   .metas-callout-inner {
-    border-top: 1px solid var(--line);
     border-left: 3px solid var(--coral);
-    padding: 0 24px 0 21px;
+    padding: 24px 28px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .metas-callout-inner .myb-row {
+    grid-template-columns: 1fr 24px 110px;
   }
 
   /* ─── APP LAYOUT ──────────────────────────────────────────── */
@@ -1801,7 +1816,6 @@
   }
 
   .metas-chart-wrap {
-    border-bottom: 1px solid var(--line);
     padding: 20px 20px 8px;
   }
 
@@ -1984,6 +1998,12 @@
   }
 
   /* ─── METAS RESPONSIVE ───────────────────────────────── */
+  @media (max-width: 900px) {
+    .metas-mid { grid-template-columns: 1fr; }
+    .metas-callout-inner { border-left: none; border-top: 3px solid var(--coral); padding: 20px 24px; }
+    .metas-callout-inner .myb-row { grid-template-columns: 1fr 28px 200px; }
+  }
+
   @media (max-width: 700px) {
     .metas-hero-inner { padding: 24px 20px 20px; }
     .metas-hero-vals { font-size: 16px; }
