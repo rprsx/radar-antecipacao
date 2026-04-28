@@ -111,7 +111,8 @@
     <div id="blocoMain" style="display: none;">
       <div class="bloco">
       <div class="today-summary-grid">
-        <div class="today-main">
+        <div class="today-main drill-trigger" data-drill="oprtd">
+          <span class="expand-hint">↗</span>
           <div class="result-label" id="mainProjLabel">Projeção</div>
           <div class="result-value">
             <span class="currency">R$</span><span id="mainProj">0,00</span>
@@ -126,19 +127,19 @@
           <div class="info-value">R$ <span id="mainPago">0,00</span></div>
           <div class="info-sub"><span id="mainPagoCount">0</span> casos fechados</div>
         </div>
-        <div class="info-box" id="boxOprtd">
+        <div class="info-box drill-trigger" id="boxOprtd" data-drill="oprtd">
+          <span class="expand-hint">↗</span>
           <div class="info-label">Oportunidades em aberto</div>
           <div class="info-value">R$ <span id="mainOprtd">0,00</span></div>
           <div class="info-sub"><span id="mainOprtdCount">0</span> contratos · ticket <span id="mainOprtdTicket">R$ 0</span></div>
         </div>
-        <div class="info-box" id="boxSemStatus">
+        <div class="info-box drill-trigger" id="boxSemStatus" data-drill="semStatus">
+          <span class="expand-hint">↗</span>
           <div class="info-label" id="mainSemStatusLabel">Aguardando resposta do cliente</div>
           <div class="info-value">R$ <span id="mainSemStatus">0,00</span></div>
           <div class="info-sub"><span id="mainSemStatusCount">0</span> aguardando resposta</div>
         </div>
       </div>
-
-      <div id="drillPanel" class="drill-panel" style="display:none"></div>
 
       <div class="history-section">
         <div class="history-header" id="mainHistHeader">Histórico</div>
@@ -232,6 +233,17 @@
 
   </main>
 
+</div>
+<div id="drillBackdrop" class="drill-backdrop"></div>
+<div id="drillDrawer" class="drill-drawer">
+  <div class="drill-drawer-head">
+    <div>
+      <div class="drill-drawer-title" id="drillDrawerTitle"></div>
+      <div class="drill-drawer-sub" id="drillDrawerSub"></div>
+    </div>
+    <button class="drill-drawer-close" id="drillDrawerClose">✕</button>
+  </div>
+  <div class="drill-drawer-body" id="drillDrawerBody"></div>
 </div>
 <div class="corner-logo">
   <img src="logo-igual.png" alt="igual" class="corner-logo-img">

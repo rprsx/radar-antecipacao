@@ -625,11 +625,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    cursor: pointer;
-    transition: filter 0.1s;
   }
-  .today-main:hover { filter: brightness(0.97); }
-  .today-main.drill-active { box-shadow: inset 0 -3px 0 var(--coral); }
 
   .today-main .comp-container {
     display: flex;
@@ -655,12 +651,6 @@
     flex-direction: column;
     justify-content: center;
   }
-  #boxOprtd, #boxSemStatus {
-    cursor: pointer;
-    transition: background 0.1s;
-  }
-  #boxOprtd:hover, #boxSemStatus:hover { background: var(--paper); }
-  #boxOprtd.drill-active, #boxSemStatus.drill-active { box-shadow: inset 0 -3px 0 var(--coral); }
 
   .info-box:last-child {
     border-right: none;
@@ -796,52 +786,83 @@
   }
 
   /* ─── HISTORY TABLE ────────────────────────────────── */
-  /* ─── DRILL-DOWN PANEL ────────────────────────────────── */
-  .drill-panel {
-    border-top: 2px solid var(--coral);
-    background: white;
-    padding: 0 0 4px;
+  /* ─── DRILL DRAWER ─────────────────────────────────────── */
+  .drill-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(30,30,36,0.18);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
   }
-  .drill-header {
+  .drill-backdrop.open { opacity: 1; pointer-events: all; }
+
+  .drill-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(500px, 92vw);
+    height: 100vh;
+    background: white;
+    border-left: 1px solid var(--line);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    box-shadow: -6px 0 32px rgba(0,0,0,0.07);
+  }
+  .drill-drawer.open { transform: translateX(0); }
+
+  .drill-drawer-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px 10px;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
     border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
   }
-  .drill-title {
-    font-size: 10px;
+  .drill-drawer-title {
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
     color: var(--ink);
+    letter-spacing: -0.01em;
   }
-  .drill-count {
-    font-size: 10px;
-    color: var(--ink-mute);
-    background: var(--paper-2);
-    padding: 2px 7px;
-    border-radius: 10px;
-  }
-  .drill-close {
-    margin-left: auto;
+  .drill-drawer-sub {
     font-size: 11px;
     color: var(--ink-mute);
-    cursor: pointer;
+    margin-top: 3px;
+  }
+  .drill-drawer-close {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--ink-mute);
     background: none;
     border: 1px solid var(--line);
-    padding: 3px 10px;
-    letter-spacing: 0.03em;
-    transition: color 0.1s;
+    cursor: pointer;
+    transition: color 0.1s, border-color 0.1s;
+    flex-shrink: 0;
   }
-  .drill-close:hover { color: var(--ink); }
+  .drill-drawer-close:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  .drill-drawer-body {
+    overflow-y: auto;
+    flex: 1;
+  }
+
   .drill-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
   }
+  .drill-table thead { position: sticky; top: 0; z-index: 1; }
   .drill-table th {
-    padding: 7px 20px;
+    padding: 8px 24px;
     font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -852,7 +873,7 @@
   }
   .drill-table th.num { text-align: right; }
   .drill-table td {
-    padding: 9px 20px;
+    padding: 10px 24px;
     border-bottom: 1px solid var(--paper-2);
     color: var(--ink);
   }
@@ -861,6 +882,23 @@
   .drill-table td.drill-status { color: var(--ink-mute); font-size: 11px; }
   .drill-table tr:last-child td { border-bottom: none; }
   .drill-table tbody tr:hover td { background: var(--paper); }
+
+  /* ─── EXPAND HINT ───────────────────────────────────────── */
+  .drill-trigger { position: relative; cursor: pointer; }
+  .expand-hint {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    opacity: 0;
+    transition: opacity 0.15s;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .drill-trigger:hover .expand-hint { opacity: 1; }
+  .drill-trigger.drill-active .expand-hint { opacity: 1; color: var(--coral); }
+  .drill-trigger.drill-active { box-shadow: inset 0 -2px 0 var(--coral); }
 
   .history-section {
     border-top: 1px solid var(--line);

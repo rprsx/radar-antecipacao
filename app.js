@@ -192,66 +192,69 @@ function processRows(rows) {
 // ─── DATA ───────────────────────────────────────────────
 let allDealsData = [];
 
-// ─── DRILL-DOWN ─────────────────────────────────────────
+// ─── DRILL DRAWER ───────────────────────────────────────
 let _drillDeals  = { oprtd: [], semStatus: [] };
 let _drillActive = null;
 let _drillInit   = false;
 
-function toggleDrillPanel(key) {
-  const panel = document.getElementById('drillPanel');
-  if (!panel) return;
+function openDrillDrawer(key) {
+  const drawer   = document.getElementById('drillDrawer');
+  const backdrop = document.getElementById('drillBackdrop');
+  if (!drawer) return;
 
-  // Deactivate all boxes
-  [document.querySelector('.today-main'), document.getElementById('boxOprtd'), document.getElementById('boxSemStatus')]
-    .forEach(el => el && el.classList.remove('drill-active'));
+  document.querySelectorAll('.drill-trigger').forEach(el => el.classList.remove('drill-active'));
 
-  if (_drillActive === key || !key) {
-    _drillActive = null;
-    panel.style.display = 'none';
-    panel.innerHTML = '';
-    return;
-  }
+  if (_drillActive === key) { closeDrillDrawer(); return; }
   _drillActive = key;
 
-  const boxEl = key === 'semStatus' ? document.getElementById('boxSemStatus')
-              : (document.getElementById('boxOprtd').style.display !== 'none'
-                  ? document.getElementById('boxOprtd')
-                  : document.querySelector('.today-main'));
-  if (boxEl) boxEl.classList.add('drill-active');
+  document.querySelectorAll(`.drill-trigger[data-drill="${key}"]`)
+    .forEach(el => el.classList.add('drill-active'));
 
+  const labels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente' };
   const deals  = _drillDeals[key] || [];
   const sorted = [...deals].sort((a, b) => b.desagio_total - a.desagio_total);
-  const labels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente' };
+  const total  = sorted.reduce((s, d) => s + d.desagio_total, 0);
+
+  document.getElementById('drillDrawerTitle').textContent = labels[key];
+  document.getElementById('drillDrawerSub').textContent =
+    `${sorted.length} caso${sorted.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
 
   const rows = sorted.map(d => `
     <tr>
       <td class="drill-cliente">${d.cliente}</td>
-      <td class="num">${d.valor_contrato > 0 ? 'R$&nbsp;' + fmtBRL(d.valor_contrato) : '—'}</td>
-      <td class="num">R$&nbsp;${fmtBRL(d.desagio_total)}</td>
+      <td class="num">${d.valor_contrato > 0 ? 'R$ ' + fmtBRL(d.valor_contrato) : '—'}</td>
+      <td class="num">R$ ${fmtBRL(d.desagio_total)}</td>
       <td class="drill-status">${d.status_contrato || '—'}</td>
     </tr>`).join('');
 
-  panel.innerHTML = `
-    <div class="drill-header">
-      <span class="drill-title">${labels[key]}</span>
-      <span class="drill-count">${sorted.length} caso${sorted.length !== 1 ? 's' : ''}</span>
-      <button class="drill-close" onclick="toggleDrillPanel('${key}')">✕ fechar</button>
-    </div>
+  document.getElementById('drillDrawerBody').innerHTML = `
     <table class="drill-table">
       <thead><tr>
-        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th><th>Status contrato</th>
+        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th><th>Status</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
-  panel.style.display = 'block';
+
+  drawer.classList.add('open');
+  backdrop.classList.add('open');
+}
+
+function closeDrillDrawer() {
+  _drillActive = null;
+  document.getElementById('drillDrawer').classList.remove('open');
+  document.getElementById('drillBackdrop').classList.remove('open');
+  document.querySelectorAll('.drill-trigger').forEach(el => el.classList.remove('drill-active'));
 }
 
 function initDrillListeners() {
   if (_drillInit) return;
   _drillInit = true;
-  document.querySelector('.today-main').addEventListener('click', () => toggleDrillPanel('oprtd'));
-  document.getElementById('boxOprtd').addEventListener('click',    () => toggleDrillPanel('oprtd'));
-  document.getElementById('boxSemStatus').addEventListener('click', () => toggleDrillPanel('semStatus'));
+  document.querySelectorAll('.drill-trigger').forEach(el => {
+    el.addEventListener('click', () => openDrillDrawer(el.dataset.drill));
+  });
+  document.getElementById('drillDrawerClose').addEventListener('click', closeDrillDrawer);
+  document.getElementById('drillBackdrop').addEventListener('click', closeDrillDrawer);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrillDrawer(); });
 }
 
 // ─── HELPERS: MÉTRICAS, TENDÊNCIAS E HISTÓRICO ─────────
@@ -677,7 +680,7 @@ function updateMainView() {
   // Store for drill-down and close any open panel (data changed)
   _drillDeals.oprtd = oprtdDeals;
   _drillDeals.semStatus = semStatusDeals;
-  toggleDrillPanel(null);
+  closeDrillDrawer();
   initDrillListeners();
   const totalOprtd = oprtdDeals.reduce((s, d) => s + d.desagio_total, 0);
   const clientesOprtd = new Set(oprtdDeals.map(d => d.cliente)).size;
