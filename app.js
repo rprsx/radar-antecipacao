@@ -235,20 +235,28 @@ function openDrillDrawer(key) {
   document.getElementById('drillDrawerSub').textContent =
     `${sorted.length} caso${sorted.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
 
-  const isPago = showDate;
-  const rows = sorted.map(d => `
-    <tr>
+  const rows = sorted.map(d => {
+    const yieldTot = d.valor_contrato > 0 ? (d.desagio_total / d.valor_contrato) * 100 : 0;
+    const yieldMes = d.parcelas_antecipadas > 0 ? yieldTot / d.parcelas_antecipadas : 0;
+    return `<tr>
       <td class="drill-cliente">${d.cliente}</td>
       <td class="num">${d.valor_contrato > 0 ? 'R$ ' + fmtBRL(d.valor_contrato) : '—'}</td>
       <td class="num">R$ ${fmtBRL(d.desagio_total)}</td>
-      <td class="drill-status">${isPago ? (d.data_fechamento_str || '—') : (d.status_contrato || '—')}</td>
-    </tr>`).join('');
+      <td class="num">${yieldTot > 0 ? fmtPct(yieldTot) : '—'}</td>
+      <td class="num">${yieldMes > 0 ? fmtPct(yieldMes) : '—'}</td>
+      <td class="num">${d.parcelas_antecipadas || '—'}</td>
+    </tr>`;
+  }).join('');
 
   document.getElementById('drillDrawerBody').innerHTML = `
     <table class="drill-table">
       <thead><tr>
-        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th>
-        <th>${isPago ? 'Data' : 'Status'}</th>
+        <th>Cliente</th>
+        <th class="num">Valor contrato</th>
+        <th class="num">Deságio</th>
+        <th class="num">Yield Total</th>
+        <th class="num">Yield Mês</th>
+        <th class="num">Parcelas</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;

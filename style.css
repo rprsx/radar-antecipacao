@@ -802,7 +802,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: min(500px, 92vw);
+    width: min(720px, 95vw);
     height: 100vh;
     background: white;
     border-left: 1px solid var(--line);
