@@ -1,30 +1,65 @@
   :root {
-    /* Paleta Igual — Goiaba / Azul / Black / Off-white */
-    --coral: #E37B5A;
-    --coral-soft: #E37B5A14;
-    --coral-line: #E37B5A40;
-    --blue: #A9B9E7;
-    --blue-soft: #A9B9E714;
-    --ink: #1E1E24;
-    --ink-soft: #4E4E58;
-    --ink-mute: #8E8E9C;
-    --paper: #F0EFEB;
-    --paper-2: #E8E7E2;
-    --line: #DDDBD5;
-    --green: #5A8F6B;
-    --green-soft: #5A8F6B15;
-    --amber: #C9933B;
+    /* ── Design System Tokens — igual.com ───────────────── */
+    --goiaba-50: #FCF2EE; --goiaba-100: #F6E5DE; --goiaba-200: #F4CAB8;
+    --goiaba-500: #E37B5A; --goiaba-600: #B66248; --goiaba-700: #884A36;
+
+    --azul-50: #F6F8FD; --azul-100: #EEF1FA; --azul-200: #DDE3F5;
+    --azul-500: #A9B9E7; --azul-600: #8794B9;
+
+    --black-400: #908F94; --black-500: #78777D; --black-600: #605F66;
+    --black-700: #48474F; --black-800: #303038; --black-900: #1E1E24;
+
+    --offwhite-50: #F0EFEB; --offwhite-75: #E4E3DF;
+    --offwhite-100: #D8D7D3; --offwhite-200: #C0BFBC;
+
+    --abacate-50: #F7FBF2; --abacate-500: #ACBA7E;
+    --abacate-600: #8A9565; --abacate-700: #67704C;
+
+    --gema-100: #FEF6E0; --gema-500: #FBD266; --gema-600: #C9A852; --gema-700: #977E3D;
+
+    /* ── Semânticas ─────────────────────────────────────── */
+    --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    --font-body:    'Inter', Helvetica, Arial, sans-serif;
+
+    --radius-sm:   4px;
+    --radius-md:   8px;
+    --radius-lg:   12px;
+
+    --shadow-sm:   0 2px 8px rgba(30,30,36,0.07);
+    --shadow-md:   0 4px 16px rgba(30,30,36,0.10);
+
+    --duration-fast:   100ms;
+    --duration-normal: 200ms;
+    --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ── App aliases → tokens ───────────────────────────── */
+    --coral:      var(--goiaba-500);
+    --coral-soft: rgba(227,123,90,0.08);
+    --coral-line: rgba(227,123,90,0.25);
+    --blue:       var(--azul-500);
+    --blue-soft:  rgba(169,185,231,0.08);
+    --ink:        var(--black-900);
+    --ink-soft:   var(--black-700);
+    --ink-mute:   var(--black-500);
+    --paper:      var(--offwhite-50);
+    --paper-2:    var(--offwhite-75);
+    --line:       var(--offwhite-100);
+    --green:      var(--abacate-700);
+    --green-soft: rgba(103,112,76,0.10);
+    --amber:      var(--gema-600);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     background: var(--paper);
     color: var(--ink);
     font-size: 13px;
     line-height: 1.45;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -118,7 +153,7 @@
   textarea {
     width: 100%;
     height: 120px;
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     background: var(--paper);
     border: 1px solid var(--line);
@@ -158,7 +193,7 @@
 
   .source-row input[type="url"] {
     flex: 1;
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     padding: 8px 12px;
     border: 1px solid var(--line);
@@ -284,7 +319,7 @@
   }
 
   button {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -294,7 +329,7 @@
     background: var(--ink);
     color: var(--paper);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--duration-fast) var(--ease-standard);
   }
 
   button:hover {
@@ -323,8 +358,11 @@
   /* ─── BLOCOS ───────────────────────────────────────── */
   .bloco {
     margin-bottom: 40px;
-    border: 2px solid var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
     background: white;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
   }
 
   .bloco-header {
@@ -498,8 +536,9 @@
   }
 
   .result-value {
+    font-family: var(--font-display);
     font-size: 36px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--coral);
     letter-spacing: -0.02em;
     line-height: 1;
@@ -553,7 +592,7 @@
   }
 
   .meta-input input {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 12px;
     padding: 6px 10px;
     border: 1px solid var(--line);
@@ -666,6 +705,7 @@
   }
 
   .info-value {
+    font-family: var(--font-display);
     font-size: 18px;
     font-weight: 700;
     color: var(--ink);
@@ -810,8 +850,8 @@
     display: flex;
     flex-direction: column;
     transform: translateX(100%);
-    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-    box-shadow: -6px 0 32px rgba(0,0,0,0.07);
+    transition: transform var(--duration-normal) var(--ease-standard);
+    box-shadow: var(--shadow-lg);
   }
   .drill-drawer.open { transform: translateX(0); }
 
@@ -1165,8 +1205,9 @@
   }
 
   .view-title {
+    font-family: var(--font-display);
     font-size: 19px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.01em;
     color: var(--ink);
     margin-bottom: 4px;
@@ -1192,6 +1233,8 @@
     text-align: center;
     background: white;
     border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
   }
 
   .metas-callout-inner {
@@ -1205,7 +1248,8 @@
   .gap-box {
     background: white;
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     padding: 22px 28px;
     display: flex;
     flex-direction: column;
@@ -1231,8 +1275,9 @@
   }
 
   .gap-box-val {
+    font-family: var(--font-display);
     font-size: 38px;
-    font-weight: 700;
+    font-weight: 800;
     color: var(--coral);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
@@ -1282,10 +1327,11 @@
   }
 
   .sidebar-logo {
+    font-family: var(--font-display);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
     line-height: 1.3;
     margin-bottom: 4px;
     color: var(--paper);
@@ -1560,7 +1606,7 @@
   }
 
   .preset-btn {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.03em;
@@ -1569,8 +1615,8 @@
     background: white;
     color: var(--ink-soft);
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.12s;
+    border-radius: var(--radius-sm);
+    transition: all var(--duration-fast) var(--ease-standard);
     text-transform: none;
   }
 
@@ -1599,13 +1645,13 @@
   }
 
   .time-custom input[type="date"] {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     padding: 5px 8px;
     border: 1px solid var(--line);
     background: white;
     color: var(--ink);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
   }
 
@@ -1627,6 +1673,8 @@
   .kpi-card {
     background: white;
     border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
     padding: 16px 20px;
   }
 
@@ -1640,6 +1688,7 @@
   }
 
   .kpi-value {
+    font-family: var(--font-display);
     font-size: 21px;
     font-weight: 700;
     color: var(--ink);
@@ -1746,6 +1795,7 @@
   }
 
   .metas-month-label {
+    font-family: var(--font-display);
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -1911,8 +1961,9 @@
   }
 
   .metas-hero-vals {
+    font-family: var(--font-display);
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--ink-soft);
     margin-bottom: 0;
     letter-spacing: -0.01em;
@@ -2012,7 +2063,7 @@
     position: fixed;
     background: var(--ink);
     color: var(--paper);
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 11px;
     font-weight: 600;
     padding: 6px 12px;
@@ -2027,7 +2078,10 @@
   .metas-bottom {
     background: white;
     border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 40px;
+    overflow: hidden;
   }
 
   .metas-chart-wrap {
@@ -2188,7 +2242,7 @@
   }
 
   .metas-input-wrap input {
-    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 13px;
     font-weight: 700;
     padding: 7px 10px;
