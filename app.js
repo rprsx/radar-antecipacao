@@ -198,6 +198,10 @@ let _drillLabels     = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardand
 let _periodDrillMap  = new Map(); // key -> { deals, label }
 let _drillActive     = null;
 let _drillInit       = false;
+let _drillCurrentDeals = [];
+let _drillSort       = { col: 2, dir: -1 }; // col index, dir: 1=asc, -1=desc
+let _lastHistoryPeriods = [];
+let _historySort     = { col: null, dir: -1 };
 
 function openDrillDrawer(key) {
   const drawer   = document.getElementById('drillDrawer');
@@ -228,12 +232,41 @@ function openDrillDrawer(key) {
     showDate    = key === 'pago';
   }
 
-  const sorted = [...deals].sort((a, b) => b.desagio_total - a.desagio_total);
-  const total  = sorted.reduce((s, d) => s + d.desagio_total, 0);
-
+  const total = deals.reduce((s, d) => s + d.desagio_total, 0);
   document.getElementById('drillDrawerTitle').textContent = drawerLabel;
   document.getElementById('drillDrawerSub').textContent =
-    `${sorted.length} caso${sorted.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
+    `${deals.length} caso${deals.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
+
+  _drillCurrentDeals = deals;
+  _drillSort = { col: 2, dir: -1 };
+  renderDrillTable();
+
+  drawer.classList.add('open');
+  backdrop.classList.add('open');
+}
+
+function renderDrillTable() {
+  const COLS = [
+    { label: 'Cliente',        cls: '',    val: d => d.cliente },
+    { label: 'Valor contrato', cls: 'num', val: d => d.valor_contrato || 0 },
+    { label: 'Deságio',        cls: 'num', val: d => d.desagio_total || 0 },
+    { label: 'Yield Total',    cls: 'num', val: d => d.valor_contrato > 0 ? (d.desagio_total / d.valor_contrato) * 100 : 0 },
+    { label: 'Yield Mês',      cls: 'num', val: d => { const yt = d.valor_contrato > 0 ? (d.desagio_total / d.valor_contrato) * 100 : 0; return d.parcelas_antecipadas > 0 ? yt / d.parcelas_antecipadas : 0; } },
+    { label: 'Parcelas',       cls: 'num', val: d => d.parcelas_antecipadas || 0 },
+  ];
+
+  const sorted = [..._drillCurrentDeals].sort((a, b) => {
+    const col = COLS[_drillSort.col];
+    const va = col.val(a), vb = col.val(b);
+    if (typeof va === 'string') return _drillSort.dir * va.localeCompare(vb, 'pt');
+    return _drillSort.dir * ((va || 0) - (vb || 0));
+  });
+
+  const heads = COLS.map((c, i) => {
+    const active = i === _drillSort.col;
+    const icon   = active ? (_drillSort.dir === 1 ? '▲' : '▼') : '↕';
+    return `<th class="${c.cls} sortable${active ? ' sort-active' : ''}" data-scol="${i}">${c.label}<span class="sort-icon">${icon}</span></th>`;
+  }).join('');
 
   const rows = sorted.map(d => {
     const yieldTot = d.valor_contrato > 0 ? (d.desagio_total / d.valor_contrato) * 100 : 0;
@@ -248,21 +281,25 @@ function openDrillDrawer(key) {
     </tr>`;
   }).join('');
 
-  document.getElementById('drillDrawerBody').innerHTML = `
+  const body = document.getElementById('drillDrawerBody');
+  body.innerHTML = `
     <table class="drill-table">
-      <thead><tr>
-        <th>Cliente</th>
-        <th class="num">Valor contrato</th>
-        <th class="num">Deságio</th>
-        <th class="num">Yield Total</th>
-        <th class="num">Yield Mês</th>
-        <th class="num">Parcelas</th>
-      </tr></thead>
+      <thead><tr>${heads}</tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 
-  drawer.classList.add('open');
-  backdrop.classList.add('open');
+  body.querySelectorAll('th[data-scol]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = parseInt(th.dataset.scol);
+      if (_drillSort.col === col) {
+        _drillSort.dir *= -1;
+      } else {
+        _drillSort.col = col;
+        _drillSort.dir = col === 0 ? 1 : -1;
+      }
+      renderDrillTable();
+    });
+  });
 }
 
 function closeDrillDrawer() {
@@ -270,6 +307,68 @@ function closeDrillDrawer() {
   document.getElementById('drillDrawer').classList.remove('open');
   document.getElementById('drillBackdrop').classList.remove('open');
   document.querySelectorAll('.drill-trigger, tr[data-pkey]').forEach(el => el.classList.remove('drill-active'));
+}
+
+function bindHistorySort() {
+  document.querySelectorAll('.history-table th[data-scol]').forEach(th => {
+    const col = parseInt(th.dataset.scol);
+    const active = col === _historySort.col;
+    th.classList.toggle('sort-active', active);
+
+    // Update or create the sort icon chip
+    let icon = th.querySelector('.sort-icon');
+    if (!icon) {
+      icon = document.createElement('span');
+      icon.className = 'sort-icon';
+      th.appendChild(icon);
+    }
+    if (active) {
+      icon.textContent = _historySort.dir === 1 ? '▲' : '▼';
+    } else {
+      icon.textContent = '↕';
+    }
+
+    th.onclick = () => {
+      if (_historySort.col === col) {
+        _historySort.dir *= -1;
+      } else {
+        _historySort.col = col;
+        _historySort.dir = -1;
+      }
+      if (_drillActive) closeDrillDrawer();
+      redrawHistoryTable();
+    };
+  });
+}
+
+function redrawHistoryTable() {
+  const METRIC_FNS = [
+    null,
+    m => m.total,
+    m => m.yieldTotal,
+    m => m.yieldMes,
+    m => m.clientesUnicos,
+    m => m.parcelasMedio,
+  ];
+  let periods = _lastHistoryPeriods;
+  let orderRecentFirst = true;
+
+  if (_historySort.col !== null) {
+    const metrics = periods.map(p => calcMetrics(p.deals));
+    const fn = METRIC_FNS[_historySort.col];
+    const indexed = periods.map((p, i) => ({ p, m: metrics[i], i }));
+    if (fn) {
+      indexed.sort((a, b) => _historySort.dir * ((fn(b.m) || 0) - (fn(a.m) || 0)));
+    } else {
+      // col 0: Período — sort by natural chronological index
+      indexed.sort((a, b) => _historySort.dir * (b.i - a.i));
+    }
+    periods = indexed.map(x => x.p);
+    orderRecentFirst = false;
+  }
+
+  document.getElementById('mainHistory').innerHTML = renderHistoryTable(periods, orderRecentFirst);
+  bindHistorySort();
 }
 
 function initDrillListeners() {
@@ -364,7 +463,7 @@ function renderHistoryTable(periods, orderRecentFirst) {
     const trClass  = rowClasses.length ? ` class="${rowClasses.join(' ')}"` : '';
 
     rows.push(`<tr${trClass}${pkeyAttr}>
-      <td class="label${zeroClass}">${p.label}${subHtml}${hint}</td>
+      <td class="label${zeroClass}">${p.label}${hint}${subHtml}</td>
       <td class="num${zeroClass}">R$ ${fmtBRL(m.total)}${trendHtml}</td>
       <td class="num${zeroClass}">${fmtPct(m.yieldTotal)}</td>
       <td class="num${zeroClass}">${fmtPct(m.yieldMes)}</td>
@@ -771,7 +870,10 @@ function updateMainView() {
 
   // History
   const periods = buildHistoryPeriods();
+  _lastHistoryPeriods = periods;
+  _historySort = { col: null, dir: -1 };
   document.getElementById('mainHistory').innerHTML = renderHistoryTable(periods, true);
+  bindHistorySort();
   document.getElementById('mainChart').innerHTML = renderLineChart(periods);
 
   // Comp badges
@@ -1238,23 +1340,22 @@ function updateMetasView() {
   document.getElementById('metasHeroSub').textContent = heroSub;
 
   // ── Callout ──
+  const _setGapVal = (id, text, hit) => {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'gap-box-val' + (hit ? ' goal-hit' : '');
+  };
   if (falta == null) {
-    document.getElementById('metasFalta').textContent  = '—';
-    document.getElementById('metasFalta').className    = 'myb-val';
-    document.getElementById('metasPorDia').textContent = '—';
-    document.getElementById('metasPorDia').className   = 'myb-val';
+    _setGapVal('metasFalta',  '—',  false);
+    _setGapVal('metasPorDia', '—',  false);
     document.getElementById('metasDiasLabel').textContent = '';
   } else if (falta === 0) {
-    document.getElementById('metasFalta').textContent  = 'Meta batida!';
-    document.getElementById('metasFalta').className    = 'myb-val goal-hit';
-    document.getElementById('metasPorDia').textContent = 'Meta batida!';
-    document.getElementById('metasPorDia').className   = 'myb-val goal-hit';
+    _setGapVal('metasFalta',  'Meta batida!', true);
+    _setGapVal('metasPorDia', 'Meta batida!', true);
     document.getElementById('metasDiasLabel').textContent = '';
   } else {
-    document.getElementById('metasFalta').textContent  = fmtBRL(falta);
-    document.getElementById('metasFalta').className    = 'myb-val';
-    document.getElementById('metasPorDia').textContent = porDia != null ? fmtBRL(porDia) : '—';
-    document.getElementById('metasPorDia').className   = 'myb-val';
+    _setGapVal('metasFalta',  fmtBRL(falta), false);
+    _setGapVal('metasPorDia', porDia != null ? fmtBRL(porDia) : '—', false);
     document.getElementById('metasDiasLabel').textContent =
       bizDays > 0 ? `${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} restante${bizDays !== 1 ? 's' : ''}` : '';
   }

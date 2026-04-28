@@ -148,12 +148,12 @@
         <table class="history-table">
           <thead>
             <tr>
-              <th>Período</th>
-              <th class="num">Deságio</th>
-              <th class="num">Yield Total</th>
-              <th class="num">Yield Mês</th>
-              <th class="num">Casos</th>
-              <th class="num">Parcelas</th>
+              <th class="sortable" data-scol="0">Período</th>
+              <th class="num sortable" data-scol="1">Deságio</th>
+              <th class="num sortable" data-scol="2">Yield Total</th>
+              <th class="num sortable" data-scol="3">Yield Mês</th>
+              <th class="num sortable" data-scol="4">Casos</th>
+              <th class="num sortable" data-scol="5">Parcelamento Médio</th>
             </tr>
           </thead>
           <tbody id="mainHistory"></tbody>
@@ -192,20 +192,19 @@
           <div class="metas-hero-sub" id="metasHeroSub"></div>
         </div>
         <div class="metas-callout-inner">
-          <div class="myb-row">
-            <span class="myb-label">Gap total para bater a meta</span>
-            <span class="myb-rs">R$</span>
-            <div class="myb-val-col">
-              <span class="myb-val" id="metasFalta">—</span>
+          <div class="gap-box">
+            <div class="gap-box-label">Valor total para bater a meta</div>
+            <div class="gap-box-amount">
+              <span class="gap-rs">R$</span><span class="gap-box-val" id="metasFalta">—</span>
             </div>
+            <div class="gap-box-sub">&nbsp;</div>
           </div>
-          <div class="myb-row">
-            <span class="myb-label">Gap diário para bater a meta</span>
-            <span class="myb-rs">R$</span>
-            <div class="myb-val-col">
-              <span class="myb-val" id="metasPorDia">—</span>
-              <span class="myb-val-days" id="metasDiasLabel"></span>
+          <div class="gap-box">
+            <div class="gap-box-label">Valor diário para bater a meta</div>
+            <div class="gap-box-amount">
+              <span class="gap-rs">R$</span><span class="gap-box-val" id="metasPorDia">—</span>
             </div>
+            <div class="gap-box-sub" id="metasDiasLabel"></div>
           </div>
         </div>
       </div>
