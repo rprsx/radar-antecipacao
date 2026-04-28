@@ -1,13 +1,16 @@
   :root {
-    --coral: #D37B5A;
-    --coral-soft: #D37B5A15;
-    --coral-line: #D37B5A40;
-    --ink: #1A1816;
-    --ink-soft: #4A453F;
-    --ink-mute: #8A847B;
-    --paper: #FAF7F2;
-    --paper-2: #F2EDE5;
-    --line: #E5DFD4;
+    /* Paleta Igual — Goiaba / Azul / Black / Off-white */
+    --coral: #E37B5A;
+    --coral-soft: #E37B5A14;
+    --coral-line: #E37B5A40;
+    --blue: #A9B9E7;
+    --blue-soft: #A9B9E714;
+    --ink: #1E1E24;
+    --ink-soft: #4E4E58;
+    --ink-mute: #8E8E9C;
+    --paper: #F0EFEB;
+    --paper-2: #E8E7E2;
+    --line: #DDDBD5;
     --green: #5A8F6B;
     --green-soft: #5A8F6B15;
     --amber: #C9933B;
@@ -987,6 +990,44 @@
     font-size: 13px;
   }
 
+  /* ─── VIEW HEADERS ───────────────────────────────────────── */
+  .view-header {
+    padding: 0 0 20px 0;
+  }
+
+  .view-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .view-subtitle {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ─── METAS PANEL (hero + callout unificados) ─────────────── */
+  .metas-panel {
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 20px;
+  }
+
+  .metas-hero-inner {
+    padding: 48px 56px 28px;
+    text-align: center;
+  }
+
+  .metas-callout-inner {
+    border-top: 1px solid var(--line);
+    border-left: 3px solid var(--coral);
+    padding: 0 24px 0 21px;
+  }
+
   /* ─── APP LAYOUT ──────────────────────────────────────────── */
   .app-layout {
     display: flex;
@@ -1444,7 +1485,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .metas-nav {
@@ -1683,7 +1724,7 @@
 
   .myb-val {
     display: block;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--coral);
     font-variant-numeric: tabular-nums;
@@ -1915,7 +1956,7 @@
 
   /* ─── METAS RESPONSIVE ───────────────────────────────── */
   @media (max-width: 700px) {
-    .metas-hero { padding: 24px 20px 20px; }
+    .metas-hero-inner { padding: 24px 20px 20px; }
     .metas-hero-vals { font-size: 16px; }
     .myb-row { grid-template-columns: 1fr auto; gap: 12px; }
     .myb-rs { display: none; }

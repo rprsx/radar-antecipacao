@@ -95,7 +95,12 @@
 
 
     <!-- BLOCO PRINCIPAL -->
-    <div id="blocoMain" class="bloco" style="display: none;">
+    <div id="blocoMain" style="display: none;">
+      <div class="view-header">
+        <div class="view-title">📊 Dados da operação</div>
+        <div class="view-subtitle">Separados por períodos</div>
+      </div>
+      <div class="bloco">
       <div class="today-summary-grid">
         <div class="today-main">
           <div class="result-label" id="mainProjLabel">Projeção</div>
@@ -143,10 +148,15 @@
       </div>
 
       <div class="filters-applied" id="mainFilters">Oportunidades: Em aberto + qualquer status de contrato preenchido · Sem status: Em aberto + contrato sem status definido</div>
+      </div><!-- .bloco -->
     </div>
 
     <!-- METAS VIEW -->
     <div id="viewMetas" style="display:none">
+
+      <div class="view-header">
+        <div class="view-title">🎯 Atingimento vs as metas</div>
+      </div>
 
       <div class="metas-topbar">
         <div class="metas-nav">
@@ -156,32 +166,34 @@
         </div>
       </div>
 
-      <div class="metas-hero">
-        <div class="metas-hero-vals" id="metasHeroVals">—</div>
-        <div class="metas-bar-wrap">
-          <div class="metas-bar-track" id="metasBarTrack">
-            <div class="metas-bar-fill" id="metasBarFill"></div>
-            <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
-            <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
+      <div class="metas-panel">
+        <div class="metas-hero-inner">
+          <div class="metas-hero-vals" id="metasHeroVals">—</div>
+          <div class="metas-bar-wrap">
+            <div class="metas-bar-track" id="metasBarTrack">
+              <div class="metas-bar-fill" id="metasBarFill"></div>
+              <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
+              <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
+            </div>
           </div>
+          <div class="metas-hero-sub" id="metasHeroSub"></div>
         </div>
-        <div class="metas-hero-sub" id="metasHeroSub"></div>
-      </div>
 
-      <div class="metas-callout">
-        <div class="myb-row">
-          <span class="myb-label">Gap total para bater a meta</span>
-          <span class="myb-rs">R$</span>
-          <div class="myb-val-col">
-            <span class="myb-val" id="metasFalta">—</span>
+        <div class="metas-callout-inner">
+          <div class="myb-row">
+            <span class="myb-label">Gap total para bater a meta</span>
+            <span class="myb-rs">R$</span>
+            <div class="myb-val-col">
+              <span class="myb-val" id="metasFalta">—</span>
+            </div>
           </div>
-        </div>
-        <div class="myb-row">
-          <span class="myb-label">Gap diário para bater a meta</span>
-          <span class="myb-rs">R$</span>
-          <div class="myb-val-col">
-            <span class="myb-val" id="metasPorDia">—</span>
-            <span class="myb-val-days" id="metasDiasLabel"></span>
+          <div class="myb-row">
+            <span class="myb-label">Gap diário para bater a meta</span>
+            <span class="myb-rs">R$</span>
+            <div class="myb-val-col">
+              <span class="myb-val" id="metasPorDia">—</span>
+              <span class="myb-val-days" id="metasDiasLabel"></span>
+            </div>
           </div>
         </div>
       </div>
