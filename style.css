@@ -918,6 +918,16 @@
   .drill-table td.drill-status { color: var(--ink-mute); font-size: 11px; }
   .drill-table tr:last-child td { border-bottom: none; }
   .drill-table tbody tr:hover td { background: var(--paper); }
+  .drill-table tfoot tr.drill-totals td {
+    padding: 9px 14px;
+    border-top: 2px solid var(--line);
+    background: var(--paper);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .drill-table tfoot tr.drill-totals td.num { color: var(--ink); }
+  .drill-total-label { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; }
 
   /* ─── EXPAND HINT ───────────────────────────────────────── */
   .drill-trigger { position: relative; cursor: pointer; }

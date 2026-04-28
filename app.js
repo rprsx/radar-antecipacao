@@ -281,11 +281,36 @@ function renderDrillTable() {
     </tr>`;
   }).join('');
 
+  let tfootHTML = '';
+  if (sorted.length > 1) {
+    const sumValor   = sorted.reduce((s, d) => s + (d.valor_contrato || 0), 0);
+    const sumDesagio = sorted.reduce((s, d) => s + (d.desagio_total  || 0), 0);
+    const yieldTotAgg = sumValor > 0 ? (sumDesagio / sumValor) * 100 : 0;
+    const { wNum, wDen } = sorted.reduce((acc, d) => {
+      if ((d.parcelas_antecipadas || 0) > 0 && (d.valor_contrato || 0) > 0) {
+        acc.wNum += d.valor_contrato * d.parcelas_antecipadas;
+        acc.wDen += d.valor_contrato;
+      }
+      return acc;
+    }, { wNum: 0, wDen: 0 });
+    const avgParcelas = wDen > 0 ? wNum / wDen : 0;
+    const yieldMesAgg = avgParcelas > 0 ? yieldTotAgg / avgParcelas : 0;
+    tfootHTML = `<tfoot><tr class="drill-totals">
+      <td class="drill-total-label">Σ ${sorted.length} casos</td>
+      <td class="num">${sumValor > 0 ? 'R$ ' + fmtBRL(sumValor) : '—'}</td>
+      <td class="num">R$ ${fmtBRL(sumDesagio)}</td>
+      <td class="num">${yieldTotAgg > 0 ? fmtPct(yieldTotAgg) : '—'}</td>
+      <td class="num">${yieldMesAgg > 0 ? fmtPct(yieldMesAgg) : '—'}</td>
+      <td class="num">${avgParcelas > 0 ? fmtDec(avgParcelas, 1) + 'x' : '—'}</td>
+    </tr></tfoot>`;
+  }
+
   const body = document.getElementById('drillDrawerBody');
   body.innerHTML = `
     <table class="drill-table">
       <thead><tr>${heads}</tr></thead>
       <tbody>${rows}</tbody>
+      ${tfootHTML}
     </table>`;
 
   body.querySelectorAll('th[data-scol]').forEach(th => {
