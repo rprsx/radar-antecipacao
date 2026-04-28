@@ -193,7 +193,8 @@ function processRows(rows) {
 let allDealsData = [];
 
 // ─── DRILL DRAWER ───────────────────────────────────────
-let _drillDeals  = { oprtd: [], semStatus: [] };
+let _drillDeals  = { oprtd: [], semStatus: [], pago: [] };
+let _drillLabels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente', pago: 'Pago' };
 let _drillActive = null;
 let _drillInit   = false;
 
@@ -210,27 +211,28 @@ function openDrillDrawer(key) {
   document.querySelectorAll(`.drill-trigger[data-drill="${key}"]`)
     .forEach(el => el.classList.add('drill-active'));
 
-  const labels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente' };
   const deals  = _drillDeals[key] || [];
   const sorted = [...deals].sort((a, b) => b.desagio_total - a.desagio_total);
   const total  = sorted.reduce((s, d) => s + d.desagio_total, 0);
 
-  document.getElementById('drillDrawerTitle').textContent = labels[key];
+  document.getElementById('drillDrawerTitle').textContent = _drillLabels[key] || key;
   document.getElementById('drillDrawerSub').textContent =
     `${sorted.length} caso${sorted.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
 
+  const isPago = key === 'pago';
   const rows = sorted.map(d => `
     <tr>
       <td class="drill-cliente">${d.cliente}</td>
-      <td class="num">${d.valor_contrato > 0 ? 'R$ ' + fmtBRL(d.valor_contrato) : '—'}</td>
-      <td class="num">R$ ${fmtBRL(d.desagio_total)}</td>
-      <td class="drill-status">${d.status_contrato || '—'}</td>
+      <td class="num">${d.valor_contrato > 0 ? 'R$ ' + fmtBRL(d.valor_contrato) : '—'}</td>
+      <td class="num">R$ ${fmtBRL(d.desagio_total)}</td>
+      <td class="drill-status">${isPago ? (d.data_fechamento_str || '—') : (d.status_contrato || '—')}</td>
     </tr>`).join('');
 
   document.getElementById('drillDrawerBody').innerHTML = `
     <table class="drill-table">
       <thead><tr>
-        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th><th>Status</th>
+        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th>
+        <th>${isPago ? 'Data' : 'Status'}</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
@@ -698,6 +700,9 @@ function updateMainView() {
   });
   const totalPago = pagoDeals.reduce((s, d) => s + d.desagio_total, 0);
   const pagoCasos = new Set(pagoDeals.map(d => d.cliente)).size;
+  const pagoLabels = { day: 'Pago hoje', week: 'Pago na semana', month: 'Pago no mês', 'last-quarter': 'Pago no período', 'last-12-months': 'Pago nos 12 meses', year: 'Pago no ano', all: 'Pago total', custom: 'Pago no período' };
+  _drillDeals.pago  = pagoDeals;
+  _drillLabels.pago = pagoLabels[periodType] || 'Pago';
 
   const isDay = periodType === 'day';
 
@@ -707,9 +712,6 @@ function updateMainView() {
   // No seletor HOJE, "Oportunidades em aberto" é redundante com "Projeção do dia" — esconde
   document.getElementById('boxOprtd').style.display = isDay ? 'none' : '';
   document.querySelector('.today-summary-grid').classList.toggle('hide-oprtd', isDay);
-
-  // Adaptive labels
-  const pagoLabels = { day: 'Pago hoje', week: 'Pago na semana', month: 'Pago no mês', 'last-quarter': 'Pago no período', 'last-12-months': 'Pago nos 12 meses', year: 'Pago no ano', all: 'Pago total', custom: 'Pago no período' };
 
   document.getElementById('mainProjLabel').textContent = 'Projeção do dia';
   document.getElementById('mainProjSub').textContent = 'ofertas aceitas pelos clientes, aguardando pagamento';
