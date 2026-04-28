@@ -181,6 +181,7 @@ function processRows(rows) {
 
   document.getElementById('initialMsg').style.display = 'none';
   document.getElementById('sidebarNav').style.display = 'block';
+  document.getElementById('radarHeader').style.display = 'block';
   document.getElementById('timeFilterBar').classList.add('visible');
   document.getElementById('kpiRow').classList.add('visible');
   document.getElementById('blocoMain').style.display = 'block';
@@ -1291,6 +1292,7 @@ function switchTab(tab) {
     b.classList.toggle('active', b.dataset.tab === tab)
   );
   const isRadar = tab === 'radar';
+  document.getElementById('radarHeader').style.display = isRadar ? 'block' : 'none';
   document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
   document.getElementById('kpiRow').classList.toggle('visible', isRadar);
   document.getElementById('blocoMain').style.display  = isRadar ? 'block' : 'none';
