@@ -398,9 +398,10 @@ function renderLineChart(periods) {
     const strokeW = p.isCurrent ? 2.5 : 2;
     const tipLbl = p.sublabel ? `${p.label} ${p.sublabel}` : p.label;
     const tipVal = `R$ ${fmtBRL(v)}`;
+    const tipDays = p.businessDays ? ` · ${p.businessDays} dias úteis` : '';
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#D37B5A" stroke="white" stroke-width="${strokeW}"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
-  onmouseenter="showChartTip(event,'${tipLbl} · ${tipVal}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+  onmouseenter="showChartTip(event,'${tipLbl} · ${tipVal}${tipDays}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
   
   // Valor em destaque do período atual
@@ -533,7 +534,8 @@ function buildHistoryPeriods() {
       return {
         label: `Semana ${wk.week}`, sublabel: String(wk.year),
         deals: allDealsData.filter(d => isPago(d) && d.ano === wkAno && d.mes === wkMes && d.semana_fechamento === wk.week),
-        isCurrent: wk.year === sy && wk.week === sw
+        isCurrent: wk.year === sy && wk.week === sw,
+        businessDays: bizDaysInRange(isoWeekMonday(wk.year, wk.week), isoWeekSunday(wk.year, wk.week))
       };
     });
   }
@@ -568,7 +570,8 @@ function buildHistoryPeriods() {
       let mm = currentMonth - i, yy = currentYear;
       while (mm <= 0) { mm += 12; yy--; }
       const deals = allDealsData.filter(d => isPago(d) && d.ano === yy && d.mes === mm);
-      periods.push({ label: mesesNomes[mm-1], sublabel: String(yy), deals, isCurrent: yy === currentYear && mm === currentMonth });
+      periods.push({ label: mesesNomes[mm-1], sublabel: String(yy), deals, isCurrent: yy === currentYear && mm === currentMonth,
+        businessDays: bizDaysInRange(new Date(yy, mm-1, 1), new Date(yy, mm, 0)) });
     }
     document.getElementById('mainHistHeader').textContent = 'Últimos 12 meses';
     return periods;
@@ -581,7 +584,8 @@ function buildHistoryPeriods() {
     return Array.from({length: 12}, (_, i) => ({
       label: mesesNomes[i], sublabel: String(sy),
       deals: allDealsData.filter(d => isPago(d) && d.ano === sy && d.mes === i+1),
-      isCurrent: false
+      isCurrent: false,
+      businessDays: bizDaysInRange(new Date(sy, i, 1), new Date(sy, i+1, 0))
     }));
   }
 
@@ -593,7 +597,8 @@ function buildHistoryPeriods() {
     let mm = sm - i, yy = sy;
     while (mm <= 0) { mm += 12; yy--; }
     const deals = allDealsData.filter(d => isPago(d) && d.ano === yy && d.mes === mm);
-    periods.push({ label: mesesCompletos[mm-1], sublabel: String(yy), deals, isCurrent: yy === sy && mm === sm });
+    periods.push({ label: mesesCompletos[mm-1], sublabel: String(yy), deals, isCurrent: yy === sy && mm === sm,
+      businessDays: bizDaysInRange(new Date(yy, mm-1, 1), new Date(yy, mm, 0)) });
   }
   document.getElementById('mainHistHeader').textContent = 'Últimos 5 meses';
   return periods;
@@ -953,6 +958,18 @@ function loadGoals(y, m) {
   return { meta_mensal: metaMensal, semanas };
 }
 
+function bizDaysInRange(start, end) {
+  let count = 0;
+  const d = new Date(start); d.setHours(0, 0, 0, 0);
+  const e = new Date(end);   e.setHours(0, 0, 0, 0);
+  while (d <= e) {
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
 // Monday of ISO week
 function isoWeekMonday(year, week) {
   const jan4 = new Date(year, 0, 4);
@@ -1017,7 +1034,8 @@ function updateMetasView() {
       lastPastAccumMeta = accumMeta;
       hasPast = true;
     }
-    return { week: wk.week, year: wk.year, resultado, meta, accumReal, accumMeta, status };
+    const businessDays = bizDaysInRange(isoWeekMonday(wk.year, wk.week), isoWeekSunday(wk.year, wk.week));
+    return { week: wk.week, year: wk.year, resultado, meta, accumReal, accumMeta, status, businessDays };
   });
 
   // Total realizado no mês
@@ -1198,7 +1216,8 @@ function renderMetasChart(weekRows, metaMensal) {
   const bars = weekRows.map((r, i) => {
     if (r.resultado <= 0) return '';
     const x = xP(i), bH = PAD.top + cH - yS(r.resultado);
-    const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}`;
+    const tipDays = r.businessDays ? ` · ${r.businessDays} dias úteis` : '';
+    const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}${tipDays}`;
     return `<rect x="${(x - barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="#D37B5A" opacity="0.18" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
@@ -1224,7 +1243,8 @@ function renderMetasChart(weekRows, metaMensal) {
     if (r.accumReal <= 0) return '';
     const x = xP(i), y = yS(r.accumReal);
     const dotR = r.status === 'current' ? 5 : 3.5;
-    const tip = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}`;
+    const tipDaysD = r.businessDays ? ` · ${r.businessDays} dias úteis` : '';
+    const tip = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}${tipDaysD}`;
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#D37B5A" stroke="white" stroke-width="2"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
