@@ -198,7 +198,7 @@ function calcMetrics(deals) {
   const valorTotal = deals.reduce((s, d) => s + (d.valor_contrato || 0), 0);
   const clientesUnicos = new Set(deals.map(d => d.cliente)).size;
   const totalParcelas = deals.reduce((s, d) => s + (d.parcelas_antecipadas || 0), 0);
-  const parcelasMedio = clientesUnicos > 0 ? totalParcelas / clientesUnicos : 0;
+  const parcelasMedio = deals.length > 0 ? totalParcelas / deals.length : 0;
   const yieldTotal = valorTotal > 0 ? (total / valorTotal) * 100 : 0;
   const yieldMes = parcelasMedio > 0 ? yieldTotal / parcelasMedio : 0;
   return { total, valorTotal, clientesUnicos, totalParcelas, parcelasMedio, yieldTotal, yieldMes };
@@ -792,17 +792,19 @@ function updateKPI() {
     el.textContent = `${arrow} ${pct >= 0 ? '+' : ''}${pct.toFixed(0)}% vs anterior`;
   }
 
-  document.getElementById('kpiDesagio').textContent    = fmtBRL(m.total);
-  document.getElementById('kpiYieldTotal').textContent = fmtPct(m.yieldTotal);
-  document.getElementById('kpiYieldMes').textContent   = fmtPct(m.yieldMes);
-  document.getElementById('kpiCasos').textContent      = m.clientesUnicos;
-  document.getElementById('kpiTicket').textContent     = fmtBRL(ticket);
+  document.getElementById('kpiDesagio').textContent        = fmtBRL(m.total);
+  document.getElementById('kpiYieldTotal').textContent     = fmtPct(m.yieldTotal);
+  document.getElementById('kpiYieldMes').textContent       = fmtPct(m.yieldMes);
+  document.getElementById('kpiCasos').textContent          = m.clientesUnicos;
+  document.getElementById('kpiTicket').textContent         = fmtBRL(ticket);
+  document.getElementById('kpiParcelamento').textContent   = m.parcelasMedio.toFixed(1);
 
-  setChange('kpiDesagioChange',    m.total,           pm.total);
-  setChange('kpiYieldTotalChange', m.yieldTotal,      pm.yieldTotal);
-  setChange('kpiYieldMesChange',   m.yieldMes,        pm.yieldMes);
-  setChange('kpiCasosChange',      m.clientesUnicos,  pm.clientesUnicos);
-  setChange('kpiTicketChange',     ticket,            prevTicket);
+  setChange('kpiDesagioChange',       m.total,            pm.total);
+  setChange('kpiYieldTotalChange',    m.yieldTotal,       pm.yieldTotal);
+  setChange('kpiYieldMesChange',      m.yieldMes,         pm.yieldMes);
+  setChange('kpiCasosChange',         m.clientesUnicos,   pm.clientesUnicos);
+  setChange('kpiTicketChange',        ticket,             prevTicket);
+  setChange('kpiParcelamentoChange',  m.parcelasMedio,    pm.parcelasMedio);
 }
 
 // ─── METAS VIEW ─────────────────────────────────────────
