@@ -193,10 +193,11 @@ function processRows(rows) {
 let allDealsData = [];
 
 // ─── DRILL DRAWER ───────────────────────────────────────
-let _drillDeals  = { oprtd: [], semStatus: [], pago: [] };
-let _drillLabels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente', pago: 'Pago' };
-let _drillActive = null;
-let _drillInit   = false;
+let _drillDeals      = { oprtd: [], semStatus: [], pago: [] };
+let _drillLabels     = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente', pago: 'Pago' };
+let _periodDrillMap  = new Map(); // key -> { deals, label }
+let _drillActive     = null;
+let _drillInit       = false;
 
 function openDrillDrawer(key) {
   const drawer   = document.getElementById('drillDrawer');
@@ -208,18 +209,33 @@ function openDrillDrawer(key) {
   if (_drillActive === key) { closeDrillDrawer(); return; }
   _drillActive = key;
 
+  // Activate the triggering element (box or table row)
   document.querySelectorAll(`.drill-trigger[data-drill="${key}"]`)
     .forEach(el => el.classList.add('drill-active'));
+  const activeRow = document.querySelector(`tr[data-pkey="${key}"]`);
+  if (activeRow) activeRow.classList.add('drill-active');
 
-  const deals  = _drillDeals[key] || [];
+  // Resolve deals + label from either fixed keys or period map
+  let deals, drawerLabel, showDate;
+  if (_periodDrillMap.has(key)) {
+    const entry = _periodDrillMap.get(key);
+    deals       = entry.deals;
+    drawerLabel = entry.label;
+    showDate    = true;
+  } else {
+    deals       = _drillDeals[key] || [];
+    drawerLabel = _drillLabels[key] || key;
+    showDate    = key === 'pago';
+  }
+
   const sorted = [...deals].sort((a, b) => b.desagio_total - a.desagio_total);
   const total  = sorted.reduce((s, d) => s + d.desagio_total, 0);
 
-  document.getElementById('drillDrawerTitle').textContent = _drillLabels[key] || key;
+  document.getElementById('drillDrawerTitle').textContent = drawerLabel;
   document.getElementById('drillDrawerSub').textContent =
     `${sorted.length} caso${sorted.length !== 1 ? 's' : ''} · R$ ${fmtBRL(total)}`;
 
-  const isPago = key === 'pago';
+  const isPago = showDate;
   const rows = sorted.map(d => `
     <tr>
       <td class="drill-cliente">${d.cliente}</td>
@@ -245,7 +261,7 @@ function closeDrillDrawer() {
   _drillActive = null;
   document.getElementById('drillDrawer').classList.remove('open');
   document.getElementById('drillBackdrop').classList.remove('open');
-  document.querySelectorAll('.drill-trigger').forEach(el => el.classList.remove('drill-active'));
+  document.querySelectorAll('.drill-trigger, tr[data-pkey]').forEach(el => el.classList.remove('drill-active'));
 }
 
 function initDrillListeners() {
@@ -253,6 +269,11 @@ function initDrillListeners() {
   _drillInit = true;
   document.querySelectorAll('.drill-trigger').forEach(el => {
     el.addEventListener('click', () => openDrillDrawer(el.dataset.drill));
+  });
+  // Event delegation for history table rows (re-rendered on each period change)
+  document.getElementById('mainHistory').addEventListener('click', e => {
+    const tr = e.target.closest('tr[data-pkey]');
+    if (tr) openDrillDrawer(tr.dataset.pkey);
   });
   document.getElementById('drillDrawerClose').addEventListener('click', closeDrillDrawer);
   document.getElementById('drillBackdrop').addEventListener('click', closeDrillDrawer);
@@ -291,6 +312,7 @@ function renderTrendHtml(current, previous) {
 function renderHistoryTable(periods, orderRecentFirst) {
   // periods: SEMPRE em ordem cronológica (antiga → recente)
   // orderRecentFirst: se true, inverte a ordem de EXIBIÇÃO (mas mantém tendências corretas)
+  _periodDrillMap.clear();
   const rows = [];
   const allMetrics = periods.map(p => calcMetrics(p.deals));
   
@@ -322,10 +344,19 @@ function renderHistoryTable(periods, orderRecentFirst) {
       if (deviation > OUTLIER_THRESHOLD) rowClasses.push('outlier-up');
       else if (deviation < -OUTLIER_THRESHOLD) rowClasses.push('outlier-down');
     }
-    const trClass = rowClasses.length ? ` class="${rowClasses.join(' ')}"` : '';
-    
-    rows.push(`<tr${trClass}>
-      <td class="label${zeroClass}">${p.label}${subHtml}</td>
+    const pkey = `p_${i}`;
+    if (p.deals.length > 0) {
+      _periodDrillMap.set(pkey, {
+        deals: p.deals,
+        label: p.sublabel ? `${p.label} ${p.sublabel}` : p.label
+      });
+    }
+    const pkeyAttr = p.deals.length > 0 ? ` data-pkey="${pkey}"` : '';
+    const hint     = p.deals.length > 0 ? '<span class="row-expand-hint">↗</span>' : '';
+    const trClass  = rowClasses.length ? ` class="${rowClasses.join(' ')}"` : '';
+
+    rows.push(`<tr${trClass}${pkeyAttr}>
+      <td class="label${zeroClass}">${p.label}${subHtml}${hint}</td>
       <td class="num${zeroClass}">R$ ${fmtBRL(m.total)}${trendHtml}</td>
       <td class="num${zeroClass}">${fmtPct(m.yieldTotal)}</td>
       <td class="num${zeroClass}">${fmtPct(m.yieldMes)}</td>

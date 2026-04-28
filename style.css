@@ -891,14 +891,39 @@
     right: 10px;
     font-size: 11px;
     color: var(--ink-mute);
-    opacity: 0;
-    transition: opacity 0.15s;
+    opacity: 0.35;
+    transition: opacity 0.15s, color 0.15s;
     line-height: 1;
     pointer-events: none;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    border-radius: 3px;
   }
   .drill-trigger:hover .expand-hint { opacity: 1; }
-  .drill-trigger.drill-active .expand-hint { opacity: 1; color: var(--coral); }
+  .drill-trigger.drill-active .expand-hint { opacity: 1; color: var(--coral); border-color: var(--coral); }
   .drill-trigger.drill-active { box-shadow: inset 0 -2px 0 var(--coral); }
+
+  /* ─── HISTORY ROW DRILL ─────────────────────────────────── */
+  .row-expand-hint {
+    display: inline-block;
+    margin-left: 7px;
+    font-size: 10px;
+    color: var(--ink-mute);
+    opacity: 0.35;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 1px 5px;
+    border-radius: 3px;
+    transition: opacity 0.15s, color 0.15s;
+    vertical-align: middle;
+    font-style: normal;
+  }
+  tr[data-pkey] { cursor: pointer; }
+  tr[data-pkey]:hover td { background: var(--paper) !important; }
+  tr[data-pkey]:hover .row-expand-hint { opacity: 1; }
+  tr[data-pkey].drill-active td { background: var(--coral-soft) !important; }
+  tr[data-pkey].drill-active .row-expand-hint { opacity: 1; color: var(--coral); border-color: var(--coral); }
 
   .history-section {
     border-top: 1px solid var(--line);
