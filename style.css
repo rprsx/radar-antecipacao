@@ -1012,6 +1012,9 @@
 
   /* ─── METAS PANEL (hero + callout unificados) ─────────────── */
   .metas-panel {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    align-items: stretch;
     background: white;
     border: 1px solid var(--line);
     margin-bottom: 20px;
@@ -1020,15 +1023,6 @@
   .metas-hero-inner {
     padding: 48px 56px 28px;
     text-align: center;
-  }
-
-  .metas-mid {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    background: white;
-    border: 1px solid var(--line);
-    margin-bottom: 20px;
-    align-items: stretch;
   }
 
   .metas-callout-inner {
@@ -1816,6 +1810,7 @@
   }
 
   .metas-chart-wrap {
+    border-bottom: 1px solid var(--line);
     padding: 20px 20px 8px;
   }
 
@@ -1999,7 +1994,7 @@
 
   /* ─── METAS RESPONSIVE ───────────────────────────────── */
   @media (max-width: 900px) {
-    .metas-mid { grid-template-columns: 1fr; }
+    .metas-panel { grid-template-columns: 1fr; }
     .metas-callout-inner { border-left: none; border-top: 3px solid var(--coral); padding: 20px 24px; }
     .metas-callout-inner .myb-row { grid-template-columns: 1fr 28px 200px; }
   }
