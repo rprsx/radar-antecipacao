@@ -192,6 +192,68 @@ function processRows(rows) {
 // ─── DATA ───────────────────────────────────────────────
 let allDealsData = [];
 
+// ─── DRILL-DOWN ─────────────────────────────────────────
+let _drillDeals  = { oprtd: [], semStatus: [] };
+let _drillActive = null;
+let _drillInit   = false;
+
+function toggleDrillPanel(key) {
+  const panel = document.getElementById('drillPanel');
+  if (!panel) return;
+
+  // Deactivate all boxes
+  [document.querySelector('.today-main'), document.getElementById('boxOprtd'), document.getElementById('boxSemStatus')]
+    .forEach(el => el && el.classList.remove('drill-active'));
+
+  if (_drillActive === key || !key) {
+    _drillActive = null;
+    panel.style.display = 'none';
+    panel.innerHTML = '';
+    return;
+  }
+  _drillActive = key;
+
+  const boxEl = key === 'semStatus' ? document.getElementById('boxSemStatus')
+              : (document.getElementById('boxOprtd').style.display !== 'none'
+                  ? document.getElementById('boxOprtd')
+                  : document.querySelector('.today-main'));
+  if (boxEl) boxEl.classList.add('drill-active');
+
+  const deals  = _drillDeals[key] || [];
+  const sorted = [...deals].sort((a, b) => b.desagio_total - a.desagio_total);
+  const labels = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente' };
+
+  const rows = sorted.map(d => `
+    <tr>
+      <td class="drill-cliente">${d.cliente}</td>
+      <td class="num">${d.valor_contrato > 0 ? 'R$&nbsp;' + fmtBRL(d.valor_contrato) : '—'}</td>
+      <td class="num">R$&nbsp;${fmtBRL(d.desagio_total)}</td>
+      <td class="drill-status">${d.status_contrato || '—'}</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="drill-header">
+      <span class="drill-title">${labels[key]}</span>
+      <span class="drill-count">${sorted.length} caso${sorted.length !== 1 ? 's' : ''}</span>
+      <button class="drill-close" onclick="toggleDrillPanel('${key}')">✕ fechar</button>
+    </div>
+    <table class="drill-table">
+      <thead><tr>
+        <th>Cliente</th><th class="num">Valor contrato</th><th class="num">Deságio</th><th>Status contrato</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  panel.style.display = 'block';
+}
+
+function initDrillListeners() {
+  if (_drillInit) return;
+  _drillInit = true;
+  document.querySelector('.today-main').addEventListener('click', () => toggleDrillPanel('oprtd'));
+  document.getElementById('boxOprtd').addEventListener('click',    () => toggleDrillPanel('oprtd'));
+  document.getElementById('boxSemStatus').addEventListener('click', () => toggleDrillPanel('semStatus'));
+}
+
 // ─── HELPERS: MÉTRICAS, TENDÊNCIAS E HISTÓRICO ─────────
 function calcMetrics(deals) {
   const total = deals.reduce((s, d) => s + d.desagio_total, 0);
@@ -611,6 +673,12 @@ function updateMainView() {
   // Open pipeline (no date filter — always shows current state)
   const oprtdDeals = allDealsData.filter(d => isEmAberto(d) && norm(d.status_contrato) !== '');
   const semStatusDeals = allDealsData.filter(d => isEmAberto(d) && norm(d.status_contrato) === '');
+
+  // Store for drill-down and close any open panel (data changed)
+  _drillDeals.oprtd = oprtdDeals;
+  _drillDeals.semStatus = semStatusDeals;
+  toggleDrillPanel(null);
+  initDrillListeners();
   const totalOprtd = oprtdDeals.reduce((s, d) => s + d.desagio_total, 0);
   const clientesOprtd = new Set(oprtdDeals.map(d => d.cliente)).size;
   const ticketOprtd = clientesOprtd > 0 ? totalOprtd / clientesOprtd : 0;

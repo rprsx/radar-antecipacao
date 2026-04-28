@@ -625,7 +625,11 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    cursor: pointer;
+    transition: filter 0.1s;
   }
+  .today-main:hover { filter: brightness(0.97); }
+  .today-main.drill-active { box-shadow: inset 0 -3px 0 var(--coral); }
 
   .today-main .comp-container {
     display: flex;
@@ -651,6 +655,12 @@
     flex-direction: column;
     justify-content: center;
   }
+  #boxOprtd, #boxSemStatus {
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  #boxOprtd:hover, #boxSemStatus:hover { background: var(--paper); }
+  #boxOprtd.drill-active, #boxSemStatus.drill-active { box-shadow: inset 0 -3px 0 var(--coral); }
 
   .info-box:last-child {
     border-right: none;
@@ -786,6 +796,72 @@
   }
 
   /* ─── HISTORY TABLE ────────────────────────────────── */
+  /* ─── DRILL-DOWN PANEL ────────────────────────────────── */
+  .drill-panel {
+    border-top: 2px solid var(--coral);
+    background: white;
+    padding: 0 0 4px;
+  }
+  .drill-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .drill-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .drill-count {
+    font-size: 10px;
+    color: var(--ink-mute);
+    background: var(--paper-2);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .drill-close {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-mute);
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    letter-spacing: 0.03em;
+    transition: color 0.1s;
+  }
+  .drill-close:hover { color: var(--ink); }
+  .drill-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .drill-table th {
+    padding: 7px 20px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    background: var(--paper);
+  }
+  .drill-table th.num { text-align: right; }
+  .drill-table td {
+    padding: 9px 20px;
+    border-bottom: 1px solid var(--paper-2);
+    color: var(--ink);
+  }
+  .drill-table td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .drill-table td.drill-cliente { font-weight: 600; }
+  .drill-table td.drill-status { color: var(--ink-mute); font-size: 11px; }
+  .drill-table tr:last-child td { border-bottom: none; }
+  .drill-table tbody tr:hover td { background: var(--paper); }
+
   .history-section {
     border-top: 1px solid var(--line);
     background: white;
