@@ -1,53 +1,24 @@
+  /* Fonte dos tokens vem do tokens.css (Design System igual.com) */
+  @import url('./tokens.css');
+
   :root {
-    /* ── Design System Tokens — igual.com ───────────────── */
-    --goiaba-50: #FCF2EE; --goiaba-100: #F6E5DE; --goiaba-200: #F4CAB8;
-    --goiaba-500: #E37B5A; --goiaba-600: #B66248; --goiaba-700: #884A36;
-
-    --azul-50: #F6F8FD; --azul-100: #EEF1FA; --azul-200: #DDE3F5;
-    --azul-500: #A9B9E7; --azul-600: #8794B9;
-
-    --black-400: #908F94; --black-500: #78777D; --black-600: #605F66;
-    --black-700: #48474F; --black-800: #303038; --black-900: #1E1E24;
-
-    --offwhite-50: #F0EFEB; --offwhite-75: #E4E3DF;
-    --offwhite-100: #D8D7D3; --offwhite-200: #C0BFBC;
-
-    --abacate-50: #F7FBF2; --abacate-500: #ACBA7E;
-    --abacate-600: #8A9565; --abacate-700: #67704C;
-
-    --gema-100: #FEF6E0; --gema-500: #FBD266; --gema-600: #C9A852; --gema-700: #977E3D;
-
-    /* ── Semânticas ─────────────────────────────────────── */
-    --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
-    --font-body:    'Inter', Helvetica, Arial, sans-serif;
-
-    --radius-sm:   4px;
-    --radius-md:   8px;
-    --radius-lg:   12px;
-
-    --shadow-sm:   0 2px 8px rgba(30,30,36,0.07);
-    --shadow-md:   0 4px 16px rgba(30,30,36,0.10);
-
-    --duration-fast:   100ms;
-    --duration-normal: 200ms;
-    --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
-
-    /* ── App aliases → tokens ───────────────────────────── */
-    --coral:      var(--goiaba-500);
+    /* ── App aliases → Design System tokens ─────────────── */
+    --coral:      var(--color-primary);
     --coral-soft: rgba(227,123,90,0.08);
     --coral-line: rgba(227,123,90,0.25);
-    --blue:       var(--azul-500);
+    --blue:       var(--color-secondary);
     --blue-soft:  rgba(169,185,231,0.08);
-    --ink:        var(--black-900);
-    --ink-soft:   var(--black-700);
-    --ink-mute:   var(--black-500);
-    --paper:      var(--offwhite-50);
-    --paper-2:    var(--offwhite-75);
+    --ink:        var(--text-primary);
+    --ink-soft:   var(--text-secondary);
+    --ink-mute:   var(--text-muted);
+    --paper:      var(--bg-page);
+    --paper-2:    var(--bg-inset);
     --line:       var(--offwhite-100);
     --green:      var(--abacate-700);
     --green-soft: rgba(103,112,76,0.10);
     --amber:      var(--gema-600);
+
+    /* Shadows e motion ficam aqui pois tokens.css já os define */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -536,9 +507,8 @@
   }
 
   .result-value {
-    font-family: var(--font-display);
     font-size: 36px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--coral);
     letter-spacing: -0.02em;
     line-height: 1;
@@ -705,7 +675,6 @@
   }
 
   .info-value {
-    font-family: var(--font-display);
     font-size: 18px;
     font-weight: 700;
     color: var(--ink);
@@ -1275,9 +1244,8 @@
   }
 
   .gap-box-val {
-    font-family: var(--font-display);
     font-size: 38px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--coral);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
@@ -1688,7 +1656,6 @@
   }
 
   .kpi-value {
-    font-family: var(--font-display);
     font-size: 21px;
     font-weight: 700;
     color: var(--ink);
@@ -1961,7 +1928,6 @@
   }
 
   .metas-hero-vals {
-    font-family: var(--font-display);
     font-size: 20px;
     font-weight: 700;
     color: var(--ink-soft);
