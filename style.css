@@ -1,24 +1,28 @@
-  /* Fonte dos tokens vem do tokens.css (Design System igual.com) */
-  @import url('./tokens.css');
-
   :root {
-    /* ── App aliases → Design System tokens ─────────────── */
-    --coral:      var(--color-primary);
-    --coral-soft: rgba(227,123,90,0.08);
-    --coral-line: rgba(227,123,90,0.25);
-    --blue:       var(--color-secondary);
-    --blue-soft:  rgba(169,185,231,0.08);
-    --ink:        var(--text-primary);
-    --ink-soft:   var(--text-secondary);
-    --ink-mute:   var(--text-muted);
-    --paper:      var(--bg-page);
-    --paper-2:    var(--bg-inset);
-    --line:       var(--offwhite-100);
-    --green:      var(--abacate-700);
-    --green-soft: rgba(103,112,76,0.10);
-    --amber:      var(--gema-600);
+    /* Paleta Igual — Goiaba / Azul / Black / Off-white */
+    --coral: #E37B5A;
+    --coral-soft: #E37B5A14;
+    --coral-line: #E37B5A40;
+    --blue: #A9B9E7;
+    --blue-soft: #A9B9E714;
+    --ink: #1E1E24;
+    --ink-soft: #4E4E58;
+    --ink-mute: #8E8E9C;
+    --paper: #F0EFEB;
+    --paper-2: #E8E7E2;
+    --line: #DDDBD5;
+    --green: #5A8F6B;
+    --green-soft: #5A8F6B15;
+    --amber: #C9933B;
 
-    /* Shadows e motion ficam aqui pois tokens.css já os define */
+    --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    --font-body:    'Inter', Helvetica, Arial, sans-serif;
+    --radius-sm: 4px;  --radius-md: 8px;
+    --shadow-sm: 0 2px 8px rgba(30,30,36,0.07);
+    --shadow-lg: 0 8px 32px rgba(30,30,36,0.13);
+    --duration-fast:   100ms;
+    --duration-normal: 200ms;
+    --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -329,11 +333,8 @@
   /* ─── BLOCOS ───────────────────────────────────────── */
   .bloco {
     margin-bottom: 40px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
+    border: 2px solid var(--line);
     background: white;
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
   }
 
   .bloco-header {
@@ -1202,8 +1203,6 @@
     text-align: center;
     background: white;
     border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
   }
 
   .metas-callout-inner {
@@ -1641,8 +1640,6 @@
   .kpi-card {
     background: white;
     border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-sm);
     padding: 16px 20px;
   }
 
@@ -2044,10 +2041,7 @@
   .metas-bottom {
     background: white;
     border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
     margin-bottom: 40px;
-    overflow: hidden;
   }
 
   .metas-chart-wrap {
