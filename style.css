@@ -1748,6 +1748,27 @@
     letter-spacing: -0.02em;
   }
 
+  /* ─── CORNER LOGO ────────────────────────────────────── */
+  .corner-logo {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 50;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+
+  .corner-logo:hover { opacity: 0.85; }
+
+  .corner-logo-img {
+    height: 24px;
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .corner-logo { display: none; }
+  }
+
   /* ─── CHART TOOLTIP ──────────────────────────────────── */
   .chart-tooltip {
     position: fixed;
