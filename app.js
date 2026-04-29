@@ -1606,7 +1606,7 @@ function buildTrendText(weekRows) {
 
 function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   if (!weekRows.length) return '';
-  const W = 700, H = 140;
+  const W = 700, H = 150;
   const PAD = { top: 28, right: 82, bottom: 28, left: 62 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;

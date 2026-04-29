@@ -794,8 +794,8 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
-    max-height: 120px;
-    aspect-ratio: 700 / 100;
+    max-height: 180px;
+    aspect-ratio: 700 / 150;
     overflow: visible;
   }
 
@@ -2066,8 +2066,8 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 120px;
-    aspect-ratio: 700 / 100;
+    max-height: 180px;
+    aspect-ratio: 700 / 150;
     overflow: visible;
   }
 
@@ -2349,8 +2349,8 @@
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 120px;
-    aspect-ratio: 700 / 100;
+    max-height: 180px;
+    aspect-ratio: 700 / 150;
     overflow: visible;
   }
   .v2-trend-text {
