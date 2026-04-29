@@ -2263,65 +2263,68 @@
 
   /* ─── METAS V2 ─────────────────────────────────────────── */
 
-  /* Camada 1: síntese — padrão bloco do app, acento lateral colorido */
+  /* Camada 1 — faixa horizontal, 4 colunas de peso equilibrado */
   .v2-status-banner {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: repeat(4, 1fr);
     background: white;
     border: 1px solid var(--line);
     border-left: 4px solid var(--v2-sc, var(--line));
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
-  .v2-banner-main {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 20px 28px 20px 24px;
+  .v2-bc {
+    padding: 14px 18px;
     border-right: 1px solid var(--line);
-    min-width: 148px;
+  }
+  .v2-bc-end { border-right: none; }
+  .v2-bc-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    margin-bottom: 5px;
   }
   .v2-status-chip {
-    font-size: 9px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: 14px;
     font-weight: 700;
+    letter-spacing: 0.02em;
     color: var(--v2-sc, var(--ink-mute));
+    line-height: 1.2;
   }
   .v2-status-pct {
     font-family: var(--font-display);
-    font-size: 44px;
+    font-size: 28px;
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink));
   }
-  .v2-banner-side {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    padding: 20px 24px;
-  }
   .v2-status-vals {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--ink);
+    line-height: 1.5;
   }
-  .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 3px; }
-  .v2-status-gap { font-size: 12px; color: var(--ink-soft); }
+  .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 2px; }
+  .v2-status-gap { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
 
-  /* Camada 2: diagnóstico */
+  /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
     display: grid;
-    grid-template-columns: 1fr 208px;
-    gap: 16px;
-    margin-bottom: 16px;
+    grid-template-columns: 1fr 192px;
+    gap: 12px;
+    margin-bottom: 12px;
     align-items: start;
+  }
+  .v2-chart-col {
+    display: flex;
+    flex-direction: column;
   }
   .v2-chart-wrap {
     background: white;
     border: 1px solid var(--line);
-    padding: 16px 16px 8px;
+    padding: 12px 16px 6px;
   }
   .v2-chart-wrap svg {
     display: block;
@@ -2329,6 +2332,16 @@
     aspect-ratio: 700 / 140;
     overflow: visible;
   }
+  .v2-trend-text {
+    padding: 7px 16px;
+    font-size: 10px;
+    font-style: italic;
+    color: var(--ink-mute);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-top: none;
+  }
+  .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
   .v2-side-cards {
     display: flex;
     flex-direction: column;
@@ -2337,7 +2350,8 @@
     background: white;
     border: 1px solid var(--line);
     border-bottom: none;
-    padding: 20px;
+    padding: 13px 15px;
+    flex: 1;
   }
   .v2-card:last-child { border-bottom: 1px solid var(--line); }
   .v2-card-label {
@@ -2346,56 +2360,40 @@
     text-transform: uppercase;
     color: var(--ink-mute);
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .v2-card-val {
-    font-size: 22px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--coral);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
   .v2-goal-hit { color: var(--green) !important; }
   .v2-card-sub {
     font-size: 10px;
     color: var(--ink-mute);
-    margin-top: 4px;
-  }
-  .v2-card-ref {
-    font-size: 10px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--line);
+    margin-top: 3px;
+    line-height: 1.4;
   }
 
-  /* Camada 3: detalhe */
+  /* Camada 3 — detalhe: nível tipográfico mínimo, contraste reduzido */
   .v2-detail {
     background: white;
     border: 1px solid var(--line);
     margin-bottom: 40px;
   }
-  .v2-trend-text {
-    padding: 10px 20px;
-    font-size: 11px;
-    font-style: italic;
-    color: var(--ink-soft);
-    background: var(--paper-2);
-    border-bottom: 1px solid var(--line);
-  }
-  .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
   .v2-table-scroll { overflow-x: auto; }
   .v2-tbl {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
+    font-size: 11px;
   }
   .v2-tbl th {
-    padding: 9px 16px;
-    font-size: 10px;
+    padding: 7px 13px;
+    font-size: 9px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-mute);
@@ -2407,33 +2405,33 @@
   }
   .v2-tbl th.r { text-align: right; }
   .v2-tbl td {
-    padding: 10px 16px;
+    padding: 7px 13px;
     border-bottom: 1px solid var(--paper-2);
-    color: var(--ink-soft);
+    color: var(--ink-mute);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
   .v2-tbl td.r { text-align: right; }
-  .v2-wk { font-weight: 700; color: var(--ink); font-size: 12px; }
+  .v2-tbl td.v-pos { color: var(--green); font-weight: 700; }
+  .v2-tbl td.v-neg { color: var(--coral); font-weight: 700; }
+  .v2-wk { font-weight: 600; color: var(--ink-soft); font-size: 11px; }
   .v2-tbl tr:last-child td { border-bottom: none; }
   .v2-tbl tr.wk-current td { background: var(--paper); }
-  .v2-tbl tr.wk-future td { color: var(--ink-mute); opacity: 0.6; }
+  .v2-tbl tr.wk-future td { opacity: 0.45; }
   .v2-tbl tbody tr:hover td { background: var(--paper); }
-  /* Indicadores de linha — borda esquerda colorida por semana */
   .v2-tbl tr.v2-row-ok    td:first-child { border-left: 3px solid var(--green); }
   .v2-tbl tr.v2-row-behind td:first-child { border-left: 3px solid var(--coral); }
   .v2-tbl tr.wk-current   td:first-child { border-left: 3px solid var(--amber); }
   .v2-tbl tr.wk-future    td:first-child { border-left: 3px solid var(--line); }
-  /* Chip de tendência na coluna VAR.% */
   .v2-ti-up, .v2-ti-dn, .v2-ti-flat {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 16px;
-    font-size: 10px;
+    width: 15px;
+    height: 13px;
+    font-size: 9px;
     font-weight: 700;
-    margin-left: 5px;
+    margin-left: 4px;
     vertical-align: middle;
     border-radius: 2px;
   }
@@ -2448,9 +2446,10 @@
     .v2-card:not(:last-child) { border-right: 1px solid var(--line); }
   }
   @media (max-width: 700px) {
-    .v2-status-banner { grid-template-columns: 1fr; }
-    .v2-banner-main { border-right: none; border-bottom: 1px solid var(--line); }
-    .v2-status-pct { font-size: 36px; }
+    .v2-status-banner { grid-template-columns: repeat(2, 1fr); }
+    .v2-bc:nth-child(2) { border-right: none; }
+    .v2-bc:nth-child(3) { border-top: 1px solid var(--line); }
+    .v2-bc-end { border-top: 1px solid var(--line); }
     .v2-side-cards { flex-direction: column; }
     .v2-card { border-right: 1px solid var(--line) !important; }
   }

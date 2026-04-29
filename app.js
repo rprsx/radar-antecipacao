@@ -1781,18 +1781,23 @@ function updateMetasV2View() {
   // ── Camada 2: gráfico + cards ──
   document.getElementById('v2ChartArea').innerHTML = renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth);
 
-  const faltaEl = document.getElementById('v2FaltaVal');
-  const diaEl   = document.getElementById('v2DiaVal');
-  const diaSubEl = document.getElementById('v2DiaSub');
-  const diaRefEl = document.getElementById('v2DiaRef');
+  const faltaEl   = document.getElementById('v2FaltaVal');
+  const diaEl     = document.getElementById('v2DiaVal');
+  const diaSubEl  = document.getElementById('v2DiaSub');
+  const avg3El    = document.getElementById('v2Avg3Val');
+  const avg3SubEl = document.getElementById('v2Avg3Sub');
   if (falta == null) {
     faltaEl.textContent = '—'; faltaEl.className = 'v2-card-val';
     diaEl.textContent   = '—'; diaEl.className   = 'v2-card-val';
-    diaSubEl.textContent = ''; diaRefEl.innerHTML = '';
+    diaSubEl.textContent = '';
+    avg3El.textContent  = '—'; avg3El.className  = 'v2-card-val';
+    avg3SubEl.textContent = ''; avg3SubEl.style.color = '';
   } else if (falta === 0) {
     faltaEl.textContent = 'Meta batida!'; faltaEl.className = 'v2-card-val v2-goal-hit';
     diaEl.textContent   = 'Meta batida!'; diaEl.className   = 'v2-card-val v2-goal-hit';
-    diaSubEl.textContent = ''; diaRefEl.innerHTML = '';
+    diaSubEl.textContent = '';
+    avg3El.textContent  = '—'; avg3El.className  = 'v2-card-val';
+    avg3SubEl.textContent = ''; avg3SubEl.style.color = '';
   } else {
     faltaEl.textContent = `R$ ${fmtBRL(falta)}`; faltaEl.className = 'v2-card-val';
     diaEl.textContent   = porDia != null ? `R$ ${fmtBRL(porDia)}` : '—'; diaEl.className = 'v2-card-val';
@@ -1800,11 +1805,12 @@ function updateMetasV2View() {
     if (isCurrentMonth && porDia != null) {
       const avg3 = last3BizDaysAvg(metasYear, metasMonth);
       if (avg3 !== null) {
-        const ok  = avg3 >= porDia;
-        const col = ok ? 'var(--green)' : 'var(--coral)';
-        diaRefEl.innerHTML = `Média últimos 3 d.u.: <strong style="color:${col}">R$ ${fmtBRL(avg3)}</strong><br><span style="color:${col}">${ok ? '↑ acima' : '↓ abaixo'} do ritmo necessário</span>`;
-      } else { diaRefEl.innerHTML = ''; }
-    } else { diaRefEl.innerHTML = ''; }
+        const ok = avg3 >= porDia;
+        avg3El.textContent = `R$ ${fmtBRL(avg3)}`; avg3El.className = 'v2-card-val' + (ok ? ' v2-goal-hit' : '');
+        avg3SubEl.textContent = ok ? '↑ acima do ritmo necessário' : '↓ abaixo do ritmo necessário';
+        avg3SubEl.style.color = ok ? 'var(--green)' : 'var(--coral)';
+      } else { avg3El.textContent = '—'; avg3El.className = 'v2-card-val'; avg3SubEl.textContent = ''; avg3SubEl.style.color = ''; }
+    } else { avg3El.textContent = '—'; avg3El.className = 'v2-card-val'; avg3SubEl.textContent = ''; avg3SubEl.style.color = ''; }
   }
 
   // ── Camada 3: texto interpretativo + tabela ──
@@ -1822,9 +1828,10 @@ function updateMetasV2View() {
     const varPctStr = varPct != null ? (varPct >= 0 ? '+' : '') + varPct.toFixed(0) + '%' : '—';
 
     let trendIcon = '';
-    if (idx > 0 && varPct !== null) {
+    if (idx > 0 && varPct !== null && r.status !== 'future') {
       const prev = weekRows[idx - 1];
-      const prevVP = prev.accumMeta > 0 ? ((prev.accumReal - prev.accumMeta) / prev.accumMeta) * 100 : null;
+      const prevVP = prev.accumMeta > 0 && prev.status !== 'future'
+        ? ((prev.accumReal - prev.accumMeta) / prev.accumMeta) * 100 : null;
       if (prevVP !== null) {
         trendIcon = varPct > prevVP ? '<span class="v2-ti-up">↑</span>'
                   : varPct < prevVP ? '<span class="v2-ti-dn">↓</span>'
