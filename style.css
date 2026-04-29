@@ -1186,7 +1186,7 @@
   }
 
   .view-title {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-size: 19px;
     font-weight: 800;
     letter-spacing: -0.01em;
@@ -1305,7 +1305,7 @@
   }
 
   .sidebar-logo {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: 800;
     text-transform: uppercase;
@@ -1770,7 +1770,7 @@
   }
 
   .metas-month-label {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -2292,7 +2292,7 @@
     line-height: 1.2;
   }
   .v2-status-pct {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-size: 28px;
     font-weight: 800;
     line-height: 1;
