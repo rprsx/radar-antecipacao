@@ -794,6 +794,7 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
+    max-height: 160px;
     aspect-ratio: 700 / 140;
     overflow: visible;
   }
@@ -2065,6 +2066,7 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
+    max-height: 160px;
     aspect-ratio: 700 / 140;
     overflow: visible;
   }
@@ -2275,49 +2277,51 @@
     margin-bottom: 12px;
   }
   .v2-bc {
-    padding: 14px 18px;
+    padding: 16px 24px;
     border-right: 1px solid var(--line);
   }
   .v2-bc-end { border-right: none; }
   .v2-bc-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    font-weight: 700;
+    font-weight: 500;
     margin-bottom: 5px;
   }
   .v2-status-chip {
-    font-size: 14px;
+    font-size: 28px;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    color: var(--v2-sc, var(--ink-mute));
-    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--v2-sc, var(--ink));
+    line-height: 1.1;
   }
   .v2-status-pct {
-    font-family: var(--font-display);
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink));
   }
   .v2-status-vals {
     font-size: 13px;
-    font-weight: 600;
-    color: var(--ink);
+    font-weight: 400;
+    color: var(--ink-soft);
     line-height: 1.5;
   }
   .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 2px; }
-  .v2-status-gap { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .v2-status-gap { font-size: 28px; font-weight: 700; color: var(--red); }
 
-  /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
-  .v2-diagnosis {
+  /* Cards em linha horizontal entre banner e gráfico */
+  .v2-cards-row {
     display: grid;
-    grid-template-columns: 1fr 192px;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
     margin-bottom: 12px;
-    align-items: start;
+  }
+  /* Camada 2 — diagnóstico: gráfico full-width */
+  .v2-diagnosis {
+    margin-bottom: 12px;
   }
   .v2-chart-col {
     display: flex;
@@ -2327,11 +2331,13 @@
     background: white;
     border: 1px solid var(--line);
     padding: 12px 16px 6px;
+    max-width: 100%;
   }
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 140;
+    max-height: 160px;
+    aspect-ratio: 700 / 120;
     overflow: visible;
   }
   .v2-trend-text {
@@ -2350,24 +2356,22 @@
   }
   .v2-card {
     background: white;
-    border: 1px solid var(--line);
-    border-bottom: none;
-    padding: 13px 15px;
-    flex: 1;
+    padding: 16px 24px;
+    border-right: 1px solid var(--line);
   }
-  .v2-card:last-child { border-bottom: 1px solid var(--line); }
+  .v2-card:last-child { border-right: none; }
   .v2-card-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
+    font-size: 10px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    font-weight: 700;
+    font-weight: 500;
     margin-bottom: 6px;
   }
   .v2-card-val {
-    font-size: 17px;
+    font-size: 21px;
     font-weight: 700;
-    color: var(--coral);
+    color: var(--red);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
     line-height: 1;
@@ -2375,7 +2379,7 @@
   }
   .v2-goal-hit { color: var(--green) !important; }
   .v2-card-sub {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-mute);
     margin-top: 3px;
     line-height: 1.4;
