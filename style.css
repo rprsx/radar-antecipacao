@@ -2317,7 +2317,7 @@
   /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
     display: grid;
-    grid-template-columns: 1fr 1000px;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 12px;
     align-items: start;
@@ -2347,48 +2347,13 @@
     border-top: none;
   }
   .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
-  .v2-side-cards {
-    display: flex;
-    flex-direction: column;
-  }
-  .v2-card {
-    background: white;
-    border: 1px solid var(--line);
-    border-bottom: none;
-    padding: 13px 15px;
-    flex: 1;
-  }
-  .v2-card:last-child { border-bottom: 1px solid var(--line); }
-  .v2-card-label {
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .v2-card-val {
-    font-size: clamp(12px, 1.18vw, 17px);
-    font-weight: 700;
-    color: var(--coral);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    margin-bottom: 3px;
-  }
   .v2-goal-hit { color: var(--green) !important; }
-  .v2-card-sub {
-    font-size: 10px;
-    color: var(--ink-mute);
-    margin-top: 3px;
-    line-height: 1.4;
-  }
 
-  /* Camada 3 — detalhe: nível tipográfico mínimo, contraste reduzido */
+  /* Camada 3 — tabela, agora coluna direita do v2-diagnosis */
   .v2-detail {
     background: white;
     border: 1px solid var(--line);
-    margin-bottom: 40px;
+    min-width: 0;
   }
   .v2-table-scroll { overflow-x: auto; }
   .v2-tbl {
@@ -2446,12 +2411,7 @@
 
   @media (max-width: 1100px) {
     .v2-diagnosis { grid-template-columns: 1fr; }
-    .v2-side-cards { flex-direction: row; }
-    .v2-card { flex: 1; border-bottom: 1px solid var(--line); border-right: none; }
-    .v2-card:not(:last-child) { border-right: 1px solid var(--line); }
   }
   @media (max-width: 700px) {
     .v2-status-banner { grid-template-columns: repeat(2, 1fr); }
-    .v2-side-cards { flex-direction: column; }
-    .v2-card { border-right: 1px solid var(--line) !important; }
   }

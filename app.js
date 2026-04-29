@@ -1772,37 +1772,6 @@ function updateMetasV2View() {
   // ── Camada 2: gráfico + cards ──
   document.getElementById('v2ChartArea').innerHTML = renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth);
 
-  const faltaEl   = document.getElementById('v2FaltaVal');
-  const diaEl     = document.getElementById('v2DiaVal');
-  const diaSubEl  = document.getElementById('v2DiaSub');
-  const avg3El    = document.getElementById('v2Avg3Val');
-  const avg3SubEl = document.getElementById('v2Avg3Sub');
-  if (falta == null) {
-    faltaEl.textContent = '—'; faltaEl.className = 'v2-card-val';
-    diaEl.textContent   = '—'; diaEl.className   = 'v2-card-val';
-    diaSubEl.textContent = '';
-    avg3El.textContent  = '—'; avg3El.className  = 'v2-card-val';
-    avg3SubEl.textContent = ''; avg3SubEl.style.color = '';
-  } else if (falta === 0) {
-    faltaEl.textContent = 'Meta batida!'; faltaEl.className = 'v2-card-val v2-goal-hit';
-    diaEl.textContent   = 'Meta batida!'; diaEl.className   = 'v2-card-val v2-goal-hit';
-    diaSubEl.textContent = '';
-    avg3El.textContent  = '—'; avg3El.className  = 'v2-card-val';
-    avg3SubEl.textContent = ''; avg3SubEl.style.color = '';
-  } else {
-    faltaEl.textContent = `R$ ${fmtBRL(falta)}`; faltaEl.className = 'v2-card-val';
-    diaEl.textContent   = porDia != null ? `R$ ${fmtBRL(porDia)}` : '—'; diaEl.className = 'v2-card-val';
-    diaSubEl.textContent = bizDays > 0 ? `${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} restante${bizDays !== 1 ? 's' : ''}` : 'Mês encerrado';
-    if (isCurrentMonth && porDia != null) {
-      const avg3 = last3BizDaysAvg(metasYear, metasMonth);
-      if (avg3 !== null) {
-        const ok = avg3 >= porDia;
-        avg3El.textContent = `R$ ${fmtBRL(avg3)}`; avg3El.className = 'v2-card-val' + (ok ? ' v2-goal-hit' : '');
-        avg3SubEl.textContent = ok ? '↑ acima do ritmo necessário' : '↓ abaixo do ritmo necessário';
-        avg3SubEl.style.color = ok ? 'var(--green)' : 'var(--coral)';
-      } else { avg3El.textContent = '—'; avg3El.className = 'v2-card-val'; avg3SubEl.textContent = ''; avg3SubEl.style.color = ''; }
-    } else { avg3El.textContent = '—'; avg3El.className = 'v2-card-val'; avg3SubEl.textContent = ''; avg3SubEl.style.color = ''; }
-  }
 
   // ── Camada 3: texto interpretativo + tabela ──
   const trendText = buildTrendText(weekRows);
