@@ -1624,15 +1624,34 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     if (r.accumReal > 0) realPath += `${(!realPath || weekRows[i-1]?.accumReal <= 0) ? 'M' : 'L'} ${xP(i).toFixed(1)} ${yS(r.accumReal).toFixed(1)} `;
   });
 
+  const makeTip = r => {
+    const real = r.accumReal >= 1000 ? `R$${(r.accumReal/1000).toFixed(0)}k` : `R$${Math.round(r.accumReal)}`;
+    const meta = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
+    const pct  = r.accumMeta > 0 ? Math.round((r.accumReal / r.accumMeta) * 100) : null;
+    const pctStr = pct != null ? ` · ${pct}% da meta` : '';
+    return `sem ${r.week} · real ${real} / meta ${meta}${pctStr}`;
+  };
+
   const dots = weekRows.map((r, i) => {
-    if (r.accumReal <= 0) return '';
-    const x = xP(i), y = yS(r.accumReal);
-    const dotR = r.status === 'current' ? 3.5 : 2.5;
-    const col  = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#E37B5A';
-    const tip  = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}`;
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="${col}" stroke="white" stroke-width="1.3"/>
+    const x = xP(i);
+    let out = '';
+    if (r.accumReal > 0) {
+      const y = yS(r.accumReal);
+      const dotR = r.status === 'current' ? 3.5 : 2.5;
+      const col  = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#E37B5A';
+      const tip  = makeTip(r);
+      out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="${col}" stroke="white" stroke-width="1.3"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+    }
+    if (r.accumMeta > 0) {
+      const y = yS(r.accumMeta);
+      const tip = makeTip(r);
+      out += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2" fill="#D0CCC6" stroke="white" stroke-width="0.8"/>
+<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+    }
+    return out;
   }).join('');
 
   const realLabels = weekRows.map((r, i) => {
@@ -1641,12 +1660,6 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     const v = r.accumReal >= 1000 ? `R$${(r.accumReal/1000).toFixed(0)}k` : `R$${Math.round(r.accumReal)}`;
     const col = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#E37B5A';
     return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="6" font-weight="600" fill="${col}" text-anchor="middle" opacity="1">${v}</text>`;
-  }).join('');
-  const metaLabels = weekRows.map((r, i) => {
-    if (r.accumMeta <= 0) return '';
-    const x = xP(i), y = yS(r.accumMeta);
-    const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="4.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
@@ -1661,11 +1674,13 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     <text x="${lx+90}" y="${ly+3}" font-size="5" fill="#D0CCC6">acum. meta</text>
   </g>`;
 
+  const hint = `<text x="${W - PAD.right}" y="8" font-size="4" fill="#8E8E9C" text-anchor="end" opacity="0.7">passe o mouse nos pontos para ver real vs meta</text>`;
+
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}
     ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
-    ${dots}${realLabels}${metaLabels}${xLabels}${legend}
+    ${dots}${realLabels}${xLabels}${legend}${hint}
   </svg>`;
 }
 
