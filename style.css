@@ -2273,40 +2273,41 @@
     margin-bottom: 12px;
   }
   .v2-bc {
-    padding: 14px 18px;
+    padding: 16px 20px;
     border-right: 1px solid var(--line);
   }
   .v2-bc-end { border-right: none; }
   .v2-bc-label {
-    font-size: 20px;
-    letter-spacing: 0.02em;
-    color: var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
   .v2-status-chip {
-    font-size: 28px;
+    font-size: 21px;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink-mute));
-    line-height: 1.2;
+    line-height: 1;
   }
   .v2-status-pct {
-    font-family: var(--font-body);
-    font-size: 28px;
-    font-weight: 800;
+    font-size: 21px;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink));
   }
   .v2-status-vals {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 21px;
+    font-weight: 700;
     color: var(--ink);
-    line-height: 1.5;
+    line-height: 1;
+    letter-spacing: -0.02em;
   }
   .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 2px; }
-  .v2-status-gap { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+  .v2-status-gap { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--ink-soft); }
 
   /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
