@@ -1678,7 +1678,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}
-    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none" opacity="0.45"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
     ${dots}${realLabels}${xLabels}${legend}${hint}
   </svg>`;
