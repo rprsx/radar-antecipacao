@@ -2260,3 +2260,157 @@
     .metas-hero-vals { font-size: 15px; }
     .metas-callout { padding: 4px 16px; }
   }
+
+  /* ─── METAS V2 ─────────────────────────────────────────── */
+
+  /* Camada 1: banner de síntese */
+  .v2-status-banner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 28px;
+    border-left: 5px solid var(--v2-sc, var(--ink-mute));
+    background: var(--v2-sb, var(--paper-2));
+    margin-bottom: 16px;
+  }
+  .v2-banner-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 100px;
+  }
+  .v2-status-chip {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--v2-sc, var(--ink-mute));
+  }
+  .v2-status-pct {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--v2-sc, var(--ink));
+  }
+  .v2-banner-side { flex: 1; }
+  .v2-status-vals {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .v2-of { font-weight: 400; color: var(--ink-mute); }
+  .v2-status-gap { font-size: 12px; color: var(--ink-soft); }
+
+  /* Camada 2: diagnóstico */
+  .v2-diagnosis {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: start;
+  }
+  .v2-chart-wrap svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: 700 / 220;
+    overflow: visible;
+  }
+  .v2-side-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .v2-card {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 16px;
+  }
+  .v2-card-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .v2-card-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .v2-goal-hit { color: var(--green); }
+  .v2-card-sub {
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+  }
+  .v2-card-ref {
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* Camada 3: detalhe */
+  .v2-detail {
+    background: white;
+    border: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .v2-trend-text {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
+  .v2-table-scroll { overflow-x: auto; }
+  .v2-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .v2-tbl th {
+    padding: 7px 14px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .v2-tbl th.r { text-align: right; }
+  .v2-tbl td {
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--paper-2);
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .v2-tbl td.r { text-align: right; color: var(--ink-soft); }
+  .v2-wk { font-weight: 600; color: var(--ink); }
+  .v2-tbl tr:last-child td { border-bottom: none; }
+  .v2-tbl tr.wk-current td { background: var(--paper); }
+  .v2-tbl tr.wk-future td { color: var(--ink-mute); }
+  .v2-tbl tbody tr:hover td { background: var(--paper); }
+  .v2-ti-up   { color: var(--green);    font-weight: 700; margin-left: 3px; font-size: 10px; }
+  .v2-ti-dn   { color: var(--coral);    font-weight: 700; margin-left: 3px; font-size: 10px; }
+  .v2-ti-flat { color: var(--ink-mute); margin-left: 3px; font-size: 10px; }
+
+  @media (max-width: 1024px) {
+    .v2-diagnosis { grid-template-columns: 1fr; }
+    .v2-side-cards { flex-direction: row; }
+    .v2-card { flex: 1; }
+  }

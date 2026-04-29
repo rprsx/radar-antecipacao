@@ -24,6 +24,7 @@
       <div class="sidebar-section-label">📋 Visualizações</div>
       <button class="sidebar-item active" data-tab="radar">📊 Operação</button>
       <button class="sidebar-item" data-tab="metas">🎯 Metas</button>
+      <button class="sidebar-item" data-tab="metas2">✦ Metas v2</button>
     </nav>
     <div class="sidebar-footer">
       <div id="syncBar" class="sync-bar hidden">
@@ -233,6 +234,73 @@
       </div>
 
     </div>
+
+    <!-- METAS V2 VIEW -->
+    <div id="viewMetasV2" style="display:none">
+
+      <div class="view-header">
+        <div class="view-title">✦ Metas — nova hierarquia</div>
+      </div>
+
+      <div class="metas-topbar">
+        <div class="metas-nav">
+          <button class="ghost metas-nav-btn" id="v2PrevMonth">&#9664;</button>
+          <span class="metas-month-label" id="v2MonthLabel">—</span>
+          <button class="ghost metas-nav-btn" id="v2NextMonth">&#9654;</button>
+        </div>
+      </div>
+
+      <!-- CAMADA 1: síntese -->
+      <div id="v2StatusBanner" class="v2-status-banner">
+        <div class="v2-banner-main">
+          <div id="v2StatusChip" class="v2-status-chip">—</div>
+          <div id="v2StatusPct" class="v2-status-pct">—</div>
+        </div>
+        <div class="v2-banner-side">
+          <div id="v2StatusVals" class="v2-status-vals">—</div>
+          <div id="v2StatusGap" class="v2-status-gap"></div>
+        </div>
+      </div>
+
+      <!-- CAMADA 2: diagnóstico -->
+      <div class="v2-diagnosis">
+        <div class="v2-chart-wrap" id="v2ChartArea"></div>
+        <div class="v2-side-cards">
+          <div class="v2-card">
+            <div class="v2-card-label">Faltam para a meta</div>
+            <div class="v2-card-val" id="v2FaltaVal">—</div>
+          </div>
+          <div class="v2-card">
+            <div class="v2-card-label">Necessário por dia</div>
+            <div class="v2-card-val" id="v2DiaVal">—</div>
+            <div class="v2-card-sub" id="v2DiaSub"></div>
+            <div class="v2-card-ref" id="v2DiaRef"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAMADA 3: detalhe -->
+      <div class="v2-detail">
+        <div id="v2TrendText" class="v2-trend-text" style="display:none"></div>
+        <div class="v2-table-scroll">
+          <table class="v2-tbl">
+            <thead>
+              <tr>
+                <th>Semana</th>
+                <th class="r">Resultado</th>
+                <th class="r">Meta</th>
+                <th class="r">Acum. Real</th>
+                <th class="r">Acum. Meta</th>
+                <th class="r">Var. Acum.</th>
+                <th class="r">Var. %</th>
+              </tr>
+            </thead>
+            <tbody id="v2Body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- viewMetasV2 -->
 
   </main>
 

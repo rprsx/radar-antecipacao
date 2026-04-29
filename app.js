@@ -1070,6 +1070,7 @@ async function loadMetasFromAPI() {
       goalsFromAPI[`${ano}_${mes}`] = { mensal: valor, sem: sem || [] };
     });
     updateMetasView();
+    if (_activeTab === 'metas2') updateMetasV2View();
   } catch(e) {
     console.warn('Falha ao carregar metas da API', e);
   }
@@ -1546,17 +1547,304 @@ function hideChartTip() {
 
 
 // ─── TAB SWITCHING ───────────────────────────────────────
+let _activeTab = 'radar';
 function switchTab(tab) {
+  _activeTab = tab;
   document.querySelectorAll('.sidebar-item[data-tab]').forEach(b =>
     b.classList.toggle('active', b.dataset.tab === tab)
   );
-  const isRadar = tab === 'radar';
-  document.getElementById('radarHeader').style.display = isRadar ? 'block' : 'none';
+  const isRadar  = tab === 'radar';
+  const isMetas2 = tab === 'metas2';
+  document.getElementById('radarHeader').style.display   = isRadar  ? 'block' : 'none';
   document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
   document.getElementById('kpiRow').classList.toggle('visible', isRadar);
-  document.getElementById('blocoMain').style.display  = isRadar ? 'block' : 'none';
-  document.getElementById('viewMetas').style.display  = isRadar ? 'none'  : 'block';
-  if (!isRadar) updateMetasView();
+  document.getElementById('blocoMain').style.display     = isRadar  ? 'block' : 'none';
+  document.getElementById('viewMetas').style.display     = (tab === 'metas') ? 'block' : 'none';
+  document.getElementById('viewMetasV2').style.display   = isMetas2 ? 'block' : 'none';
+  if (tab === 'metas')  updateMetasView();
+  if (isMetas2)         updateMetasV2View();
+}
+
+// ─── METAS V2 ────────────────────────────────────────────
+
+function last3BizDaysAvg(year, month) {
+  const holidays = brHolidays(year);
+  const isWorkday = d => {
+    if (d.getDay() === 0 || d.getDay() === 6) return false;
+    return !holidays.has(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+  };
+  const cursor = new Date(); cursor.setHours(0, 0, 0, 0);
+  const bizDays = [];
+  while (bizDays.length < 3) {
+    if (cursor.getFullYear() !== year || cursor.getMonth() + 1 !== month) break;
+    if (isWorkday(cursor)) bizDays.push(new Date(cursor));
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  if (!bizDays.length) return null;
+  const isPago = d => norm(d.status_fechamento).includes('pago');
+  const total = allDealsData
+    .filter(deal => isPago(deal) && deal.data_fechamento &&
+      bizDays.some(day => sameDay(deal.data_fechamento, day)))
+    .reduce((s, deal) => s + deal.desagio_total, 0);
+  return total / bizDays.length;
+}
+
+function buildTrendText(weekRows) {
+  const past = weekRows.filter(w => w.status === 'past' && w.meta > 0);
+  if (past.length < 2) return null;
+  const varPcts = past.map(w => w.accumMeta > 0 ? ((w.accumReal - w.accumMeta) / w.accumMeta) * 100 : null);
+  const last = varPcts[varPcts.length - 1];
+  const prev = varPcts.length > 1 ? varPcts[varPcts.length - 2] : null;
+  const lastRes = past[past.length - 1].resultado;
+  const prevRes = past.length > 1 ? past[past.length - 2].resultado : null;
+  if (last !== null && last >= 0) {
+    return prev !== null && last > prev
+      ? 'Atingimento acumulado acima da meta e em aceleração nas últimas semanas.'
+      : 'Atingimento acumulado dentro ou acima da meta.';
+  }
+  if (last !== null && prev !== null) {
+    if (last > prev) return `Tendência de recuperação nas últimas ${Math.min(past.length, 3)} semanas — variação acumulada melhorando.`;
+    if (last < prev) return 'Variação acumulada piorando semana a semana — ritmo abaixo do necessário.';
+  }
+  if (prevRes !== null && lastRes > prevRes) return 'Resultado da última semana superior à anterior — sinal positivo de curto prazo.';
+  return null;
+}
+
+function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
+  if (!weekRows.length) return '';
+  const W = 700, H = 220;
+  const PAD = { top: 40, right: 82, bottom: 38, left: 62 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+  const allVals = [metaMensal, ...weekRows.map(r => r.accumReal), ...weekRows.map(r => r.accumMeta)].filter(v => v > 0);
+  if (!allVals.length) return '<div style="padding:20px;color:#8E8E9C;font-size:11px;text-align:center">Sem dados</div>';
+  const maxVal = Math.max(...allVals) * 1.08;
+  const yS = v => PAD.top + cH - (v / maxVal) * cH;
+  const xStep = weekRows.length > 1 ? cW / (weekRows.length - 1) : cW;
+  const xP = i => weekRows.length > 1 ? PAD.left + i * xStep : PAD.left + cW / 2;
+
+  const grid = [0, 0.25, 0.5, 0.75, 1].map(f => {
+    const y = PAD.top + cH - f * cH;
+    const lbl = (f * maxVal) >= 1000 ? `R$${((f * maxVal)/1000).toFixed(0)}k` : `R$${Math.round(f * maxVal)}`;
+    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#DDDBD5" stroke-width="0.6"/>
+            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" font-size="7" fill="#8E8E9C" text-anchor="end">${lbl}</text>`;
+  }).join('');
+
+  const barW = Math.min(cW / weekRows.length * 0.38, 16);
+  const bars = weekRows.map((r, i) => {
+    if (r.resultado <= 0 && r.status === 'future') return '';
+    if (r.resultado <= 0) return '';
+    const x = xP(i);
+    const bH = PAD.top + cH - yS(r.resultado);
+    const col = r.meta > 0 && r.resultado >= r.meta ? '#5A8F6B' : '#D37B5A';
+    const op  = r.meta > 0 && r.resultado >= r.meta ? '0.3' : '0.22';
+    const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}`;
+    return `<rect x="${(x-barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${col}" opacity="${op}" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+  }).join('');
+
+  let metaPath = '', realPath = '';
+  weekRows.forEach((r, i) => {
+    if (r.accumMeta > 0) metaPath += `${(!metaPath || weekRows[i-1]?.accumMeta <= 0) ? 'M' : 'L'} ${xP(i).toFixed(1)} ${yS(r.accumMeta).toFixed(1)} `;
+    if (r.accumReal > 0) realPath += `${(!realPath || weekRows[i-1]?.accumReal <= 0) ? 'M' : 'L'} ${xP(i).toFixed(1)} ${yS(r.accumReal).toFixed(1)} `;
+  });
+
+  const dots = weekRows.map((r, i) => {
+    if (r.accumReal <= 0) return '';
+    const x = xP(i), y = yS(r.accumReal);
+    const dotR = r.status === 'current' ? 3.5 : 2.5;
+    const col  = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#D37B5A';
+    const tip  = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="${col}" stroke="white" stroke-width="1.3"/>
+<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
+  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+  }).join('');
+
+  let todayEl = '';
+  if (isCurrentMonth) {
+    const ci = weekRows.findIndex(w => w.status === 'current');
+    if (ci >= 0) {
+      const dow = Math.min(Math.max(new Date().getDay() || 5, 1), 5);
+      const frac = (dow - 1) / 4;
+      const x0 = xP(ci);
+      const x1 = ci < weekRows.length - 1 ? xP(ci + 1) : x0 + xStep;
+      const xT = (x0 + frac * (x1 - x0)).toFixed(1);
+      todayEl = `<line x1="${xT}" y1="${PAD.top}" x2="${xT}" y2="${(PAD.top+cH).toFixed(1)}" stroke="#8E8E9C" stroke-width="0.8" stroke-dasharray="2.5,2"/>
+        <text x="${xT}" y="${(PAD.top-5).toFixed(1)}" font-size="6.5" fill="#8E8E9C" text-anchor="middle" font-weight="600">hoje</text>`;
+    }
+  }
+
+  const lastReal = [...weekRows].reverse().find(r => r.accumReal > 0);
+  const lastMeta = [...weekRows].reverse().find(r => r.accumMeta > 0);
+  let lbReal = '', lbMeta = '';
+  if (lastReal) {
+    const i = weekRows.indexOf(lastReal), x = xP(i), y = yS(lastReal.accumReal);
+    const v = lastReal.accumReal >= 1000 ? `R$${(lastReal.accumReal/1000).toFixed(0)}k` : `R$${Math.round(lastReal.accumReal)}`;
+    const col = lastReal.accumMeta > 0 && lastReal.accumReal >= lastReal.accumMeta ? '#5A8F6B' : '#D37B5A';
+    lbReal = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" font-weight="700" fill="${col}">${v}</text>`;
+  }
+  if (lastMeta) {
+    const i = weekRows.indexOf(lastMeta), x = xP(i), y = yS(lastMeta.accumMeta);
+    const v = lastMeta.accumMeta >= 1000 ? `R$${(lastMeta.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(lastMeta.accumMeta)}`;
+    lbMeta = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" fill="#8A847B">${v}</text>`;
+  }
+
+  const xLabels = weekRows.map((r, i) =>
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4E4E58" text-anchor="middle" font-weight="700">sem ${r.week}</text>`
+  ).join('');
+
+  const lx = PAD.left, ly = 16;
+  const legend = `
+    <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#D37B5A" stroke-width="1.6"/>
+    <text x="${lx+16}" y="${ly+3}" font-size="7" fill="#4E4E58">acum. real</text>
+    <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#8A847B" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="${lx+90}" y="${ly+3}" font-size="7" fill="#8A847B">acum. meta</text>
+    <rect x="${lx+156}" y="${ly-5}" width="9" height="7" fill="#5A8F6B" opacity="0.35"/>
+    <text x="${lx+169}" y="${ly+3}" font-size="7" fill="#5A8F6B">≥ meta</text>
+    <rect x="${lx+206}" y="${ly-5}" width="9" height="7" fill="#D37B5A" opacity="0.28"/>
+    <text x="${lx+219}" y="${ly+3}" font-size="7" fill="#D37B5A">&lt; meta</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    ${grid}${bars}${todayEl}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8A847B" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
+    ${realPath ? `<path d="${realPath.trim()}" stroke="#D37B5A" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+    ${dots}${lbReal}${lbMeta}${xLabels}${legend}
+  </svg>`;
+}
+
+function updateMetasV2View() {
+  if (!allDealsData.length) return;
+  const goals   = loadGoals(metasYear, metasMonth);
+  const weeks   = getWeeksOfMonth(metasYear, metasMonth);
+  const isPago  = d => norm(d.status_fechamento).includes('pago');
+
+  let accumReal = 0, accumMeta = 0;
+  const weekRows = weeks.map(wk => {
+    const resultado = allDealsData
+      .filter(d => isPago(d) && d.ano === metasYear && d.mes === metasMonth && d.semana_fechamento === wk.week)
+      .reduce((s, d) => s + d.desagio_total, 0);
+    const meta = goals.semanas[wk.week] || 0;
+    accumReal += resultado; accumMeta += meta;
+    const status = weekStatus(wk.year, wk.week);
+    const businessDays = bizDaysInRange(isoWeekMonday(wk.year, wk.week), isoWeekSunday(wk.year, wk.week));
+    return { week: wk.week, year: wk.year, resultado, meta, accumReal, accumMeta, status, businessDays };
+  });
+
+  const totalRealizado = allDealsData
+    .filter(d => isPago(d) && d.ano === metasYear && d.mes === metasMonth)
+    .reduce((s, d) => s + d.desagio_total, 0);
+  const metaMensal  = goals.meta_mensal || 0;
+  const atingimento = metaMensal > 0 ? (totalRealizado / metaMensal) * 100 : null;
+
+  const _today = new Date();
+  const _ty = _today.getFullYear(), _tm = _today.getMonth() + 1;
+  const isPastMonth    = metasYear < _ty || (metasYear === _ty && metasMonth < _tm);
+  const isFutureMonth  = metasYear > _ty || (metasYear === _ty && metasMonth > _tm);
+  const isCurrentMonth = !isPastMonth && !isFutureMonth;
+
+  const falta   = metaMensal > 0 ? Math.max(0, metaMensal - totalRealizado) : null;
+  const bizDays = isFutureMonth ? bizDaysInMonth(metasYear, metasMonth) : remainingBizDays(metasYear, metasMonth);
+  const porDia  = (falta != null && falta > 0 && bizDays > 0) ? falta / bizDays : null;
+
+  document.getElementById('v2MonthLabel').textContent = `${MESES_METAS[metasMonth - 1]} ${metasYear}`;
+
+  // ── Camada 1: banner de status ──
+  const banner = document.getElementById('v2StatusBanner');
+  let statusLabel, statusColor, statusBg;
+  if (atingimento === null) {
+    statusLabel = 'SEM META'; statusColor = '--ink-mute'; statusBg = '--paper-2';
+  } else if (atingimento >= 100) {
+    statusLabel = 'META BATIDA'; statusColor = '--green'; statusBg = '--green-soft';
+  } else if (isPastMonth) {
+    statusLabel = 'NÃO ATINGIDA'; statusColor = '--coral'; statusBg = '--coral-soft';
+  } else if (atingimento >= 70) {
+    statusLabel = 'NO CAMINHO'; statusColor = '--amber'; statusBg = '--paper-2';
+  } else {
+    statusLabel = 'EM RISCO'; statusColor = '--coral'; statusBg = '--coral-soft';
+  }
+  banner.style.setProperty('--v2-sc', `var(${statusColor})`);
+  banner.style.setProperty('--v2-sb', `var(${statusBg})`);
+  document.getElementById('v2StatusChip').textContent = statusLabel;
+  document.getElementById('v2StatusPct').textContent  = atingimento != null ? `${Math.round(atingimento)}%` : '—';
+  document.getElementById('v2StatusVals').innerHTML   = metaMensal > 0
+    ? `R$ ${fmtBRL(totalRealizado)} <span class="v2-of">de</span> R$ ${fmtBRL(metaMensal)}`
+    : '<em>Meta não definida</em>';
+  const gapEl = document.getElementById('v2StatusGap');
+  if (falta != null && falta > 0) {
+    gapEl.textContent = `faltam R$ ${fmtBRL(falta)}`;
+  } else if (falta === 0 || (atingimento != null && atingimento >= 100)) {
+    gapEl.textContent = metaMensal > 0 ? `superada em R$ ${fmtBRL(totalRealizado - metaMensal)}` : '';
+  } else {
+    gapEl.textContent = '';
+  }
+
+  // ── Camada 2: gráfico + cards ──
+  document.getElementById('v2ChartArea').innerHTML = renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth);
+
+  const faltaEl = document.getElementById('v2FaltaVal');
+  const diaEl   = document.getElementById('v2DiaVal');
+  const diaSubEl = document.getElementById('v2DiaSub');
+  const diaRefEl = document.getElementById('v2DiaRef');
+  if (falta == null) {
+    faltaEl.textContent = '—'; faltaEl.className = 'v2-card-val';
+    diaEl.textContent   = '—'; diaEl.className   = 'v2-card-val';
+    diaSubEl.textContent = ''; diaRefEl.innerHTML = '';
+  } else if (falta === 0) {
+    faltaEl.textContent = 'Meta batida!'; faltaEl.className = 'v2-card-val v2-goal-hit';
+    diaEl.textContent   = 'Meta batida!'; diaEl.className   = 'v2-card-val v2-goal-hit';
+    diaSubEl.textContent = ''; diaRefEl.innerHTML = '';
+  } else {
+    faltaEl.textContent = `R$ ${fmtBRL(falta)}`; faltaEl.className = 'v2-card-val';
+    diaEl.textContent   = porDia != null ? `R$ ${fmtBRL(porDia)}` : '—'; diaEl.className = 'v2-card-val';
+    diaSubEl.textContent = bizDays > 0 ? `${bizDays} dia${bizDays !== 1 ? 's' : ''} útei${bizDays !== 1 ? 's' : 'l'} restante${bizDays !== 1 ? 's' : ''}` : 'Mês encerrado';
+    if (isCurrentMonth && porDia != null) {
+      const avg3 = last3BizDaysAvg(metasYear, metasMonth);
+      if (avg3 !== null) {
+        const ok  = avg3 >= porDia;
+        const col = ok ? 'var(--green)' : 'var(--coral)';
+        diaRefEl.innerHTML = `Média últimos 3 d.u.: <strong style="color:${col}">R$ ${fmtBRL(avg3)}</strong><br><span style="color:${col}">${ok ? '↑ acima' : '↓ abaixo'} do ritmo necessário</span>`;
+      } else { diaRefEl.innerHTML = ''; }
+    } else { diaRefEl.innerHTML = ''; }
+  }
+
+  // ── Camada 3: texto interpretativo + tabela ──
+  const trendText = buildTrendText(weekRows);
+  const trendEl = document.getElementById('v2TrendText');
+  trendEl.textContent    = trendText || '';
+  trendEl.style.display  = trendText ? 'block' : 'none';
+
+  document.getElementById('v2Body').innerHTML = weekRows.map((r, idx) => {
+    const varAccum  = r.accumReal - r.accumMeta;
+    const varPct    = r.accumMeta > 0 ? (varAccum / r.accumMeta) * 100 : null;
+    const varCls    = varAccum > 0 ? 'v-pos' : varAccum < 0 ? 'v-neg' : 'v-zero';
+    const varAccStr = (r.accumMeta > 0 || r.accumReal > 0)
+      ? (varAccum >= 0 ? '+' : '-') + 'R$ ' + fmtBRL(Math.abs(varAccum)) : '—';
+    const varPctStr = varPct != null ? (varPct >= 0 ? '+' : '') + varPct.toFixed(0) + '%' : '—';
+
+    let trendIcon = '';
+    if (idx > 0 && varPct !== null) {
+      const prev = weekRows[idx - 1];
+      const prevVP = prev.accumMeta > 0 ? ((prev.accumReal - prev.accumMeta) / prev.accumMeta) * 100 : null;
+      if (prevVP !== null) {
+        trendIcon = varPct > prevVP ? '<span class="v2-ti-up">↑</span>'
+                  : varPct < prevVP ? '<span class="v2-ti-dn">↓</span>'
+                  : '<span class="v2-ti-flat">→</span>';
+      }
+    }
+
+    const trCls  = r.status === 'current' ? 'wk-current' : r.status === 'future' ? 'wk-future' : '';
+    const resStr = r.resultado > 0 ? 'R$ ' + fmtBRL(r.resultado) : r.status === 'future' ? '—' : 'R$ 0,00';
+    const resCls = r.meta > 0 && r.status !== 'future' ? (r.resultado >= r.meta ? 'v-pos' : 'v-neg') : '';
+    return `<tr class="${trCls}">
+      <td class="v2-wk">sem ${r.week}</td>
+      <td class="r ${resCls}">${resStr}</td>
+      <td class="r">${r.meta > 0 ? 'R$ ' + fmtBRL(r.meta) : '—'}</td>
+      <td class="r">R$ ${fmtBRL(r.accumReal)}</td>
+      <td class="r">${r.accumMeta > 0 ? 'R$ ' + fmtBRL(r.accumMeta) : '—'}</td>
+      <td class="r ${varCls}">${varAccStr}</td>
+      <td class="r ${varCls}">${varPctStr}${trendIcon}</td>
+    </tr>`;
+  }).join('');
 }
 
 // ─── METAS INIT ──────────────────────────────────────────
@@ -1574,6 +1862,17 @@ function switchTab(tab) {
   document.querySelectorAll('.sidebar-item[data-tab]').forEach(btn =>
     btn.addEventListener('click', () => switchTab(btn.dataset.tab))
   );
+})();
+
+(function initMetasV2() {
+  document.getElementById('v2PrevMonth').addEventListener('click', () => {
+    metasMonth--; if (metasMonth < 1) { metasMonth = 12; metasYear--; }
+    updateMetasV2View();
+  });
+  document.getElementById('v2NextMonth').addEventListener('click', () => {
+    metasMonth++; if (metasMonth > 12) { metasMonth = 1; metasYear++; }
+    updateMetasV2View();
+  });
 })();
 
 // ─── INICIALIZAÇÃO ──────────────────────────────────────
