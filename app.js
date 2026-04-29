@@ -1617,18 +1617,6 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#d0d0d0" stroke-width="0.4" opacity="0.2"/>`;
   }).join('');
 
-  const barW = Math.min(cW / weekRows.length * 0.38, 16);
-  const bars = weekRows.map((r, i) => {
-    if (r.resultado <= 0 && r.status === 'future') return '';
-    if (r.resultado <= 0) return '';
-    const x = xP(i);
-    const bH = PAD.top + cH - yS(r.resultado);
-    const col = r.meta > 0 && r.resultado >= r.meta ? '#5A8F6B' : '#E37B5A';
-    const op  = r.meta > 0 && r.resultado >= r.meta ? '0.3' : '0.22';
-    const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}`;
-    return `<rect x="${(x-barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${col}" opacity="${op}" style="cursor:pointer"
-  onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
-  }).join('');
 
   let metaPath = '', realPath = '';
   weekRows.forEach((r, i) => {
@@ -1671,14 +1659,10 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     <text x="${lx+16}" y="${ly+3}" font-size="5" fill="#4E4E58">acum. real</text>
     <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="3,2"/>
     <text x="${lx+90}" y="${ly+3}" font-size="5" fill="#D0CCC6">acum. meta</text>
-    <rect x="${lx+156}" y="${ly-5}" width="9" height="7" fill="#5A8F6B"/>
-    <text x="${lx+169}" y="${ly+3}" font-size="5" fill="#5A8F6B">≥ meta</text>
-    <rect x="${lx+206}" y="${ly-5}" width="9" height="7" fill="#E37B5A"/>
-    <text x="${lx+219}" y="${ly+3}" font-size="5" fill="#E37B5A">&lt; meta</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    ${grid}${bars}
+    ${grid}
     ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
     ${dots}${realLabels}${metaLabels}${xLabels}${legend}
