@@ -1676,7 +1676,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     } else {
       labelY = yMeta - 6;
     }
-    return `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" font-size="4.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
+    return `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" font-size="4.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="0.85">${v}</text>`;
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
@@ -1695,7 +1695,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}
-    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none" opacity="0.8"/>` : ''}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none" opacity="0.4"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
     ${dots}${realLabels}${metaLabels}${xLabels}${legend}${hint}
   </svg>`;
