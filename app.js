@@ -1662,19 +1662,19 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4E4E58" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="4" fill="#4E4E58" text-anchor="middle" font-weight="700" opacity="0.45">sem ${r.week}</text>`
   ).join('');
 
   const lx = PAD.left, ly = 16;
-  const legend = `<g opacity="0.5">
+  const legend = `<g opacity="1">
     <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#E37B5A" stroke-width="1.6"/>
-    <text x="${lx+16}" y="${ly+3}" font-size="7" fill="#4E4E58">acum. real</text>
+    <text x="${lx+16}" y="${ly+3}" font-size="5" fill="#4E4E58">acum. real</text>
     <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+90}" y="${ly+3}" font-size="7" fill="#D0CCC6">acum. meta</text>
+    <text x="${lx+90}" y="${ly+3}" font-size="5" fill="#D0CCC6">acum. meta</text>
     <rect x="${lx+156}" y="${ly-5}" width="9" height="7" fill="#5A8F6B"/>
-    <text x="${lx+169}" y="${ly+3}" font-size="7" fill="#5A8F6B">≥ meta</text>
+    <text x="${lx+169}" y="${ly+3}" font-size="5" fill="#5A8F6B">≥ meta</text>
     <rect x="${lx+206}" y="${ly-5}" width="9" height="7" fill="#E37B5A"/>
-    <text x="${lx+219}" y="${ly+3}" font-size="7" fill="#E37B5A">&lt; meta</text>
+    <text x="${lx+219}" y="${ly+3}" font-size="5" fill="#E37B5A">&lt; meta</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
