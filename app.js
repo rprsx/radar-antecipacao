@@ -1669,9 +1669,9 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   const lx = PAD.left, ly = 16;
   const legend = `<g opacity="1">
     <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#E37B5A" stroke-width="1.6"/>
-    <text x="${lx+16}" y="${ly+3}" font-size="5" fill="#4E4E58">acum. real</text>
+    <text x="${lx+16}" y="${ly+3}" font-size="6" fill="#4E4E58">acum. real</text>
     <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+90}" y="${ly+3}" font-size="5" fill="#D0CCC6">acum. meta</text>
+    <text x="${lx+90}" y="${ly+3}" font-size="6" fill="#D0CCC6">acum. meta</text>
   </g>`;
 
   const hint = `<text x="${W - PAD.right}" y="8" font-size="4" fill="#8E8E9C" text-anchor="end" opacity="0.7">passe o mouse nos pontos para ver real vs meta</text>`;
