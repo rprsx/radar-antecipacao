@@ -568,13 +568,13 @@ function renderLineChart(periods) {
     const y = PAD.top + chartH - frac * chartH;
     const val = frac * yMax;
     const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(0)}k` : `R$ ${Math.round(val)}`;
-    return `<text x="${PAD.left - 8}" y="${(y + 3).toFixed(1)}" style="font-size:10px" fill="#8A847B" text-anchor="end" opacity="0.45">${valStr}</text>`;
+    return `<text x="${PAD.left - 8}" y="${(y + 3).toFixed(1)}" font-size="7" fill="#8A847B" text-anchor="end" opacity="0.45">${valStr}</text>`;
   }).join('');
 
   // Linha de média (pontilhada)
   const avgY = yScale(avg);
   const avgLine = `<line x1="${PAD.left}" y1="${avgY.toFixed(1)}" x2="${W-PAD.right}" y2="${avgY.toFixed(1)}" stroke="#8A847B" stroke-dasharray="1.5,2" stroke-width="0.6" />`;
-  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" style="font-size:11px" fill="#8A847B" text-anchor="start" font-weight="400" letter-spacing="0.5" opacity="0.5">MÉDIA</text>`;
+  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="7" fill="#8A847B" text-anchor="start" font-weight="400" letter-spacing="0.5" opacity="0.5">MÉDIA</text>`;
   
   // Path da linha + área preenchida (gradient suave)
   let linePath = '';
@@ -642,18 +642,18 @@ function renderLineChart(periods) {
     const y = yScale(metrics[currentIdx].total);
     const val = metrics[currentIdx].total;
     const valStr = val >= 1000 ? `R$ ${(val/1000).toFixed(1)}k` : `R$ ${Math.round(val)}`;
-    currentValueLabel = `<text x="${x.toFixed(1)}" y="${(y - 8).toFixed(1)}" style="font-size:10px" font-weight="400" fill="#1A1816" text-anchor="middle" opacity="0.6">${valStr}</text>`;
+    currentValueLabel = `<text x="${x.toFixed(1)}" y="${(y - 8).toFixed(1)}" font-size="7" font-weight="400" fill="#1A1816" text-anchor="middle" opacity="0.6">${valStr}</text>`;
   }
   
   // Labels do eixo X
   const xLabels = periods.map((p, i) => {
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" style="font-size:10px" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">${p.label}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="7" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">${p.label}</text>`;
   }).join('');
 
   // Sub-labels (se existir)
   const subLabels = periods.map((p, i) => {
     if (!p.sublabel) return '';
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 4}" style="font-size:10px" fill="#8A847B" text-anchor="middle" opacity="0.45">${p.sublabel}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 4}" font-size="7" fill="#8A847B" text-anchor="middle" opacity="0.45">${p.sublabel}</text>`;
   }).join('');
   
   return `
@@ -1446,7 +1446,7 @@ function renderMetasChart(weekRows, metaMensal) {
     const v = f * maxVal;
     const lbl = v >= 1000 ? `R$${(v/1000).toFixed(0)}k` : `R$${Math.round(v)}`;
     return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#E5DFD4" stroke-width="0.6"/>
-            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" style="font-size:10px" fill="#8A847B" text-anchor="end" opacity="0.45">${lbl}</text>`;
+            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" font-size="7" fill="#8A847B" text-anchor="end" opacity="0.45">${lbl}</text>`;
   }).join('');
 
   // Bars (weekly resultado, light fill)
@@ -1495,28 +1495,28 @@ function renderMetasChart(weekRows, metaMensal) {
   if (lastReal) {
     const i = weekRows.indexOf(lastReal), x = xP(i), y = yS(lastReal.accumReal);
     const v = lastReal.accumReal >= 1000 ? `R$${(lastReal.accumReal/1000).toFixed(0)}k` : `R$${Math.round(lastReal.accumReal)}`;
-    labelReal = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" style="font-size:10px" font-weight="400" fill="#D37B5A" opacity="0.6">${v}</text>`;
+    labelReal = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" font-weight="400" fill="#D37B5A" opacity="0.6">${v}</text>`;
   }
   if (lastMeta) {
     const i = weekRows.indexOf(lastMeta), x = xP(i), y = yS(lastMeta.accumMeta);
     const v = lastMeta.accumMeta >= 1000 ? `R$${(lastMeta.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(lastMeta.accumMeta)}`;
-    labelMeta = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" style="font-size:10px" font-weight="400" fill="#8A847B" opacity="0.6">${v}</text>`;
+    labelMeta = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" font-weight="400" fill="#8A847B" opacity="0.6">${v}</text>`;
   }
 
   // X labels
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" style="font-size:10px" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
   ).join('');
 
   // Legend
   const lx = PAD.left, ly = 16;
   const legend = `<g opacity="0.5">
     <line x1="${lx}" y1="${ly}" x2="${lx+14}" y2="${ly}" stroke="#D37B5A" stroke-width="1.6"/>
-    <text x="${lx+18}" y="${ly+3}" style="font-size:11px" fill="#4A453F">acum. real</text>
+    <text x="${lx+18}" y="${ly+3}" font-size="7" fill="#4A453F">acum. real</text>
     <line x1="${lx+78}" y1="${ly}" x2="${lx+92}" y2="${ly}" stroke="#8A847B" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+96}" y="${ly+3}" style="font-size:11px" fill="#8A847B">acum. meta</text>
+    <text x="${lx+96}" y="${ly+3}" font-size="7" fill="#8A847B">acum. meta</text>
     <rect x="${lx+168}" y="${ly-5}" width="10" height="8" fill="#D37B5A"/>
-    <text x="${lx+182}" y="${ly+3}" style="font-size:11px" fill="#4A453F">resultado sem.</text>
+    <text x="${lx+182}" y="${ly+3}" font-size="7" fill="#4A453F">resultado sem.</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
@@ -1628,7 +1628,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     const y = PAD.top + cH - f * cH;
     const lbl = (f * maxVal) >= 1000 ? `R$${((f * maxVal)/1000).toFixed(0)}k` : `R$${Math.round(f * maxVal)}`;
     return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#DDDBD5" stroke-width="0.6"/>
-            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" style="font-size:10px" fill="#8E8E9C" text-anchor="end" opacity="0.45">${lbl}</text>`;
+            <text x="${PAD.left-6}" y="${(y+3).toFixed(1)}" font-size="7" fill="#8E8E9C" text-anchor="end" opacity="0.45">${lbl}</text>`;
   }).join('');
 
   const barW = Math.min(cW / weekRows.length * 0.38, 16);
@@ -1668,28 +1668,28 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     const i = weekRows.indexOf(lastReal), x = xP(i), y = yS(lastReal.accumReal);
     const v = lastReal.accumReal >= 1000 ? `R$${(lastReal.accumReal/1000).toFixed(0)}k` : `R$${Math.round(lastReal.accumReal)}`;
     const col = lastReal.accumMeta > 0 && lastReal.accumReal >= lastReal.accumMeta ? '#5A8F6B' : '#D37B5A';
-    lbReal = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" style="font-size:10px" font-weight="400" fill="${col}" opacity="0.6">${v}</text>`;
+    lbReal = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" font-weight="400" fill="${col}" opacity="0.6">${v}</text>`;
   }
   if (lastMeta) {
     const i = weekRows.indexOf(lastMeta), x = xP(i), y = yS(lastMeta.accumMeta);
     const v = lastMeta.accumMeta >= 1000 ? `R$${(lastMeta.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(lastMeta.accumMeta)}`;
-    lbMeta = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" style="font-size:10px" font-weight="400" fill="#8A847B" opacity="0.6">${v}</text>`;
+    lbMeta = `<text x="${(x+6).toFixed(1)}" y="${(y+3).toFixed(1)}" font-size="7" font-weight="400" fill="#8A847B" opacity="0.6">${v}</text>`;
   }
 
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" style="font-size:10px" fill="#4E4E58" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4E4E58" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
   ).join('');
 
   const lx = PAD.left, ly = 16;
   const legend = `<g opacity="0.5">
     <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#D37B5A" stroke-width="1.6"/>
-    <text x="${lx+16}" y="${ly+3}" style="font-size:11px" fill="#4E4E58">acum. real</text>
+    <text x="${lx+16}" y="${ly+3}" font-size="7" fill="#4E4E58">acum. real</text>
     <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#8A847B" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+90}" y="${ly+3}" style="font-size:11px" fill="#8A847B">acum. meta</text>
+    <text x="${lx+90}" y="${ly+3}" font-size="7" fill="#8A847B">acum. meta</text>
     <rect x="${lx+156}" y="${ly-5}" width="9" height="7" fill="#5A8F6B"/>
-    <text x="${lx+169}" y="${ly+3}" style="font-size:11px" fill="#5A8F6B">≥ meta</text>
+    <text x="${lx+169}" y="${ly+3}" font-size="7" fill="#5A8F6B">≥ meta</text>
     <rect x="${lx+206}" y="${ly-5}" width="9" height="7" fill="#D37B5A"/>
-    <text x="${lx+219}" y="${ly+3}" style="font-size:11px" fill="#D37B5A">&lt; meta</text>
+    <text x="${lx+219}" y="${ly+3}" font-size="7" fill="#D37B5A">&lt; meta</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
