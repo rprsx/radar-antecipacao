@@ -2278,10 +2278,9 @@
   }
   .v2-bc-end { border-right: none; }
   .v2-bc-label {
-    font-size: 20px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
     font-weight: 700;
     margin-bottom: 5px;
   }
