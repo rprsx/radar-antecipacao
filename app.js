@@ -1640,13 +1640,13 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     const x = xP(i), y = yS(r.accumReal);
     const v = r.accumReal >= 1000 ? `R$${(r.accumReal/1000).toFixed(0)}k` : `R$${Math.round(r.accumReal)}`;
     const col = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#E37B5A';
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="600" fill="${col}" text-anchor="middle" opacity="1">${v}</text>`;
+    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="6" font-weight="600" fill="${col}" text-anchor="middle" opacity="1">${v}</text>`;
   }).join('');
   const metaLabels = weekRows.map((r, i) => {
     if (r.accumMeta <= 0) return '';
     const x = xP(i), y = yS(r.accumMeta);
     const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="5.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
+    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="4.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
