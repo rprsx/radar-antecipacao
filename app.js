@@ -1738,7 +1738,7 @@ function updateMetasV2View() {
   document.getElementById('v2StatusChip').textContent = statusLabel;
   document.getElementById('v2StatusPct').textContent  = atingimento != null ? `${Math.round(atingimento)}%` : '—';
   document.getElementById('v2StatusVals').innerHTML   = metaMensal > 0
-    ? `R$ ${fmtBRL(totalRealizado)} <span class="v2-of">de</span> R$ ${fmtBRL(metaMensal)}`
+    ? `<span style="color:var(--coral)">R$ ${fmtBRL(totalRealizado)}</span> <span class="v2-of">de</span> R$ ${fmtBRL(metaMensal)}`
     : '<em>Meta não definida</em>';
   const gapEl = document.getElementById('v2StatusGap');
   if (falta != null && falta > 0) {
