@@ -1614,7 +1614,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
 
   const grid = [0, 0.25, 0.5, 0.75, 1].map(f => {
     const y = PAD.top + cH - f * cH;
-    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#d0d0d0" stroke-width="0.4" opacity="0.1"/>`;
+    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#d0d0d0" stroke-width="0.4" opacity="0.2"/>`;
   }).join('');
 
   const barW = Math.min(cW / weekRows.length * 0.38, 16);
