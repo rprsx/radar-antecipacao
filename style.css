@@ -784,7 +784,7 @@
     .distrib-stats { grid-column: 1 / -1; justify-content: flex-start; padding-left: 96px; }
   }
   .line-chart-container {
-    padding: 24px 24px 12px;
+    padding: 20px 20px 8px;
     background: white;
     border-bottom: 1px solid var(--line);
   }
@@ -792,6 +792,7 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
+    aspect-ratio: 700 / 210;
     overflow: visible;
   }
 
@@ -2062,6 +2063,7 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
+    aspect-ratio: 700 / 230;
     overflow: visible;
   }
 

@@ -548,7 +548,7 @@ function renderLineChart(periods) {
   const yMax = maxVal * 1.1;
   const yMin = 0;
   
-  const W = 700, H = 180;
+  const W = 700, H = 210;
   const PAD = { top: 28, right: 60, bottom: 40, left: 50 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
@@ -658,7 +658,7 @@ function renderLineChart(periods) {
   
   return `
     <div class="line-chart-container">
-      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="height:${H}px;">
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
         ${gradientDef}
         ${gridLines}
         ${yLabels}
@@ -1423,7 +1423,7 @@ function updateMetasView() {
 function renderMetasChart(weekRows, metaMensal) {
   if (!weekRows.length) return '';
 
-  const W = 700, H = 200;
+  const W = 700, H = 230;
   const PAD = { top: 36, right: 80, bottom: 36, left: 60 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
@@ -1517,7 +1517,7 @@ function renderMetasChart(weekRows, metaMensal) {
     <rect x="${lx+216}" y="${ly-6}" width="14" height="10" fill="#D37B5A" opacity="0.3"/>
     <text x="${lx+234}" y="${ly+4}" font-size="11" fill="#4A453F">resultado sem.</text>`;
 
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="height:${H}px;">
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}${bars}
     ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8A847B" stroke-width="1.5" stroke-dasharray="5,3" fill="none"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#D37B5A" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
