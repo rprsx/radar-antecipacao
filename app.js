@@ -1663,7 +1663,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="4" fill="#4E4E58" text-anchor="middle" font-weight="700" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="6" fill="#4E4E58" text-anchor="middle" font-weight="700" opacity="0.45">sem ${r.week}</text>`
   ).join('');
 
   const lx = PAD.left, ly = 16;
