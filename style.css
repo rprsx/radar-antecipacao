@@ -2333,7 +2333,7 @@
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 200;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
   .v2-trend-text {
