@@ -2285,7 +2285,7 @@
     margin-bottom: 5px;
   }
   .v2-status-chip {
-    font-size: 14px;
+    font-size: 28px;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: var(--v2-sc, var(--ink-mute));

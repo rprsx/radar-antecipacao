@@ -1725,11 +1725,11 @@ function updateMetasV2View() {
   if (atingimento === null) {
     statusLabel = 'SEM META'; statusColor = '--ink-mute'; statusBg = '--paper-2';
   } else if (atingimento >= 100) {
-    statusLabel = 'META BATIDA'; statusColor = '--green'; statusBg = '--green-soft';
+    statusLabel = 'Meta Batida'; statusColor = '--green'; statusBg = '--green-soft';
   } else if (isPastMonth) {
     statusLabel = 'NÃO ATINGIDA'; statusColor = '--coral'; statusBg = '--coral-soft';
   } else if (atingimento >= 70) {
-    statusLabel = 'NO CAMINHO'; statusColor = '--amber'; statusBg = '--paper-2';
+    statusLabel = 'On track'; statusColor = '--ink-soft'; statusBg = '--paper-2';
   } else {
     statusLabel = 'EM RISCO'; statusColor = '--coral'; statusBg = '--coral-soft';
   }
