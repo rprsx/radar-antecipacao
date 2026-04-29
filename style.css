@@ -2317,7 +2317,7 @@
   /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
     display: grid;
-    grid-template-columns: 1fr 192px;
+    grid-template-columns: 1fr 300px;
     gap: 12px;
     margin-bottom: 12px;
     align-items: start;
