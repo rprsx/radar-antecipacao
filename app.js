@@ -1752,7 +1752,10 @@ function updateMetasV2View() {
   }
 
   const liquidoEl = document.getElementById('v2StatusLiquido');
-  if (falta != null && falta > 0) {
+  if (!isCurrentMonth) {
+    liquidoEl.textContent = '—';
+    liquidoEl.style.color = '';
+  } else if (falta != null && falta > 0) {
     const liquido = falta - _projOprtd;
     if (liquido <= 0) {
       liquidoEl.textContent = 'pipeline cobre a meta';
@@ -1762,7 +1765,7 @@ function updateMetasV2View() {
       liquidoEl.style.color = '';
     }
   } else {
-    liquidoEl.textContent = falta === 0 ? '—' : '—';
+    liquidoEl.textContent = '—';
     liquidoEl.style.color = '';
   }
 
