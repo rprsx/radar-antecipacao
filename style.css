@@ -2267,16 +2267,18 @@
   .v2-status-banner {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    background: white;
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--v2-sc, var(--line));
+    gap: 12px;
     margin-bottom: 12px;
   }
   .v2-bc {
+    background: white;
+    border: 1px solid var(--line);
     padding: 16px 20px;
-    border-right: 1px solid var(--line);
   }
-  .v2-bc-end { border-right: none; }
+  .v2-bc:first-child {
+    border-left: 4px solid var(--v2-sc, var(--line));
+  }
+  .v2-bc-end { }
   .v2-bc-label {
     font-size: 10px;
     letter-spacing: 0.12em;
@@ -2447,9 +2449,6 @@
   }
   @media (max-width: 700px) {
     .v2-status-banner { grid-template-columns: repeat(2, 1fr); }
-    .v2-bc:nth-child(2) { border-right: none; }
-    .v2-bc:nth-child(3) { border-top: 1px solid var(--line); }
-    .v2-bc-end { border-top: 1px solid var(--line); }
     .v2-side-cards { flex-direction: column; }
     .v2-card { border-right: 1px solid var(--line) !important; }
   }
