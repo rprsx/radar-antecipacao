@@ -548,7 +548,7 @@ function renderLineChart(periods) {
   const yMax = maxVal * 1.1;
   const yMin = 0;
   
-  const W = 700, H = 210;
+  const W = 700, H = 140;
   const PAD = { top: 28, right: 60, bottom: 40, left: 50 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;

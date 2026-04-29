@@ -792,7 +792,7 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 210;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
 
