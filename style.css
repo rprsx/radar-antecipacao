@@ -2063,7 +2063,7 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 230;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
 
@@ -2326,7 +2326,7 @@
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 220;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
   .v2-side-cards {

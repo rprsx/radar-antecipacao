@@ -1424,8 +1424,8 @@ function updateMetasView() {
 function renderMetasChart(weekRows, metaMensal) {
   if (!weekRows.length) return '';
 
-  const W = 700, H = 230;
-  const PAD = { top: 36, right: 80, bottom: 36, left: 60 };
+  const W = 700, H = 140;
+  const PAD = { top: 28, right: 80, bottom: 28, left: 60 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
 
@@ -1612,8 +1612,8 @@ function buildTrendText(weekRows) {
 
 function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   if (!weekRows.length) return '';
-  const W = 700, H = 220;
-  const PAD = { top: 40, right: 82, bottom: 38, left: 62 };
+  const W = 700, H = 140;
+  const PAD = { top: 28, right: 82, bottom: 28, left: 62 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
   const allVals = [metaMensal, ...weekRows.map(r => r.accumReal), ...weekRows.map(r => r.accumMeta)].filter(v => v > 0);
