@@ -193,6 +193,7 @@ function processRows(rows) {
 let allDealsData = [];
 
 // ─── DRILL DRAWER ───────────────────────────────────────
+let _projOprtd       = 0; // projeção em aberto (pipeline), compartilhada com Metas v2
 let _drillDeals      = { oprtd: [], semStatus: [], pago: [] };
 let _drillLabels     = { oprtd: 'Oportunidades em aberto', semStatus: 'Aguardando resposta do cliente', pago: 'Pago' };
 let _periodDrillMap  = new Map(); // key -> { deals, label }
@@ -838,6 +839,7 @@ function updateMainView() {
   closeDrillDrawer();
   initDrillListeners();
   const totalOprtd = oprtdDeals.reduce((s, d) => s + d.desagio_total, 0);
+  _projOprtd = totalOprtd;
   const clientesOprtd = new Set(oprtdDeals.map(d => d.cliente)).size;
   const ticketOprtd = clientesOprtd > 0 ? totalOprtd / clientesOprtd : 0;
   const totalSemStatus = semStatusDeals.reduce((s, d) => s + d.desagio_total, 0);
@@ -1747,6 +1749,21 @@ function updateMetasV2View() {
     gapEl.textContent = metaMensal > 0 ? `superada em R$ ${fmtBRL(totalRealizado - metaMensal)}` : '';
   } else {
     gapEl.textContent = '';
+  }
+
+  const liquidoEl = document.getElementById('v2StatusLiquido');
+  if (falta != null && falta > 0) {
+    const liquido = falta - _projOprtd;
+    if (liquido <= 0) {
+      liquidoEl.textContent = 'pipeline cobre a meta';
+      liquidoEl.style.color = 'var(--green)';
+    } else {
+      liquidoEl.textContent = `R$ ${fmtBRL(liquido)}`;
+      liquidoEl.style.color = '';
+    }
+  } else {
+    liquidoEl.textContent = falta === 0 ? '—' : '—';
+    liquidoEl.style.color = '';
   }
 
   // ── Camada 2: gráfico + cards ──

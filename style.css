@@ -2266,7 +2266,7 @@
   /* Camada 1 — faixa horizontal, 4 colunas de peso equilibrado */
   .v2-status-banner {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 12px;
     margin-bottom: 12px;
   }
