@@ -1614,7 +1614,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
 
   const grid = [0, 0.25, 0.5, 0.75, 1].map(f => {
     const y = PAD.top + cH - f * cH;
-    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#d0d0d0" stroke-width="0.4" opacity="0.3"/>`;
+    return `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="#d0d0d0" stroke-width="0.4" opacity="0.1"/>`;
   }).join('');
 
   const barW = Math.min(cW / weekRows.length * 0.38, 16);
@@ -1658,7 +1658,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     if (r.accumMeta <= 0) return '';
     const x = xP(i), y = yS(r.accumMeta);
     const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
+    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="5.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
