@@ -2316,11 +2316,10 @@
 
   /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
     margin-bottom: 12px;
-    align-items: start;
   }
   .v2-chart-col {
     display: flex;
@@ -2334,7 +2333,7 @@
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    aspect-ratio: 700 / 140;
+    aspect-ratio: 700 / 200;
     overflow: visible;
   }
   .v2-trend-text {
@@ -2349,11 +2348,10 @@
   .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
   .v2-goal-hit { color: var(--green) !important; }
 
-  /* Camada 3 — tabela, agora coluna direita do v2-diagnosis */
+  /* Camada 3 — tabela abaixo do gráfico */
   .v2-detail {
     background: white;
     border: 1px solid var(--line);
-    min-width: 0;
   }
   .v2-table-scroll { overflow-x: auto; }
   .v2-tbl {
