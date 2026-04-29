@@ -794,8 +794,8 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
-    max-height: 160px;
-    aspect-ratio: 700 / 140;
+    max-height: 120px;
+    aspect-ratio: 700 / 100;
     overflow: visible;
   }
 
@@ -2066,8 +2066,8 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 160px;
-    aspect-ratio: 700 / 140;
+    max-height: 120px;
+    aspect-ratio: 700 / 100;
     overflow: visible;
   }
 
@@ -2310,7 +2310,20 @@
     line-height: 1.5;
   }
   .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 2px; }
-  .v2-status-gap { font-size: 28px; font-weight: 700; color: var(--red); }
+  .v2-status-gap {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--red);
+    line-height: 1.3;
+  }
+  .v2-status-gap::before {
+    content: "faltam";
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 400;
+    display: block;
+    margin-bottom: 2px;
+  }
 
   /* Cards em linha horizontal entre banner e gráfico */
   .v2-cards-row {
@@ -2330,14 +2343,14 @@
   .v2-chart-wrap {
     background: white;
     border: 1px solid var(--line);
-    padding: 12px 16px 6px;
+    padding: 8px 12px 4px;
     max-width: 100%;
   }
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 160px;
-    aspect-ratio: 700 / 120;
+    max-height: 120px;
+    aspect-ratio: 700 / 100;
     overflow: visible;
   }
   .v2-trend-text {
