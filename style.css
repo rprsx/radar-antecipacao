@@ -14,8 +14,6 @@
     --green: #5A8F6B;
     --green-soft: #5A8F6B15;
     --amber: #C9933B;
-    --red: #C9392A;
-    --red-soft: #C9392A15;
 
     --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
     --font-body:    'Inter', Helvetica, Arial, sans-serif;
@@ -794,8 +792,7 @@
   .line-chart-container svg {
     display: block;
     width: 100%;
-    max-height: 180px;
-    aspect-ratio: 700 / 150;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
 
@@ -2066,8 +2063,7 @@
   .metas-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 180px;
-    aspect-ratio: 700 / 150;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
 
@@ -2277,64 +2273,49 @@
     margin-bottom: 12px;
   }
   .v2-bc {
-    padding: 16px 24px;
+    padding: 14px 18px;
     border-right: 1px solid var(--line);
   }
   .v2-bc-end { border-right: none; }
   .v2-bc-label {
-    font-size: 10px;
-    letter-spacing: 0.06em;
+    font-size: 9px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: 5px;
   }
   .v2-status-chip {
-    font-size: 28px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--v2-sc, var(--ink));
-    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--v2-sc, var(--ink-mute));
+    line-height: 1.2;
   }
   .v2-status-pct {
+    font-family: var(--font-display);
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink));
   }
   .v2-status-vals {
     font-size: 13px;
-    font-weight: 400;
-    color: var(--ink-soft);
+    font-weight: 600;
+    color: var(--ink);
     line-height: 1.5;
   }
   .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 2px; }
-  .v2-status-gap {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--red);
-    line-height: 1.3;
-  }
-  .v2-status-gap::before {
-    content: "faltam";
-    font-size: 11px;
-    color: var(--ink-mute);
-    font-weight: 400;
-    display: block;
-    margin-bottom: 2px;
-  }
+  .v2-status-gap { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
 
-  /* Cards em linha horizontal entre banner e gráfico */
-  .v2-cards-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 12px;
-  }
-  /* Camada 2 — diagnóstico: gráfico full-width */
+  /* Camada 2 — diagnóstico: gráfico (com insight ancorado) + cards laterais */
   .v2-diagnosis {
+    display: grid;
+    grid-template-columns: 1fr 192px;
+    gap: 12px;
     margin-bottom: 12px;
+    align-items: start;
   }
   .v2-chart-col {
     display: flex;
@@ -2343,14 +2324,12 @@
   .v2-chart-wrap {
     background: white;
     border: 1px solid var(--line);
-    padding: 8px 12px 4px;
-    max-width: 100%;
+    padding: 12px 16px 6px;
   }
   .v2-chart-wrap svg {
     display: block;
     width: 100%;
-    max-height: 180px;
-    aspect-ratio: 700 / 150;
+    aspect-ratio: 700 / 140;
     overflow: visible;
   }
   .v2-trend-text {
@@ -2369,22 +2348,24 @@
   }
   .v2-card {
     background: white;
-    padding: 16px 24px;
-    border-right: 1px solid var(--line);
+    border: 1px solid var(--line);
+    border-bottom: none;
+    padding: 13px 15px;
+    flex: 1;
   }
-  .v2-card:last-child { border-right: none; }
+  .v2-card:last-child { border-bottom: 1px solid var(--line); }
   .v2-card-label {
-    font-size: 10px;
-    letter-spacing: 0.06em;
+    font-size: 9px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-mute);
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: 6px;
   }
   .v2-card-val {
-    font-size: 21px;
+    font-size: 17px;
     font-weight: 700;
-    color: var(--red);
+    color: var(--coral);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
     line-height: 1;
@@ -2392,7 +2373,7 @@
   }
   .v2-goal-hit { color: var(--green) !important; }
   .v2-card-sub {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--ink-mute);
     margin-top: 3px;
     line-height: 1.4;
