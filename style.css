@@ -2263,54 +2263,65 @@
 
   /* ─── METAS V2 ─────────────────────────────────────────── */
 
-  /* Camada 1: banner de síntese */
+  /* Camada 1: síntese — padrão bloco do app, acento lateral colorido */
   .v2-status-banner {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    padding: 24px 28px;
-    border-left: 5px solid var(--v2-sc, var(--ink-mute));
-    background: var(--v2-sb, var(--paper-2));
+    display: grid;
+    grid-template-columns: auto 1fr;
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--v2-sc, var(--line));
     margin-bottom: 16px;
   }
   .v2-banner-main {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    min-width: 100px;
+    gap: 6px;
+    padding: 20px 28px 20px 24px;
+    border-right: 1px solid var(--line);
+    min-width: 148px;
   }
   .v2-status-chip {
     font-size: 9px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     font-weight: 700;
     color: var(--v2-sc, var(--ink-mute));
   }
   .v2-status-pct {
     font-family: var(--font-display);
-    font-size: 48px;
+    font-size: 44px;
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--v2-sc, var(--ink));
   }
-  .v2-banner-side { flex: 1; }
+  .v2-banner-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 24px;
+  }
   .v2-status-vals {
     font-size: 14px;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 6px;
   }
-  .v2-of { font-weight: 400; color: var(--ink-mute); }
+  .v2-of { font-weight: 400; color: var(--ink-mute); margin: 0 3px; }
   .v2-status-gap { font-size: 12px; color: var(--ink-soft); }
 
   /* Camada 2: diagnóstico */
   .v2-diagnosis {
     display: grid;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 208px;
     gap: 16px;
     margin-bottom: 16px;
     align-items: start;
+  }
+  .v2-chart-wrap {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 16px 16px 8px;
   }
   .v2-chart-wrap svg {
     display: block;
@@ -2321,29 +2332,32 @@
   .v2-side-cards {
     display: flex;
     flex-direction: column;
-    gap: 12px;
   }
   .v2-card {
     background: white;
     border: 1px solid var(--line);
-    padding: 16px;
+    border-bottom: none;
+    padding: 20px;
   }
+  .v2-card:last-child { border-bottom: 1px solid var(--line); }
   .v2-card-label {
     font-size: 9px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-mute);
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .v2-card-val {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 4px;
+    color: var(--coral);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-bottom: 4px;
   }
-  .v2-goal-hit { color: var(--green); }
+  .v2-goal-hit { color: var(--green) !important; }
   .v2-card-sub {
     font-size: 10px;
     color: var(--ink-mute);
@@ -2353,8 +2367,8 @@
     font-size: 10px;
     color: var(--ink-soft);
     line-height: 1.5;
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
     border-top: 1px solid var(--line);
   }
 
@@ -2365,11 +2379,11 @@
     margin-bottom: 40px;
   }
   .v2-trend-text {
-    padding: 10px 16px;
+    padding: 10px 20px;
     font-size: 11px;
     font-style: italic;
     color: var(--ink-soft);
-    background: var(--paper);
+    background: var(--paper-2);
     border-bottom: 1px solid var(--line);
   }
   .v2-trend-text::before { content: "▸ "; color: var(--coral); font-style: normal; }
@@ -2377,12 +2391,12 @@
   .v2-tbl {
     width: 100%;
     border-collapse: collapse;
-    font-size: 11px;
+    font-size: 12px;
   }
   .v2-tbl th {
-    padding: 7px 14px;
-    font-size: 9px;
-    letter-spacing: 0.1em;
+    padding: 9px 16px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-mute);
     border-bottom: 1px solid var(--line);
@@ -2393,24 +2407,50 @@
   }
   .v2-tbl th.r { text-align: right; }
   .v2-tbl td {
-    padding: 7px 14px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--paper-2);
-    color: var(--ink);
+    color: var(--ink-soft);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-  .v2-tbl td.r { text-align: right; color: var(--ink-soft); }
-  .v2-wk { font-weight: 600; color: var(--ink); }
+  .v2-tbl td.r { text-align: right; }
+  .v2-wk { font-weight: 700; color: var(--ink); font-size: 12px; }
   .v2-tbl tr:last-child td { border-bottom: none; }
   .v2-tbl tr.wk-current td { background: var(--paper); }
-  .v2-tbl tr.wk-future td { color: var(--ink-mute); }
+  .v2-tbl tr.wk-future td { color: var(--ink-mute); opacity: 0.6; }
   .v2-tbl tbody tr:hover td { background: var(--paper); }
-  .v2-ti-up   { color: var(--green);    font-weight: 700; margin-left: 3px; font-size: 10px; }
-  .v2-ti-dn   { color: var(--coral);    font-weight: 700; margin-left: 3px; font-size: 10px; }
-  .v2-ti-flat { color: var(--ink-mute); margin-left: 3px; font-size: 10px; }
+  /* Indicadores de linha — borda esquerda colorida por semana */
+  .v2-tbl tr.v2-row-ok    td:first-child { border-left: 3px solid var(--green); }
+  .v2-tbl tr.v2-row-behind td:first-child { border-left: 3px solid var(--coral); }
+  .v2-tbl tr.wk-current   td:first-child { border-left: 3px solid var(--amber); }
+  .v2-tbl tr.wk-future    td:first-child { border-left: 3px solid var(--line); }
+  /* Chip de tendência na coluna VAR.% */
+  .v2-ti-up, .v2-ti-dn, .v2-ti-flat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+  .v2-ti-up   { background: var(--green-soft); color: var(--green); }
+  .v2-ti-dn   { background: var(--coral-soft); color: var(--coral); }
+  .v2-ti-flat { background: var(--paper-2);    color: var(--ink-mute); }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1100px) {
     .v2-diagnosis { grid-template-columns: 1fr; }
     .v2-side-cards { flex-direction: row; }
-    .v2-card { flex: 1; }
+    .v2-card { flex: 1; border-bottom: 1px solid var(--line); border-right: none; }
+    .v2-card:not(:last-child) { border-right: 1px solid var(--line); }
+  }
+  @media (max-width: 700px) {
+    .v2-status-banner { grid-template-columns: 1fr; }
+    .v2-banner-main { border-right: none; border-bottom: 1px solid var(--line); }
+    .v2-status-pct { font-size: 36px; }
+    .v2-side-cards { flex-direction: column; }
+    .v2-card { border-right: 1px solid var(--line) !important; }
   }

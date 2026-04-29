@@ -1832,7 +1832,12 @@ function updateMetasV2View() {
       }
     }
 
-    const trCls  = r.status === 'current' ? 'wk-current' : r.status === 'future' ? 'wk-future' : '';
+    const rowOk     = r.meta > 0 && r.status !== 'future' && r.resultado >= r.meta;
+    const rowBehind = r.meta > 0 && r.status !== 'future' && r.resultado < r.meta;
+    const trCls = [
+      r.status === 'current' ? 'wk-current' : r.status === 'future' ? 'wk-future' : '',
+      rowOk ? 'v2-row-ok' : rowBehind ? 'v2-row-behind' : ''
+    ].filter(Boolean).join(' ');
     const resStr = r.resultado > 0 ? 'R$ ' + fmtBRL(r.resultado) : r.status === 'future' ? '—' : 'R$ 0,00';
     const resCls = r.meta > 0 && r.status !== 'future' ? (r.resultado >= r.meta ? 'v-pos' : 'v-neg') : '';
     return `<tr class="${trCls}">
