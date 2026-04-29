@@ -565,8 +565,8 @@ function renderLineChart(periods) {
 
   // Linha de média (pontilhada)
   const avgY = yScale(avg);
-  const avgLine = `<line x1="${PAD.left}" y1="${avgY.toFixed(1)}" x2="${W-PAD.right}" y2="${avgY.toFixed(1)}" stroke="#8A847B" stroke-dasharray="1.5,2" stroke-width="0.6" />`;
-  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="7" fill="#8A847B" text-anchor="start" font-weight="400" letter-spacing="0.5" opacity="0.5">MÉDIA</text>`;
+  const avgLine = `<line x1="${PAD.left}" y1="${avgY.toFixed(1)}" x2="${W-PAD.right}" y2="${avgY.toFixed(1)}" stroke="#8E8E9C" stroke-dasharray="3,3" stroke-width="0.6" opacity="0.5"/>`;
+  const avgLabel = `<text x="${W - PAD.right + 6}" y="${(avgY + 3).toFixed(1)}" font-size="9" fill="#8E8E9C" text-anchor="start" font-weight="400" opacity="0.7">MÉDIA</text>`;
   
   // Path da linha + área preenchida (gradient suave)
   let linePath = '';
@@ -602,13 +602,13 @@ function renderLineChart(periods) {
   const gradientDef = `
     <defs>
       <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#D37B5A" stop-opacity="0.18" />
-        <stop offset="100%" stop-color="#D37B5A" stop-opacity="0" />
+        <stop offset="0%" stop-color="#E37B5A" stop-opacity="0.15" />
+        <stop offset="100%" stop-color="#E37B5A" stop-opacity="0" />
       </linearGradient>
     </defs>
   `;
   const areaShape = areaPath ? `<path d="${areaPath.trim()}" fill="url(#areaGrad)" />` : '';
-  const lineShape = linePath ? `<path d="${linePath.trim()}" stroke="#D37B5A" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-linecap="round" />` : '';
+  const lineShape = linePath ? `<path d="${linePath.trim()}" stroke="#E37B5A" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-linecap="round" />` : '';
 
   // Pontos (todos na mesma cor coral — destaque por tamanho)
   const dots = periods.map((p, i) => {
@@ -621,7 +621,7 @@ function renderLineChart(periods) {
     const tipLbl = p.sublabel ? `${p.label} ${p.sublabel}` : p.label;
     const tipVal = `R$ ${fmtBRL(v)}`;
     const tipDays = p.businessDays ? ` · ${p.businessDays} dias úteis` : '';
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#D37B5A" stroke="white" stroke-width="${strokeW}"/>
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="#E37B5A" stroke="white" stroke-width="${strokeW}"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tipLbl} · ${tipVal}${tipDays}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
@@ -632,19 +632,19 @@ function renderLineChart(periods) {
     if (v === 0) return '';
     const x = xPos(i);
     const y = yScale(v);
-    const valStr = v >= 1000 ? `R$ ${(v/1000).toFixed(1)}k` : `R$ ${Math.round(v)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="#1A1816" text-anchor="middle" opacity="0.55">${valStr}</text>`;
+    const valStr = 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+    return `<text x="${x.toFixed(1)}" y="${(y - 8).toFixed(1)}" font-size="9" font-weight="500" fill="#E37B5A" text-anchor="middle" opacity="0.8">${valStr}</text>`;
   }).join('');
   
   // Labels do eixo X
   const xLabels = periods.map((p, i) => {
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="7" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">${p.label}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 14}" font-size="10" fill="#8E8E9C" text-anchor="middle" font-weight="400">${p.label}</text>`;
   }).join('');
 
   // Sub-labels (se existir)
   const subLabels = periods.map((p, i) => {
     if (!p.sublabel) return '';
-    return `<text x="${xPos(i).toFixed(1)}" y="${H - 4}" font-size="7" fill="#8A847B" text-anchor="middle" opacity="0.45">${p.sublabel}</text>`;
+    return `<text x="${xPos(i).toFixed(1)}" y="${H - 4}" font-size="9" fill="#8E8E9C" text-anchor="middle">${p.sublabel}</text>`;
   }).join('');
   
   return `
@@ -1443,7 +1443,10 @@ function renderMetasChart(weekRows, metaMensal) {
     const x = xP(i), bH = PAD.top + cH - yS(r.resultado);
     const tipDays = r.businessDays ? ` · ${r.businessDays} dias úteis` : '';
     const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}${tipDays}`;
-    return `<rect x="${(x - barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="#D37B5A" opacity="0.18" style="cursor:pointer"
+    const aboveMeta = r.meta > 0 && r.resultado >= r.meta;
+    const barFill = aboveMeta ? '#5A8F6B' : '#E8E7E2';
+    const barOp   = aboveMeta ? '0.1' : '1';
+    return `<rect x="${(x - barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${barFill}" opacity="${barOp}" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
 
@@ -1470,7 +1473,7 @@ function renderMetasChart(weekRows, metaMensal) {
     const dotR = r.status === 'current' ? 3.5 : 2.5;
     const tipDaysD = r.businessDays ? ` · ${r.businessDays} dias úteis` : '';
     const tip = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}${tipDaysD}`;
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#D37B5A" stroke="white" stroke-width="1.3"/>
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#E37B5A" stroke="white" stroke-width="1.3"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
@@ -1479,36 +1482,40 @@ function renderMetasChart(weekRows, metaMensal) {
   const realLabels = weekRows.map((r, i) => {
     if (r.accumReal <= 0) return '';
     const x = xP(i), y = yS(r.accumReal);
-    const v = r.accumReal >= 1000 ? `R$${(r.accumReal/1000).toFixed(0)}k` : `R$${Math.round(r.accumReal)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="#D37B5A" text-anchor="middle" opacity="0.55">${v}</text>`;
+    const v = 'R$ ' + Math.round(r.accumReal).toLocaleString('pt-BR');
+    const col = r.accumMeta > 0 ? (r.accumReal >= r.accumMeta ? '#5A8F6B' : '#C9392A') : '#E37B5A';
+    return `<text x="${x.toFixed(1)}" y="${(y - 8).toFixed(1)}" font-size="9" font-weight="500" fill="${col}" text-anchor="middle" opacity="0.8">${v}</text>`;
   }).join('');
   const metaLabels = weekRows.map((r, i) => {
     if (r.accumMeta <= 0) return '';
-    const x = xP(i), y = yS(r.accumMeta);
-    const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="#8A847B" text-anchor="middle" opacity="0.55">${v}</text>`;
+    const x = xP(i), yM = yS(r.accumMeta);
+    const yR = r.accumReal > 0 ? yS(r.accumReal) : null;
+    const gap = yR !== null ? Math.abs(yR - yM) : 99;
+    const dy = gap < 12 ? 18 : 14;
+    const v = 'R$ ' + Math.round(r.accumMeta).toLocaleString('pt-BR');
+    return `<text x="${x.toFixed(1)}" y="${(yM + dy).toFixed(1)}" font-size="9" font-weight="500" fill="#8E8E9C" text-anchor="middle" opacity="0.8">${v}</text>`;
   }).join('');
 
   // X labels
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4A453F" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="10" fill="#8E8E9C" text-anchor="middle" font-weight="400">sem ${r.week}</text>`
   ).join('');
 
   // Legend
   const lx = PAD.left, ly = 16;
-  const legend = `<g opacity="0.5">
-    <line x1="${lx}" y1="${ly}" x2="${lx+14}" y2="${ly}" stroke="#D37B5A" stroke-width="1.6"/>
-    <text x="${lx+18}" y="${ly+3}" font-size="7" fill="#4A453F">acum. real</text>
-    <line x1="${lx+78}" y1="${ly}" x2="${lx+92}" y2="${ly}" stroke="#8A847B" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+96}" y="${ly+3}" font-size="7" fill="#8A847B">acum. meta</text>
-    <rect x="${lx+168}" y="${ly-5}" width="10" height="8" fill="#D37B5A"/>
-    <text x="${lx+182}" y="${ly+3}" font-size="7" fill="#4A453F">resultado sem.</text>
+  const legend = `<g opacity="0.6">
+    <line x1="${lx}" y1="${ly}" x2="${lx+14}" y2="${ly}" stroke="#E37B5A" stroke-width="1.6"/>
+    <text x="${lx+18}" y="${ly+4}" font-size="10" fill="#4E4E58" font-weight="400">acum. real</text>
+    <line x1="${lx+88}" y1="${ly}" x2="${lx+102}" y2="${ly}" stroke="#8E8E9C" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="${lx+106}" y="${ly+4}" font-size="10" fill="#4E4E58" font-weight="400">acum. meta</text>
+    <rect x="${lx+184}" y="${ly-4}" width="9" height="8" fill="#E8E7E2"/>
+    <text x="${lx+197}" y="${ly+4}" font-size="10" fill="#4E4E58" font-weight="400">resultado sem.</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}${bars}
-    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8A847B" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
-    ${realPath ? `<path d="${realPath.trim()}" stroke="#D37B5A" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8E8E9C" stroke-width="1" stroke-dasharray="4,3" fill="none"/>` : ''}
+    ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
     ${dots}${realLabels}${metaLabels}${xLabels}${legend}
   </svg>`;
 }
@@ -1621,10 +1628,11 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     if (r.resultado <= 0) return '';
     const x = xP(i);
     const bH = PAD.top + cH - yS(r.resultado);
-    const col = r.meta > 0 && r.resultado >= r.meta ? '#5A8F6B' : '#D37B5A';
-    const op  = r.meta > 0 && r.resultado >= r.meta ? '0.3' : '0.22';
+    const aboveMeta = r.meta > 0 && r.resultado >= r.meta;
+    const barFill = aboveMeta ? '#5A8F6B' : '#E8E7E2';
+    const barOp   = aboveMeta ? '0.1' : '1';
     const tip = `sem ${r.week} · resultado R$ ${fmtBRL(r.resultado)}`;
-    return `<rect x="${(x-barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${col}" opacity="${op}" style="cursor:pointer"
+    return `<rect x="${(x-barW/2).toFixed(1)}" y="${yS(r.resultado).toFixed(1)}" width="${barW.toFixed(1)}" height="${bH.toFixed(1)}" fill="${barFill}" opacity="${barOp}" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
 
@@ -1638,9 +1646,8 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     if (r.accumReal <= 0) return '';
     const x = xP(i), y = yS(r.accumReal);
     const dotR = r.status === 'current' ? 3.5 : 2.5;
-    const col  = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#D37B5A';
     const tip  = `sem ${r.week} · acum. real R$ ${fmtBRL(r.accumReal)}`;
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="${col}" stroke="white" stroke-width="1.3"/>
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${dotR}" fill="#E37B5A" stroke="white" stroke-width="1.3"/>
 <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="14" fill="transparent" style="cursor:pointer"
   onmouseenter="showChartTip(event,'${tip}')" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
   }).join('');
@@ -1648,37 +1655,40 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
   const realLabels = weekRows.map((r, i) => {
     if (r.accumReal <= 0) return '';
     const x = xP(i), y = yS(r.accumReal);
-    const v = r.accumReal >= 1000 ? `R$${(r.accumReal/1000).toFixed(0)}k` : `R$${Math.round(r.accumReal)}`;
-    const col = r.accumMeta > 0 && r.accumReal >= r.accumMeta ? '#5A8F6B' : '#D37B5A';
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="${col}" text-anchor="middle" opacity="0.55">${v}</text>`;
+    const v = 'R$ ' + Math.round(r.accumReal).toLocaleString('pt-BR');
+    const col = r.accumMeta > 0 ? (r.accumReal >= r.accumMeta ? '#5A8F6B' : '#C9392A') : '#E37B5A';
+    return `<text x="${x.toFixed(1)}" y="${(y - 8).toFixed(1)}" font-size="9" font-weight="500" fill="${col}" text-anchor="middle" opacity="0.8">${v}</text>`;
   }).join('');
   const metaLabels = weekRows.map((r, i) => {
     if (r.accumMeta <= 0) return '';
-    const x = xP(i), y = yS(r.accumMeta);
-    const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
-    return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="7" font-weight="400" fill="#8A847B" text-anchor="middle" opacity="0.55">${v}</text>`;
+    const x = xP(i), yM = yS(r.accumMeta);
+    const yR = r.accumReal > 0 ? yS(r.accumReal) : null;
+    const gap = yR !== null ? Math.abs(yR - yM) : 99;
+    const dy = gap < 12 ? 18 : 14;
+    const v = 'R$ ' + Math.round(r.accumMeta).toLocaleString('pt-BR');
+    return `<text x="${x.toFixed(1)}" y="${(yM + dy).toFixed(1)}" font-size="9" font-weight="500" fill="#8E8E9C" text-anchor="middle" opacity="0.8">${v}</text>`;
   }).join('');
 
   const xLabels = weekRows.map((r, i) =>
-    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="7" fill="#4E4E58" text-anchor="middle" font-weight="400" opacity="0.45">sem ${r.week}</text>`
+    `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="10" fill="#8E8E9C" text-anchor="middle" font-weight="400">sem ${r.week}</text>`
   ).join('');
 
   const lx = PAD.left, ly = 16;
-  const legend = `<g opacity="0.5">
-    <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#D37B5A" stroke-width="1.6"/>
-    <text x="${lx+16}" y="${ly+3}" font-size="7" fill="#4E4E58">acum. real</text>
-    <line x1="${lx+74}" y1="${ly}" x2="${lx+86}" y2="${ly}" stroke="#8A847B" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="${lx+90}" y="${ly+3}" font-size="7" fill="#8A847B">acum. meta</text>
-    <rect x="${lx+156}" y="${ly-5}" width="9" height="7" fill="#5A8F6B"/>
-    <text x="${lx+169}" y="${ly+3}" font-size="7" fill="#5A8F6B">≥ meta</text>
-    <rect x="${lx+206}" y="${ly-5}" width="9" height="7" fill="#D37B5A"/>
-    <text x="${lx+219}" y="${ly+3}" font-size="7" fill="#D37B5A">&lt; meta</text>
+  const legend = `<g opacity="0.6">
+    <line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="#E37B5A" stroke-width="1.6"/>
+    <text x="${lx+16}" y="${ly+4}" font-size="10" fill="#4E4E58" font-weight="400">acum. real</text>
+    <line x1="${lx+82}" y1="${ly}" x2="${lx+94}" y2="${ly}" stroke="#8E8E9C" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="${lx+98}" y="${ly+4}" font-size="10" fill="#4E4E58" font-weight="400">acum. meta</text>
+    <rect x="${lx+170}" y="${ly-4}" width="9" height="8" fill="#5A8F6B" opacity="0.25"/>
+    <text x="${lx+183}" y="${ly+4}" font-size="10" fill="#5A8F6B" font-weight="400">≥ meta</text>
+    <rect x="${lx+224}" y="${ly-4}" width="9" height="8" fill="#E8E7E2"/>
+    <text x="${lx+237}" y="${ly+4}" font-size="10" fill="#8E8E9C" font-weight="400">&lt; meta</text>
   </g>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     ${grid}${bars}
-    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8A847B" stroke-width="1" stroke-dasharray="4,2.5" fill="none"/>` : ''}
-    ${realPath ? `<path d="${realPath.trim()}" stroke="#D37B5A" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+    ${metaPath ? `<path d="${metaPath.trim()}" stroke="#8E8E9C" stroke-width="1" stroke-dasharray="4,3" fill="none"/>` : ''}
+    ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
     ${dots}${realLabels}${metaLabels}${xLabels}${legend}
   </svg>`;
 }
