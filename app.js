@@ -1662,6 +1662,23 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     return `<text x="${x.toFixed(1)}" y="${(y - 6).toFixed(1)}" font-size="6" font-weight="600" fill="${col}" text-anchor="middle" opacity="1">${v}</text>`;
   }).join('');
 
+  const metaLabels = weekRows.map((r, i) => {
+    if (r.accumMeta <= 0) return '';
+    const x = xP(i);
+    const yMeta = yS(r.accumMeta);
+    const yReal = r.accumReal > 0 ? yS(r.accumReal) : null;
+    const v = r.accumMeta >= 1000 ? `R$${(r.accumMeta/1000).toFixed(0)}k` : `R$${Math.round(r.accumMeta)}`;
+    // anti-colisão: se os pontos estiverem a menos de 14 unidades de distância,
+    // empurra o label da meta para o lado oposto ao real
+    let labelY;
+    if (yReal != null && Math.abs(yMeta - yReal) < 14) {
+      labelY = yMeta > yReal ? yMeta + 10 : yMeta - 12;
+    } else {
+      labelY = yMeta - 6;
+    }
+    return `<text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" font-size="4.5" font-weight="400" fill="#D0CCC6" text-anchor="middle" opacity="1">${v}</text>`;
+  }).join('');
+
   const xLabels = weekRows.map((r, i) =>
     `<text x="${xP(i).toFixed(1)}" y="${H-8}" font-size="6" fill="#4E4E58" text-anchor="middle" font-weight="700" opacity="0.45">sem ${r.week}</text>`
   ).join('');
@@ -1680,7 +1697,7 @@ function renderMetasV2Chart(weekRows, metaMensal, isCurrentMonth) {
     ${grid}
     ${metaPath ? `<path d="${metaPath.trim()}" stroke="#D0CCC6" stroke-width="1" stroke-dasharray="4,2.5" fill="none" opacity="0.45"/>` : ''}
     ${realPath ? `<path d="${realPath.trim()}" stroke="#E37B5A" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
-    ${dots}${realLabels}${xLabels}${legend}${hint}
+    ${dots}${realLabels}${metaLabels}${xLabels}${legend}${hint}
   </svg>`;
 }
 
