@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -23,8 +23,9 @@
     <nav class="sidebar-nav" id="sidebarNav" style="display:none">
       <div class="sidebar-section-label">📋 Visualizações</div>
       <button class="sidebar-item active" data-tab="radar">📊 Operação</button>
-      <button class="sidebar-item" data-tab="metas">🎯 Metas</button>
-      <button class="sidebar-item" data-tab="metas2">✦ Metas v2</button>
+      <button class="sidebar-item" data-tab="metas2">🎯 Report | Metas</button>
+      <button class="sidebar-item" data-tab="financeiro">💰 Report | Financeiro</button>
+      <button class="sidebar-item" data-tab="precificacao">💡 Precificação</button>
     </nav>
     <div class="sidebar-footer">
       <div id="syncBar" class="sync-bar hidden">
@@ -168,78 +169,12 @@
       </div><!-- .bloco -->
     </div>
 
-    <!-- METAS VIEW -->
-    <div id="viewMetas" style="display:none">
-
-      <div class="view-header">
-        <div class="view-title">🎯 Atingimento vs as metas</div>
-      </div>
-
-      <div class="metas-topbar">
-        <div class="metas-nav">
-          <button class="ghost metas-nav-btn" id="metasPrevMonth">&#9664;</button>
-          <span class="metas-month-label" id="metasMonthLabel">—</span>
-          <button class="ghost metas-nav-btn" id="metasNextMonth">&#9654;</button>
-        </div>
-      </div>
-
-      <div class="metas-panel">
-        <div class="metas-hero-inner">
-          <div class="metas-hero-vals" id="metasHeroVals">—</div>
-          <div class="metas-bar-wrap">
-            <div class="metas-bar-track" id="metasBarTrack">
-              <div class="metas-bar-fill" id="metasBarFill"></div>
-              <div class="metas-bar-now" id="metasBarNow" style="display:none"></div>
-              <div class="metas-bar-now-pct" id="metasBarNowPct" style="display:none"></div>
-            </div>
-          </div>
-          <div class="metas-hero-sub" id="metasHeroSub"></div>
-        </div>
-        <div class="metas-callout-inner">
-          <div class="gap-box">
-            <div class="gap-box-label">Valor total para bater a meta</div>
-            <div class="gap-box-amount">
-              <span class="gap-rs">R$</span><span class="gap-box-val" id="metasFalta">—</span>
-            </div>
-            <div class="gap-box-sub">&nbsp;</div>
-          </div>
-          <div class="gap-box">
-            <div class="gap-box-label">Valor diário para bater a meta</div>
-            <div class="gap-box-amount">
-              <span class="gap-rs">R$</span><span class="gap-box-val" id="metasPorDia">—</span>
-            </div>
-            <div class="gap-box-sub" id="metasDiasLabel"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="metas-bottom">
-        <div class="metas-chart-wrap" id="metasChart"></div>
-        <div class="metas-table-scroll">
-          <table class="metas-tbl">
-            <thead>
-              <tr>
-                <th>Semana</th>
-                <th class="r">Resultado</th>
-                <th class="r">Meta</th>
-                <th class="r">Acum. Real</th>
-                <th class="r">Acum. Meta</th>
-                <th class="r">Var. Acum.</th>
-                <th class="r">Var. %</th>
-              </tr>
-            </thead>
-            <tbody id="metasBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
     <!-- METAS V2 VIEW -->
     <div id="viewMetasV2" style="display:none">
 
       <div class="view-header">
-        <div class="view-title">✦ Metas — nova hierarquia</div>
+        <div class="view-title">🎯 Atingimento vs as metas</div>
+        <div class="view-subtitle">Resultado semanal e projeção do mês</div>
       </div>
 
       <div class="metas-topbar">
@@ -250,57 +185,423 @@
         </div>
       </div>
 
-      <!-- CAMADA 1: síntese -->
-      <div id="v2StatusBanner" class="v2-status-banner">
-        <div class="v2-bc">
-          <div class="v2-bc-label">Status</div>
-          <div id="v2StatusChip" class="v2-status-chip">—</div>
+      <!-- Narrativa do mês -->
+      <div class="v2-narrative" id="v2Narrative" style="display:none">
+        <div class="v2-narrative-header">
+          <div class="v2-narrative-label" id="v2NarrativeLabel">Leitura do mês</div>
         </div>
-        <div class="v2-bc">
-          <div class="v2-bc-label">Atingimento</div>
-          <div id="v2StatusPct" class="v2-status-pct">—</div>
-        </div>
-        <div class="v2-bc">
-          <div class="v2-bc-label">Realizado / Meta</div>
-          <div id="v2StatusVals" class="v2-status-vals">—</div>
-        </div>
-        <div class="v2-bc">
-          <div class="v2-bc-label">Gap total</div>
-          <div id="v2StatusGap" class="v2-status-gap">—</div>
-        </div>
-        <div class="v2-bc v2-bc-end">
-          <div class="v2-bc-label">Gap menos projeção do dia</div>
-          <div id="v2StatusLiquido" class="v2-status-gap">—</div>
-        </div>
+        <div class="v2-narrative-body" id="v2NarrativeText"></div>
       </div>
 
-      <!-- CAMADA 2: diagnóstico + detalhe -->
-      <div class="v2-diagnosis">
-        <div class="v2-chart-col">
-          <div class="v2-chart-wrap" id="v2ChartArea"></div>
-          <div id="v2TrendText" class="v2-trend-text" style="display:none"></div>
-        </div>
-        <div class="v2-detail">
-          <div class="v2-table-scroll">
-            <table class="v2-tbl">
-              <thead>
-                <tr>
-                  <th>Semana</th>
-                  <th class="r">Resultado</th>
-                  <th class="r">Meta</th>
-                  <th class="r">Acum. Real</th>
-                  <th class="r">Acum. Meta</th>
-                  <th class="r">Var. Acum.</th>
-                  <th class="r">Var. %</th>
-                </tr>
-              </thead>
-              <tbody id="v2Body"></tbody>
-            </table>
+      <!-- GRID PRINCIPAL: 2fr | 1fr -->
+      <div id="v2StatusBanner" class="v2-layout-grid">
+
+        <!-- Coluna esquerda: 2 boxes do banner + gráfico -->
+        <div class="v2-left-col">
+          <div class="v2-banner-left">
+            <div class="v2-bc">
+              <div class="v2-bc-label">Status</div>
+              <div id="v2StatusChip" class="v2-status-chip">—</div>
+              <div id="v2StatusSub" class="v2-bc-sub"></div>
+            </div>
+            <div class="v2-bc">
+              <div class="v2-bc-label">Atingimento</div>
+              <div id="v2StatusPct" class="v2-status-pct">—</div>
+              <div id="v2AtingSub" class="v2-bc-sub"></div>
+            </div>
           </div>
+          <div class="v2-chart-col">
+            <div class="v2-chart-wrap" id="v2ChartArea"></div>
+            <div id="v2TrendText" class="v2-trend-text" style="display:none"></div>
+          </div>
+        </div>
+
+        <!-- Coluna direita: Realizado/Meta + cards -->
+        <div class="v2-right-col">
+          <div class="v2-bc">
+            <div class="v2-bc-label">Realizado / Meta</div>
+            <div id="v2StatusVals" class="v2-status-vals">—</div>
+            <div id="v2ValsSub" class="v2-bc-sub"></div>
+          </div>
+          <div class="v2-card">
+            <div class="v2-card-label">Gap total</div>
+            <div class="v2-card-val" id="v2GapTotalVal">—</div>
+            <div class="v2-card-sub" id="v2GapTotalSub">valor que falta para bater a meta</div>
+          </div>
+          <div class="v2-card">
+            <div class="v2-card-label">Gap menos projeção do dia</div>
+            <div class="v2-card-val" id="v2LiquidoCardVal">—</div>
+            <div class="v2-card-sub" id="v2LiquidoCardSub">valor que falta descontando o que temos previsto pra fechar hoje</div>
+          </div>
+          <div class="v2-card">
+            <div class="v2-card-label">Gap por dia</div>
+            <div class="v2-card-val" id="v2DiaCardVal">—</div>
+            <div class="v2-card-sub" id="v2DiaCardDesc">valor que temos que fazer por cada dia útil que resta no mês</div>
+            <div class="v2-card-sub" id="v2DiaCardSub"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tabela semanal abaixo -->
+      <div class="v2-detail">
+        <div class="v2-table-scroll">
+          <table class="v2-tbl">
+            <thead>
+              <tr>
+                <th>Semana</th>
+                <th class="r">D.U.</th>
+                <th class="r">Resultado</th>
+                <th class="r">Meta</th>
+                <th class="r">Acum. Real</th>
+                <th class="r">Acum. Meta</th>
+                <th class="r">Var. Acum.</th>
+                <th class="r">Var. %</th>
+              </tr>
+            </thead>
+            <tbody id="v2Body"></tbody>
+          </table>
         </div>
       </div>
 
     </div><!-- viewMetasV2 -->
+
+    <!-- REPORT | FINANCEIRO -->
+    <div id="viewFinanceiro" style="display:none">
+
+      <div class="view-header">
+        <div class="view-title">💰 Dados financeiros</div>
+        <div class="view-subtitle">Capital por safra · yield · payback</div>
+      </div>
+
+      <div class="fin-filter-bar">
+        <button class="preset-btn active fin-filter-btn" data-period="all">Tudo</button>
+        <button class="preset-btn fin-filter-btn" data-period="ltm">LTM <span class="fin-filter-hint">últimos 12 meses</span></button>
+        <button class="preset-btn fin-filter-btn" data-period="quarter">Por quarter</button>
+      </div>
+
+      <div class="kpi-row visible" id="finKpiRow">
+        <div class="kpi-card">
+          <div class="kpi-label">Principal Investido</div>
+          <div class="kpi-value"><span class="kpi-currency">R$</span><span id="finKpiPrincipal">—</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Deságio Total</div>
+          <div class="kpi-value"><span class="kpi-currency">R$</span><span id="finKpiDesagio">—</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Yield Total médio</div>
+          <div class="kpi-value"><span id="finKpiYieldTot">—</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Yield a.m. médio</div>
+          <div class="kpi-value"><span id="finKpiYieldAm">—</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Casos</div>
+          <div class="kpi-value"><span id="finKpiCasos">—</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Payback médio</div>
+          <div class="kpi-value"><span id="finKpiPayback">—</span><span class="kpi-unit">m</span></div>
+        </div>
+      </div>
+
+      <div class="bloco">
+        <div class="history-section">
+          <div class="history-header-row">
+            <div class="history-header" id="finLTMHeader">Evolução da operação</div>
+          </div>
+          <div id="finLTMChart"></div>
+        </div>
+      </div>
+
+      <div class="bloco">
+        <div class="history-section">
+          <div class="history-header-row">
+            <div class="history-header" id="finYPHeader">Yield a.m. e Payback</div>
+          </div>
+          <div id="finYPChart"></div>
+        </div>
+      </div>
+
+      <div class="bloco">
+        <div class="history-section">
+          <div class="history-header" id="finTableHeader">Performance por safra</div>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Safra</th>
+                <th class="num">Casos</th>
+                <th class="num">Dias úteis</th>
+                <th class="num">Principal</th>
+                <th class="num">Deságio</th>
+                <th class="num">Yield total</th>
+                <th class="num">Yield a.m.</th>
+                <th class="num">Payback</th>
+                <th class="num">Parcel. médio</th>
+              </tr>
+            </thead>
+            <tbody id="finSafraBody"></tbody>
+            <tfoot id="finSafraTfoot"></tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Análise do Perfil da Carteira -->
+      <div class="v2-carteira" id="v2CarteiraPerfil" style="display:none">
+        <div class="v2-carteira-header">
+          <div class="v2-carteira-title" id="v2CarteiraTitle">Análise do Perfil da Carteira</div>
+        </div>
+        <div class="v2-carteira-body" id="v2CarteiraBody"></div>
+      </div>
+
+    </div><!-- viewFinanceiro -->
+
+    <!-- PRECIFICAÇÃO DINÂMICA -->
+    <div id="viewPrecificacao" style="display:none">
+
+      <!-- Sub-tab navigation -->
+      <div class="prec-subnav">
+        <button class="prec-subtab active" data-prectab="caso">Análise de Caso</button>
+        <button class="prec-subtab" data-prectab="simulador">Simulador</button>
+      </div>
+
+      <!-- ── Sub-view: Proposta Rápida (hidden) ── -->
+      <div id="precSubRapida" class="prec-subview" style="display:none">
+        <div class="bloco">
+          <div class="history-header">Proposta Rápida — calcule o que oferecer ao cliente</div>
+          <div class="pr-form">
+            <div class="pr-main-inputs">
+              <div class="prec-input-wrap">
+                <label class="prec-label">Valor da parcela (R$)</label>
+                <input type="number" id="prP" class="prec-input-hero" placeholder="0" min="1" step="1">
+              </div>
+              <div class="prec-input-wrap">
+                <label class="prec-label">Nº de parcelas</label>
+                <select id="prN" class="pr-select-n"></select>
+              </div>
+            </div>
+            <div class="pr-rate-config">
+              <span class="prec-label" style="display:block;margin-bottom:6px">Parâmetros de pricing</span>
+              <div class="prec-param-row"><span class="prec-unit prec-rate-label">base</span><input type="number" id="prBase" class="prec-input-sm" value="15" min="0" max="100" step="0.5"><span class="prec-unit">%</span></div>
+              <div class="prec-param-row"><span class="prec-unit prec-rate-label">mensal</span><input type="number" id="prMonthly" class="prec-input-sm" value="5" min="0" max="30" step="0.5"><span class="prec-unit">%</span></div>
+            </div>
+          </div>
+          <div id="prResult"></div>
+        </div>
+      </div>
+
+      <!-- ── Sub-view: Análise de Caso ── -->
+      <div id="precSubCaso" class="prec-subview">
+        <div class="caso-guide-box">
+          <div class="caso-guide-header">
+            <span class="caso-guide-icon">⚙</span>
+            <span class="caso-guide-title">Como funciona o pricing</span>
+          </div>
+          <div class="caso-guide-body">
+            <div class="caso-guide-levers">
+              <div class="caso-guide-lever">
+                <div class="caso-guide-lever-name">Taxa base</div>
+                <div class="caso-guide-lever-desc">Desconto fixo cobrado independente do prazo. É o "custo de entrada" da operação — não muda com o número de parcelas.</div>
+              </div>
+              <div class="caso-guide-lever">
+                <div class="caso-guide-lever-name">Taxa mensal</div>
+                <div class="caso-guide-lever-desc">Custo adicional por mês de espera. Cada parcela extra aumenta o desconto composto — mais parcelas = mais deságio, mas também mais risco de crédito.</div>
+              </div>
+              <div class="caso-guide-lever">
+                <div class="caso-guide-lever-name">Yield a.m.</div>
+                <div class="caso-guide-lever-desc">Rentabilidade mensal da operação (deságio ÷ parcelas). É o número que define a qualidade do deal — target mínimo de 8%, ideal acima de 10%.</div>
+              </div>
+            </div>
+            <div class="caso-guide-playbook">
+              <div class="caso-guide-playbook-title">Playbook de negociação</div>
+              <div class="caso-guide-playbook-rules">
+                <div class="caso-guide-rule"><span class="caso-guide-rule-num">1</span>Preferir o maior número de parcelas que ainda entregue yield ≥ 10% — maximiza o deságio sem abrir mão de rentabilidade.</div>
+                <div class="caso-guide-rule"><span class="caso-guide-rule-num">2</span>Se não houver opção ≥ 10%, aceitar a maior N com yield ≥ 8% (classificação "ok").</div>
+                <div class="caso-guide-rule"><span class="caso-guide-rule-num">3</span>Nunca fechar abaixo de 7% sem aprovação. Deals entre 7–8% exigem justificativa.</div>
+                <div class="caso-guide-rule"><span class="caso-guide-rule-num">4</span>Ao negociar, começe pela oferta recomendada. Se o cliente resistir, reduza parcelas — o yield sobe e você ainda preserva a operação.</div>
+              </div>
+            </div>
+          </div>
+          <div class="caso-guide-steps">
+            <div class="caso-guide-steps-title">Como usar esta calculadora</div>
+            <div class="caso-guide-step"><span class="caso-guide-step-num">1</span><span>Informe o <strong>valor total do crédito</strong> e o <strong>total de parcelas</strong> do cliente</span></div>
+            <div class="caso-guide-step"><span class="caso-guide-step-num">2</span><span>A ferramenta simula automaticamente todas as combinações possíveis de antecipação</span></div>
+            <div class="caso-guide-step"><span class="caso-guide-step-num">3</span><span>A <strong>oferta recomendada</strong> é a que maximiza o deságio mantendo yield aceitável</span></div>
+            <div class="caso-guide-step"><span class="caso-guide-step-num">4</span><span>Clique em qualquer linha da tabela para ver os detalhes completos da proposta</span></div>
+          </div>
+        </div>
+
+        <div class="bloco">
+          <div class="history-header">Análise de Caso — encontre a oferta ideal dado o crédito do cliente</div>
+          <div class="caso-form">
+            <div class="prec-input-wrap">
+              <label class="prec-label">Valor total do crédito (R$)</label>
+              <input type="number" id="casoTotal" class="prec-input-hero" placeholder="0" min="1" step="1">
+            </div>
+            <div class="prec-input-wrap">
+              <label class="prec-label">Total de parcelas</label>
+              <select id="casoNTotal" class="pr-select-n"></select>
+            </div>
+            <div class="caso-rate-config">
+              <span class="prec-label" style="display:block;margin-bottom:6px">Parâmetros</span>
+              <div class="prec-param-row"><span class="prec-unit prec-rate-label">base</span><input type="number" id="casoBase" class="prec-input-sm" value="15" min="0" max="100" step="0.5"><span class="prec-unit">%</span></div>
+              <div class="prec-param-row"><span class="prec-unit prec-rate-label">mensal</span><input type="number" id="casoMonthly" class="prec-input-sm" value="5" min="0" max="30" step="0.5"><span class="prec-unit">%</span></div>
+            </div>
+          </div>
+          <div id="casoResult"></div>
+        </div>
+      </div>
+
+      <!-- ── Sub-view: Modo Negociação ── -->
+      <div id="precSubNegociacao" class="prec-subview" style="display:none">
+        <div class="bloco">
+          <div class="history-header">Modo Negociação — arraste para calibrar a oferta</div>
+          <div class="neg-form">
+            <div class="prec-input-wrap">
+              <label class="prec-label">Valor da parcela (R$)</label>
+              <input type="number" id="negP" class="prec-input-hero" placeholder="0" min="1" step="1">
+            </div>
+            <div class="prec-input-wrap">
+              <label class="prec-label">Nº de parcelas</label>
+              <select id="negN" class="pr-select-n"></select>
+            </div>
+            <div class="neg-face-label" id="negFace"></div>
+          </div>
+          <div id="negSliderSection" style="display:none">
+            <div class="neg-slider-header">
+              <span>← operação melhor</span>
+              <span>cliente recebe mais →</span>
+            </div>
+            <div class="neg-track-wrap">
+              <div class="neg-track" id="negTrack"></div>
+              <input type="range" id="negSlider" class="neg-slider" min="20" max="97" value="65">
+            </div>
+            <div class="neg-zone-labels" id="negZoneLabels"></div>
+            <div id="negResult" class="neg-result"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Sub-view: Simulador ── -->
+      <div id="precSubSimulador" class="prec-subview" style="display:none">
+
+        <!-- Lever cards -->
+        <div class="prec-levers-row">
+          <div class="prec-lever-card">
+            <div class="prec-lever-kicker">Alavanca 01</div>
+            <div class="prec-lever-name">Yield Total</div>
+            <div class="prec-lever-eq">deságio ÷ face value</div>
+            <div class="prec-lever-text">A alavanca principal de pricing. Não é afetada pelo número de parcelas — só muda se você cobrar mais ou menos desconto sobre o valor do ativo.</div>
+          </div>
+          <div class="prec-lever-card">
+            <div class="prec-lever-kicker">Alavanca 02</div>
+            <div class="prec-lever-name">Yield a.m.</div>
+            <div class="prec-lever-eq">yield total ÷ parcelas</div>
+            <div class="prec-lever-text">Mais parcelas comprimem o yield mensal. Para mantê-lo acima de 8%, o yield total precisa crescer proporcionalmente ao número de parcelas.</div>
+          </div>
+          <div class="prec-lever-card">
+            <div class="prec-lever-kicker">Alavanca 03</div>
+            <div class="prec-lever-name">Payback</div>
+            <div class="prec-lever-eq">(capital ÷ face) × parcelas</div>
+            <div class="prec-lever-text">Mede em quantos meses o capital retorna. Mais parcelas imobilizam o capital por mais tempo. Alvo: abaixo de 2 meses.</div>
+          </div>
+        </div>
+
+        <!-- Playbook -->
+        <div class="bloco">
+          <div class="history-header">Mínimos operacionais</div>
+          <div class="prec-rules-grid">
+            <div class="prec-rule prec-rule-ok">
+              <div class="prec-rule-range">1 – 2 parcelas</div>
+              <div class="prec-rule-metrics">
+                <span>Yield total <strong>&ge; 20%</strong></span>
+                <span>Yield a.m. <strong>&ge; 10%</strong></span>
+              </div>
+              <div class="prec-rule-label">Operação padrão</div>
+            </div>
+            <div class="prec-rule prec-rule-ok">
+              <div class="prec-rule-range">3 – 4 parcelas</div>
+              <div class="prec-rule-metrics">
+                <span>Yield total <strong>&ge; 30%</strong></span>
+                <span>Yield a.m. <strong>&ge; 8%</strong></span>
+              </div>
+              <div class="prec-rule-label">Aceitável com pricing correto</div>
+            </div>
+            <div class="prec-rule prec-rule-warn">
+              <div class="prec-rule-range">5 – 6 parcelas</div>
+              <div class="prec-rule-metrics">
+                <span>Yield total <strong>&ge; 40%</strong></span>
+                <span>Yield a.m. <strong>&ge; 7%</strong></span>
+              </div>
+              <div class="prec-rule-label">Atenção ao tenor</div>
+            </div>
+            <div class="prec-rule prec-rule-alert">
+              <div class="prec-rule-range">&ge; 7 parcelas</div>
+              <div class="prec-rule-metrics">
+                <span>Yield total <strong>&ge; N × 9%</strong></span>
+                <span>Yield a.m. <strong>&ge; 7%</strong></span>
+              </div>
+              <div class="prec-rule-label">Exige aprovação especial</div>
+            </div>
+          </div>
+          <div class="prec-insight">
+            Referência abr/26 — 10 deals com face &gt; R$10k foram precificados a 15–21% com 6–11 parcelas: yield a.m. resultante de 2,8% e payback de 7,7 meses. Capital imobilizado, retorno destruído.
+          </div>
+        </div>
+
+        <!-- Calculator -->
+        <div class="bloco">
+          <div class="history-header">Calculadora de cenários</div>
+          <div class="prec-calc-area">
+            <div class="prec-calc-main-input">
+              <label class="prec-label">Valor da parcela (R$)</label>
+              <input type="number" id="precValorParcela" class="prec-input-hero" placeholder="0" min="1" step="1">
+            </div>
+            <div class="prec-calc-divider"></div>
+            <div class="prec-scenario-grid">
+              <div class="prec-scenario-col">
+                <label class="prec-label">Cenário 1</label>
+                <select id="precN1" class="prec-select"></select>
+                <div class="prec-scenario-rates">
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">base</span><input type="number" id="precBase1" class="prec-input-sm" value="15" min="0" max="100" step="0.5"><span class="prec-unit">%</span></div>
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">mensal</span><input type="number" id="precMonthly1" class="prec-input-sm" value="5" min="0" max="30" step="0.5"><span class="prec-unit">%</span></div>
+                </div>
+              </div>
+              <div class="prec-scenario-col">
+                <label class="prec-label">Cenário 2</label>
+                <select id="precN2" class="prec-select"></select>
+                <div class="prec-scenario-rates">
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">base</span><input type="number" id="precBase2" class="prec-input-sm" value="15" min="0" max="100" step="0.5"><span class="prec-unit">%</span></div>
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">mensal</span><input type="number" id="precMonthly2" class="prec-input-sm" value="5" min="0" max="30" step="0.5"><span class="prec-unit">%</span></div>
+                </div>
+              </div>
+              <div class="prec-scenario-col">
+                <label class="prec-label">Cenário 3</label>
+                <select id="precN3" class="prec-select"></select>
+                <div class="prec-scenario-rates">
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">base</span><input type="number" id="precBase3" class="prec-input-sm" value="15" min="0" max="100" step="0.5"><span class="prec-unit">%</span></div>
+                  <div class="prec-param-row"><span class="prec-unit prec-rate-label">mensal</span><input type="number" id="precMonthly3" class="prec-input-sm" value="5" min="0" max="30" step="0.5"><span class="prec-unit">%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="prec-legend">
+            <span class="prec-legend-title">Classificação do yield a.m.</span>
+            <div class="prec-legend-items">
+              <div class="prec-legend-item"><span class="prec-ym prec-ym-ok">✓ excelente</span><span class="prec-legend-thresh">&ge; 10% a.m. — operação ideal</span></div>
+              <div class="prec-legend-item"><span class="prec-ym prec-ym-ok">✓ ok</span><span class="prec-legend-thresh">&ge; 8% a.m. — aceitável</span></div>
+              <div class="prec-legend-item"><span class="prec-ym prec-ym-warn">⚠ atenção</span><span class="prec-legend-thresh">&ge; 7% a.m. — requer aprovação</span></div>
+              <div class="prec-legend-item"><span class="prec-ym prec-ym-alert">✕ abaixo do mínimo</span><span class="prec-legend-thresh">&lt; 7% a.m. — não aprovado</span></div>
+            </div>
+          </div>
+          <div id="precResults" class="prec-results"><div class="prec-empty">Informe o valor da parcela para gerar os cenários.</div></div>
+        </div>
+
+      </div><!-- precSubSimulador -->
+
+    </div><!-- viewPrecificacao -->
 
   </main>
 
@@ -320,6 +621,6 @@
   <img src="logos/igual-logo-monochrome-black.svg" alt="igual" class="corner-logo-img">
 </div>
 <div id="chartTooltip" class="chart-tooltip"></div>
-<script src="app.js"></script>
+<script src="app.js?v=10"></script>
 
 </body></html>

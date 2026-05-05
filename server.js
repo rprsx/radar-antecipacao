@@ -50,6 +50,13 @@ app.get('/api/metas', async (req, res) => {
   }
 });
 
+app.get('/api/fin-auth', (req, res) => {
+  const expected = process.env.FIN_PIN || '';
+  if (!expected) return res.status(503).json({ ok: false, error: 'FIN_PIN não configurado' });
+  if (req.query.pin === expected) return res.json({ ok: true });
+  res.status(401).json({ ok: false });
+});
+
 app.get('/api/pipeline', async (req, res) => {
   try {
     const { rows } = await pool.query(
