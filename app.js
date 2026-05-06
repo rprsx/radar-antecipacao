@@ -1334,6 +1334,14 @@ async function openFinanceiroTab() {
       const tr = e.target.closest('tr[data-pkey]');
       if (tr) openDrillDrawer(tr.dataset.pkey);
     });
+    document.getElementById('v2CarteiraPrev').addEventListener('click', () => {
+      _carteiraMonth--; if (_carteiraMonth < 1) { _carteiraMonth = 12; _carteiraYear--; }
+      updateFinanceiroView();
+    });
+    document.getElementById('v2CarteiraNext').addEventListener('click', () => {
+      _carteiraMonth++; if (_carteiraMonth > 12) { _carteiraMonth = 1; _carteiraYear++; }
+      updateFinanceiroView();
+    });
     _finInitialized = true;
   }
   document.getElementById('viewFinanceiro').style.display = 'block';
@@ -1995,6 +2003,8 @@ function updateMetasV2View() {
 
 const MESES_SHORT_FIN = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 let _finPeriod = 'all';
+let _carteiraYear  = new Date().getFullYear();
+let _carteiraMonth = new Date().getMonth() + 1;
 let _finInitialized = false;
 
 function _makeSafraEntry(key, label, deals) {
@@ -2292,8 +2302,7 @@ function updateFinanceiroView() {
   </tr>`;
 
   // ── Análise do Perfil da Carteira ──
-  const now = new Date();
-  const curY = now.getFullYear(), curM = now.getMonth() + 1;
+  const curY = _carteiraYear, curM = _carteiraMonth;
   const prevM = curM === 1 ? 12 : curM - 1;
   const prevY = curM === 1 ? curY - 1 : curY;
   const carteiraDeals     = allDealsData.filter(d => isPago(d) && d.ano === curY && d.mes === curM);
