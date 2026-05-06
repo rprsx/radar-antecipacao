@@ -78,7 +78,7 @@ app.get('/api/mutuo-stats', async (req, res) => {
     const { rows } = await pool.query(
       'SELECT * FROM sheets_antecipacao.pipeline_web ORDER BY _row ASC'
     );
-    const pagos = rows.filter(r => r.status && r.status.toLowerCase() === 'pago');
+    const pagos = rows.filter(r => r.status_fechamento && r.status_fechamento.toLowerCase().includes('pago'));
     const n = pagos.length;
     if (n === 0) return res.json({ kpis: {}, safras: [] });
 
