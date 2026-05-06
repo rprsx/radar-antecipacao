@@ -2309,9 +2309,10 @@ function updateFinanceiroView() {
   const carteiraPrevDeals = allDealsData.filter(d => isPago(d) && d.ano === prevY && d.mes === prevM);
   const carteiraEl   = document.getElementById('v2CarteiraPerfil');
   const carteiraHTML = buildCarteiraPerfilHTML(carteiraDeals, carteiraPrevDeals);
+  const mesLabel = `${MESES_METAS[curM - 1]} ${curY}`;
+  document.getElementById('v2CarteiraNavLabel').textContent = mesLabel;
   if (carteiraHTML) {
-    document.getElementById('v2CarteiraTitle').textContent =
-      `Análise do Perfil da Carteira — ${MESES_METAS[curM - 1]} ${curY}`;
+    document.getElementById('v2CarteiraTitle').textContent = 'Análise do Perfil da Carteira';
     document.getElementById('v2CarteiraBody').innerHTML = carteiraHTML;
     carteiraEl.style.display = 'block';
   } else {
