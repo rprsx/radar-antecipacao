@@ -733,7 +733,7 @@ function buildHistoryPeriods() {
     let daysBack = 1;
     while (periods.length < 5) {
       const ref = new Date(today); ref.setDate(today.getDate() - daysBack++); ref.setHours(0,0,0,0);
-      if (ref.getDay() === 0 || ref.getDay() === 6) continue;
+      if (!isBizDay(ref)) continue;
       const deals = allDealsData.filter(d => isPago(d) && d.data_fechamento && sameDay(d.data_fechamento, ref));
       periods.unshift({ label: `${String(ref.getDate()).padStart(2,'0')}/${mesesNomes[ref.getMonth()].toLowerCase()}`, sublabel: diasAbr[ref.getDay()], deals, isCurrent: false });
     }
