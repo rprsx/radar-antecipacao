@@ -69,6 +69,50 @@ app.get('/api/pipeline', async (req, res) => {
   }
 });
 
+app.get('/mutuo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'mutuo.html'));
+});
+
+app.get('/api/mutuo-stats', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM sheets_antecipacao.pipeline_web ORDER BY _row ASC'
+    );
+    const pagos = rows.filter(r => r.status && r.status.toLowerCase() === 'pago');
+    const n = pagos.length;
+    if (n === 0) return res.json({ kpis: {}, safras: [] });
+
+    const totalPrincipal = pagos.reduce((s, d) => s + (parseFloat(d.valor_contrato) || 0), 0);
+    const totalDesagio   = pagos.reduce((s, d) => s + (parseFloat(d.desagio_total)  || 0), 0);
+    const avgYieldAm     = pagos.reduce((s, d) => s + (parseFloat(d.yield_operacao_mes)   || 0), 0) / n;
+    const avgYieldTotal  = pagos.reduce((s, d) => s + (parseFloat(d.yield_operacao_total) || 0), 0) / n;
+    const avgParc        = pagos.reduce((s, d) => s + (parseFloat(d.parcelas_antecipadas) || 1), 0) / n;
+
+    const safraMap = {};
+    pagos.forEach(d => {
+      const ano = parseInt(d.ano), mes = parseInt(d.mes);
+      if (!ano || !mes) return;
+      const key = `${ano}-${String(mes).padStart(2,'0')}`;
+      if (!safraMap[key]) safraMap[key] = { key, n: 0, principal: 0, desagio: 0, yamSum: 0, ytSum: 0 };
+      const s = safraMap[key];
+      s.n++;
+      s.principal += parseFloat(d.valor_contrato) || 0;
+      s.desagio   += parseFloat(d.desagio_total)  || 0;
+      s.yamSum    += parseFloat(d.yield_operacao_mes)   || 0;
+      s.ytSum     += parseFloat(d.yield_operacao_total) || 0;
+    });
+
+    const safras = Object.values(safraMap)
+      .map(s => ({ key: s.key, n: s.n, principal: Math.round(s.principal), desagio: Math.round(s.desagio), yieldAm: s.yamSum / s.n, yieldTotal: s.ytSum / s.n }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+
+    res.json({ kpis: { totalCases: n, totalPrincipal: Math.round(totalPrincipal), avgYieldAm, avgYieldTotal, avgParc }, safras });
+  } catch (err) {
+    console.error('[api/mutuo-stats]', err.message);
+    res.status(500).json({ error: 'Database query failed', detail: err.message });
+  }
+});
+
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Radar server running at http://localhost:${PORT}`));
