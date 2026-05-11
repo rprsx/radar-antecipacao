@@ -164,7 +164,7 @@
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-lamina">📄 Lâmina</button>
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-guia">📋 Guia do Mutuante</button>
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-contrato">📝 Contrato</button>
-        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-calc">📊 Simulador</button>
+
         <div class="sidebar-section-label" style="margin-top:14px">🔧 Interno</div>
         <a href="/interno" class="sidebar-item" style="text-decoration:none;font-size:13px">🏦 Fluxo Interno</a>
       </div>
@@ -954,13 +954,13 @@
           <tr><td>Data de Desembolso</td><td>[DD/MM/AAAA]</td></tr>
           <tr><td>Prazo</td><td>12 (doze) meses</td></tr>
           <tr><td>Data de Vencimento</td><td>[DD/MM/AAAA]</td></tr>
-          <tr><td>Remuneração</td><td>CDI + 6% (seis por cento) ao ano, calculada mensalmente conforme Cláusula 2.2</td></tr>
+          <tr><td>Remuneração</td><td>CDI + 6% (seis por cento) ao ano, acumulada mensalmente e paga no vencimento conforme Cláusula 2.2</td></tr>
           <tr><td>Modalidade de recebimento</td><td>No vencimento — acumulado no mês 12 junto com o principal</td></tr>
           <tr><td>Amortização do Principal</td><td>Integral no vencimento (bullet)</td></tr>
           <tr><td>Conta para Recebimento</td><td>[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]</td></tr>
         </table>
         <div class="clause-sub"><strong>2.1.</strong> O desembolso do Principal será realizado pelo <strong>Mutuante</strong> em favor da <strong>Mutuária</strong> em até 2 (dois) dias úteis após a assinatura do presente Contrato.</div>
-        <div class="clause-sub"><strong>2.2.</strong> A remuneração mensal será calculada pela acumulação da taxa CDI do período de referência, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula: <strong>Juros do mês = (CDI acumulado do mês + 0,5%) × Principal</strong>.</div>
+        <div class="clause-sub"><strong>2.2.</strong> A remuneração será calculada pela acumulação mensal da taxa CDI do período de referência, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula de acumulação mensal: <strong>Juros do mês = (CDI acumulado do mês + 0,5%) × Principal</strong>. O total acumulado ao longo dos 12 meses será pago integralmente na Data de Vencimento.</div>
         <div class="clause-sub"><strong>2.3.</strong> Na hipótese de atraso no pagamento, incidirão: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; e (iii) atualização monetária pelo IPCA acumulado no período.</div>
         <div class="clause-sub"><strong>2.4.</strong> O Mutuante poderá solicitar antecipação do vencimento mediante notificação com 30 dias de antecedência, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados <em>pro rata die</em> sobre o período decorrido, sem penalidade.</div>
       </div>
@@ -980,7 +980,7 @@
       </div>
       <div class="clause-block">
         <div class="clause-title">Cláusula 6ª — Vencimento Antecipado</div>
-        <div class="clause-body">A Mutuária estará sujeita ao vencimento antecipado nas hipóteses de: decretação de falência ou recuperação judicial; atraso superior a 30 dias no pagamento de juros; descumprimento de obrigação relevante não sanado em 15 dias após notificação.</div>
+        <div class="clause-body">A Mutuária estará sujeita ao vencimento antecipado nas hipóteses de: decretação de falência ou recuperação judicial; inadimplemento de qualquer obrigação pecuniária prevista neste Contrato por prazo superior a 30 dias; descumprimento de obrigação relevante não sanado em 15 dias após notificação.</div>
       </div>
       <div class="clause-block">
         <div class="clause-title">Cláusula 7ª — Confidencialidade</div>
@@ -1020,56 +1020,6 @@
       <div class="legal">Este instrumento constitui mútuo privado entre partes, celebrado nos termos dos artigos 586 a 592 do Código Civil. Não se trata de valor mobiliário nem de produto financeiro regulado pela CVM ou pelo Banco Central.</div>
     </div>
     </div><!-- viewMutuoContrato -->
-
-    <!-- ═══════════════ SIMULADOR ═══════════════ -->
-    <div id="viewMutuoCalc" style="display:none;padding-bottom:60px">
-      <div class="view-header" style="padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line)">
-        <div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-mute);margin-bottom:4px">Mútuo · Simulador</div>
-          <div class="view-title">Simulador do Mutuante</div>
-          <div class="view-subtitle">Projeção de retorno para 12 meses com base no montante investido</div>
-        </div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:24px;background:white;border:1px solid var(--line);padding:14px 20px;margin-bottom:20px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute)">Montante investido</span>
-          <span style="font-size:11px;color:var(--ink-mute)">R$</span>
-          <input id="calcMontante" type="text" inputmode="numeric" value="50.000"
-            style="font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);padding:6px 10px;color:var(--ink);background:var(--paper);width:130px;text-align:right">
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute)">CDI a.a.</span>
-          <input id="calcCdi" type="number" value="14.40" step="0.25" min="0" max="50"
-            style="font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);padding:6px 10px;color:var(--ink);background:var(--paper);width:90px;text-align:right">
-          <span style="font-size:11px;color:var(--ink-mute)">%</span>
-          <span id="calcDerivedRate" style="font-size:11px;color:var(--ink-mute)"></span>
-        </div>
-      </div>
-
-      <div id="calcKpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px"></div>
-
-      <div style="background:white;border:1px solid var(--line)">
-        <div style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between">
-          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink)">Projeção mês a mês</span>
-          <span style="font-size:11px;color:var(--ink-mute)">CDI + 0,5% a.m. · IR regressivo retido na fonte</span>
-        </div>
-        <table style="width:100%;border-collapse:collapse;font-size:12px">
-          <thead>
-            <tr style="background:var(--paper-2)">
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:left;border-bottom:1px solid var(--line)">Mês</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Juros brutos</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">IR retido</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Juros líquidos</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Devolução principal</th>
-              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Total recebido</th>
-            </tr>
-          </thead>
-          <tbody id="calcBody"></tbody>
-        </table>
-        <div id="calcNote" style="font-size:10px;color:var(--ink-mute);padding:8px 14px;border-top:1px solid var(--line);background:var(--paper)"></div>
-      </div>
-    </div><!-- viewMutuoCalc -->
 
   </main>
 

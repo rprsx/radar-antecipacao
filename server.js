@@ -501,13 +501,13 @@ app.get('/api/export/contrato', async (req, res) => {
       defTable([
         ['Valor do Principal (R$)','[____________]'],['Data de Desembolso','[DD/MM/AAAA]'],
         ['Prazo','12 (doze) meses'],['Data de Vencimento','[DD/MM/AAAA]'],
-        ['Remuneração','CDI + 6% (seis por cento) ao ano, calculada mensalmente conforme Cláusula 2.2'],
+        ['Remuneração','CDI + 6% (seis por cento) ao ano, acumulada mensalmente e paga no vencimento conforme Cláusula 2.2'],
         ['Modalidade de recebimento','No vencimento — acumulado no mês 12 junto com o principal'],
         ['Amortização do Principal','Integral no vencimento (bullet)'],
         ['Conta para Recebimento','[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]'],
       ]),
       p('2.1. O desembolso do Principal será realizado pelo Mutuante em favor da Mutuária em até 2 (dois) dias úteis após a assinatura do presente Contrato.', { spaceAfter: 80 }),
-      p('2.2. A remuneração mensal será calculada pela acumulação da taxa CDI do período, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula: Juros do mês = (CDI acumulado do mês + 0,5%) × Principal.', { spaceAfter: 80 }),
+      p('2.2. A remuneração será calculada pela acumulação mensal da taxa CDI do período, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula de acumulação mensal: Juros do mês = (CDI acumulado do mês + 0,5%) × Principal. O total acumulado ao longo dos 12 meses será pago integralmente na Data de Vencimento.', { spaceAfter: 80 }),
       p('2.3. Na hipótese de atraso: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; (iii) atualização pelo IPCA.', { spaceAfter: 80 }),
       p('2.4. O Mutuante poderá solicitar antecipação do vencimento com 30 dias de notificação, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados pro rata die sobre o período decorrido, sem penalidade.'),
 
@@ -523,7 +523,7 @@ app.get('/api/export/contrato', async (req, res) => {
         'A Mutuária declara e se obriga a: empregar os recursos exclusivamente na antecipação de recebíveis judiciais; manter escrituração contábil regular; notificar o Mutuante com 15 dias sobre eventos que possam impactar sua capacidade de pagamento; manter obrigações tributárias, previdenciárias e trabalhistas em dia.'),
 
       ...cl('Cláusula 6ª — Vencimento Antecipado',
-        'A Mutuária estará sujeita ao vencimento antecipado nas hipóteses de: decretação de falência ou recuperação judicial; dissolução ou liquidação; atraso superior a 30 dias no pagamento de juros; descumprimento de obrigação relevante não sanado em 15 dias após notificação; falsidade em qualquer declaração prestada.'),
+        'A Mutuária estará sujeita ao vencimento antecipado nas hipóteses de: decretação de falência ou recuperação judicial; dissolução ou liquidação; inadimplemento de qualquer obrigação pecuniária prevista neste Contrato por prazo superior a 30 dias; descumprimento de obrigação relevante não sanado em 15 dias após notificação; falsidade em qualquer declaração prestada.'),
 
       ...cl('Cláusula 7ª — Confidencialidade',
         'As partes comprometem-se a manter em sigilo todas as informações obtidas em razão deste Contrato pelo prazo de 5 anos após o término da vigência.'),

@@ -1296,7 +1296,7 @@ function switchTab(tab) {
   const isMetas2     = tab === 'metas2';
   const isFinanceiro = tab === 'financeiro';
   const isPrec       = tab === 'precificacao';
-  const isMutuo      = tab === 'mutuo-lamina' || tab === 'mutuo-guia' || tab === 'mutuo-contrato' || tab === 'mutuo-calc';
+  const isMutuo      = tab === 'mutuo-lamina' || tab === 'mutuo-guia' || tab === 'mutuo-contrato';
   document.getElementById('radarHeader').style.display         = isRadar  ? 'block' : 'none';
   document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
   document.getElementById('kpiRow').classList.toggle('visible', isRadar);
@@ -1307,7 +1307,6 @@ function switchTab(tab) {
   document.getElementById('viewMutuoLamina').style.display     = tab === 'mutuo-lamina'   ? 'block' : 'none';
   document.getElementById('viewMutuoGuia').style.display       = tab === 'mutuo-guia'     ? 'block' : 'none';
   document.getElementById('viewMutuoContrato').style.display   = tab === 'mutuo-contrato' ? 'block' : 'none';
-  document.getElementById('viewMutuoCalc').style.display       = tab === 'mutuo-calc'     ? 'block' : 'none';
   if (isMetas2)     updateMetasV2View();
   if (isFinanceiro) openFinanceiroTab();
   if (isPrec)       openPrecificacaoTab();
@@ -1319,84 +1318,7 @@ async function openMutuoTab(tab) {
   document.getElementById('viewMutuoLamina').style.display   = tab === 'mutuo-lamina'   ? 'block' : 'none';
   document.getElementById('viewMutuoGuia').style.display     = tab === 'mutuo-guia'     ? 'block' : 'none';
   document.getElementById('viewMutuoContrato').style.display = tab === 'mutuo-contrato' ? 'block' : 'none';
-  document.getElementById('viewMutuoCalc').style.display     = tab === 'mutuo-calc'     ? 'block' : 'none';
   if (!_mutuoLoaded) loadMutuoStats();
-  if (tab === 'mutuo-calc') initCalc();
-}
-
-// ─── SIMULADOR DO MUTUANTE ───────────────────────────────
-let _calcInited = false;
-function initCalc() {
-  if (_calcInited) return;
-  _calcInited = true;
-  const montanteEl = document.getElementById('calcMontante');
-  montanteEl.addEventListener('input', () => {
-    const raw = montanteEl.value.replace(/\./g, '').replace(',', '.');
-    runCalc();
-  });
-  montanteEl.addEventListener('blur', () => {
-    const num = parseBR(montanteEl.value);
-    if (!isNaN(num) && num > 0) montanteEl.value = num.toLocaleString('pt-BR');
-  });
-  document.getElementById('calcCdi').addEventListener('input', runCalc);
-  runCalc();
-}
-
-function parseBR(s) {
-  return parseFloat(String(s).replace(/\./g, '').replace(',', '.'));
-}
-
-function runCalc() {
-  const montante = parseBR(document.getElementById('calcMontante').value) || 50000;
-  const cdiAa    = parseFloat(document.getElementById('calcCdi').value)      || 14.40;
-  const cdiAm    = cdiAa / 12 / 100;
-  const rate     = cdiAm + 0.005;
-  const fmtR = v => 'R$ ' + Math.round(Math.abs(v)).toLocaleString('pt-BR');
-  const fmtP = v => (v * 100).toFixed(2).replace('.', ',') + '%';
-
-  document.getElementById('calcDerivedRate').textContent = '→ ' + fmtP(rate) + ' a.m.';
-
-  let acum = 0, sumBruto = 0, sumIR = 0, sumLiq = 0;
-  const rows = [];
-  for (let m = 1; m <= 12; m++) {
-    const bruto     = montante * rate;
-    const irRate    = m <= 6 ? 0.225 : 0.20;
-    const ir        = bruto * irRate;
-    const liq       = bruto - ir;
-    const principal = m === 12 ? montante : 0;
-    const totalMes  = liq + principal;
-    acum += liq; sumBruto += bruto; sumIR += ir; sumLiq += liq;
-    rows.push({ m, bruto, ir, liq, principal, totalMes, acum });
-  }
-
-  const R = (v, cls = '') => `<td style="padding:9px 14px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;color:${cls === 'coral' ? 'var(--coral)' : cls === 'green' ? 'var(--green)' : 'var(--ink-soft)'};font-weight:${cls === 'bold' ? '700' : '400'}">${v}</td>`;
-  const L = v => `<td style="padding:9px 14px;border-bottom:1px solid var(--line);font-weight:600;color:var(--ink)">${v}</td>`;
-
-  document.getElementById('calcBody').innerHTML =
-    rows.map(r => {
-      const isLast = r.m === 12;
-      const rowStyle = isLast ? ' style="background:var(--paper)"' : '';
-      return `<tr${rowStyle}>${L('Mês ' + r.m + (isLast ? ' ★' : ''))}${R(fmtR(r.bruto))}${R('– ' + fmtR(r.ir), 'coral')}${R(fmtR(r.liq), 'green')}${R(isLast ? fmtR(r.principal) : '—', isLast ? 'bold' : '')}${R(fmtR(r.totalMes), 'bold')}</tr>`;
-    }).join('') +
-    `<tr style="background:var(--paper-2)">
-      <td style="padding:9px 14px;font-weight:700;color:var(--ink)">Total 12 meses</td>
-      ${R(fmtR(sumBruto))}${R('– ' + fmtR(sumIR), 'coral')}${R(fmtR(sumLiq), 'green')}${R(fmtR(montante), 'bold')}${R(fmtR(sumLiq + montante), 'bold')}
-    </tr>`;
-
-  const rendLiq = sumLiq / montante;
-  document.getElementById('calcKpis').innerHTML = [
-    ['Juros líquidos totais', fmtR(sumLiq), 'var(--green)'],
-    ['Principal devolvido', fmtR(montante), 'var(--ink)'],
-    ['Total recebido', fmtR(sumLiq + montante), 'var(--green)'],
-    ['Rendimento líquido a.a.', fmtP(rendLiq), 'var(--ink)'],
-  ].map(([label, val, color]) => `
-    <div style="background:white;border:1px solid var(--line);padding:16px 18px">
-      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-mute);margin-bottom:6px">${label}</div>
-      <div style="font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1;color:${color || 'var(--ink)'}}">${val}</div>
-    </div>`).join('');
-
-  document.getElementById('calcNote').textContent =
-    `Principal de ${fmtR(montante)} devolvido integralmente no mês 12, sem IR · CDI de referência: ${cdiAa.toFixed(2)}% a.a. · Spread fixo: 0,5% a.m.`;
 }
 
 // ─── MUTUO STATS ─────────────────────────────────────────
