@@ -322,7 +322,7 @@ app.get('/api/export/lamina', async (req, res) => {
     const doc = new Document({ sections: [{ children: [
       new Paragraph({ children: [new TextRun({ text: 'IGUAL ANTECIPAÇÃO', color: CORAL, bold: true, size: 20 })], spacing: { after: 60 } }),
       new Paragraph({ children: [new TextRun({ text: 'Lâmina do Investidor — Veículo de Mútuo', color: INK, bold: true, size: 52 })], spacing: { after: 120 } }),
-      p('CDI + 6% ao ano · 12 meses · modalidade de recebimento à escolha · aval pessoal dos sócios', { color: SOFT }),
+      p('CDI + 6% ao ano · 12 meses · juros no vencimento · aval pessoal dos sócios', { color: SOFT }),
       p('Últimos 12 meses (LTM)', { color: MUTED, size: 18 }),
 
       heading('1. Como funciona a operação'),
@@ -350,10 +350,10 @@ app.get('/api/export/lamina', async (req, res) => {
       defTable([
         ['Remuneração','CDI + 6% ao ano — spread fixo de 0,5% a.m. sobre o CDI acumulado do mês'],
         ['Prazo','12 meses'],
-        ['Modalidade de recebimento','À escolha na assinatura: mensal (TED/PIX todo mês) ou no vencimento (acumulado, pago com o principal no mês 12)'],
+        ['Modalidade de recebimento','Juros no vencimento — acumulado no mês 12 junto com o principal'],
         ['Amortização do principal','Integral no vencimento (bullet)'],
         ['Volume total alvo','R$ 800.000'],
-        ['IR (pessoa física)','Mensal: 22,5% m.1–6 · 20,0% m.7–12  |  Vencimento: 17,5% único (>360 dias) — retido na fonte'],
+        ['IR (pessoa física)','17,5% único no vencimento (operação >360 dias) — retido na fonte'],
         ['IOF','Não incide para mutuante PF · PJ: confirmar com assessoria'],
         ['Garantia','Aval pessoal e solidário dos sócios da igual'],
         ['Natureza jurídica','Mútuo privado — arts. 586–592 Código Civil · Não regulado pela CVM'],
@@ -361,12 +361,12 @@ app.get('/api/export/lamina', async (req, res) => {
       ]),
 
       heading('5. Retorno estimado — pessoa física (CDI ref. 14,40% a.a.)'),
-      p('CDI de 14,40% a.a. (maio/2026). Remuneração bruta idêntica nas duas modalidades: CDI + 6% a.a. (~20,75% a.a.). A diferença é exclusivamente no IR.', { color: MUTED, size: 18 }),
-      makeTable(['', 'Juros mensais', 'Juros no vencimento'], [
-        ['IR retido na fonte', '22,5% m.1–6 · 20,0% m.7–12', '17,5% único no vencimento'],
-        ['Líquido estimado', '~16,3% a.a.', '~17,1% a.a.'],
-        ['vs. CDI líquido (10,8%)', '~151% do CDI', '~158% do CDI'],
-      ], [2400, 3300, 3300]),
+      p('CDI de 14,40% a.a. (maio/2026). Remuneração bruta: CDI + 6% a.a. (~20,75% a.a.).', { color: MUTED, size: 18 }),
+      defTable([
+        ['IR retido na fonte', '17,5% único no vencimento (operação >360 dias)'],
+        ['Líquido estimado', '~17,1% a.a.'],
+        ['vs. CDI líquido (10,8%)', '~158% do CDI'],
+      ]),
 
       heading('6. Riscos e mitigantes'),
       makeTable(['Risco','Descrição','Mitigante'],[
@@ -396,42 +396,33 @@ app.get('/api/export/guia', async (req, res) => {
       p('Tudo que você precisa saber antes de investir. Linguagem simples, sem jargão financeiro desnecessário.', { color: SOFT }),
 
       heading('1. O que é isso, em uma frase?'),
-      p('Você empresta dinheiro para a igual por 12 meses. A igual usa esse dinheiro para financiar a operação de antecipação de recebíveis judiciais. Em troca, você recebe os juros na modalidade escolhida na assinatura e recupera o valor emprestado inteiro no prazo.'),
-      p('Analogia simples: é parecido com um CDB de banco — você empresta e pega o principal de volta no vencimento. A diferença é que aqui o retorno é maior, o risco é diferente (sem FGC, mas com aval pessoal dos sócios) — e você escolhe se quer receber os juros todo mês ou acumulados no final.', { color: MUTED }),
+      p('Você empresta dinheiro para a igual por 12 meses. A igual usa esse dinheiro para financiar a operação de antecipação de recebíveis judiciais. Em troca, você recebe os juros acumulados no vencimento, junto com o principal.'),
+      p('Analogia simples: é parecido com um CDB de banco — você empresta e pega o principal de volta no vencimento. A diferença é que aqui o retorno é maior e o risco é diferente (sem FGC, mas com aval pessoal dos sócios).', { color: MUTED }),
 
       heading('2. Quanto recebo e quando?'),
       p('A remuneração é de CDI + 6% ao ano, calculada mensalmente. O valor acompanha a taxa de juros do mercado.'),
       p('Fórmula mensal: Juros brutos do mês = (CDI acumulado do mês + 0,5%) × valor investido', { color: INK, bold: true }),
       p('Com CDI atual de ~14,40% a.a. → CDI mensal ~1,20% + spread 0,50% = ~1,70% bruto/mês', { color: MUTED }),
-      p('Sobre os juros incide IR Retido na Fonte (IRRF). A escolha da modalidade impacta o IR e o retorno líquido:'),
-      makeTable(['Modalidade','Quando entra','IR (IRRF)','Juros líquidos (R$ 100 inv.)'],[
-        ['Mensal','Todo mês via TED/PIX','22,5% m.1–6 · 20,0% m.7–12','~R$ 1,33/mês (m.1–6) · ~R$ 1,38/mês (m.7–12)'],
-        ['No vencimento','Acumulado · mês 12 com o principal','17,5% único (>360 dias)','~R$ 17,03 no mês 12'],
-      ], [1800, 2400, 2400, 2400]),
-      p('IR mais eficiente no vencimento: ao optar pelo vencimento, todo o rendimento cai na faixa de 17,5%, gerando ~+0,8pp de retorno líquido a mais (~16,3% vs ~17,1% a.a.). A escolha depende do seu fluxo de caixa.', { color: MUTED }),
+      p('Os juros são acumulados durante os 12 meses e pagos no vencimento, junto com o principal. A alíquota de IR é de 17,5% — faixa mais favorável da tabela regressiva, válida para operações acima de 360 dias.'),
+      defTable([
+        ['Pagamento dos juros','Acumulado no mês 12, junto com a devolução do principal'],
+        ['IR retido na fonte','17,5% único sobre o total de juros acumulados'],
+        ['Juros líquidos estimados (R$ 100k)','~R$ 17.028 no mês 12'],
+      ]),
+      p('Outras condições de pagamento podem ser discutidas na assinatura.', { color: MUTED, size: 18 }),
       p('Para mutuantes pessoa física, não há IOF nesta operação. Para PJ, o IOF pode incidir — confirmar com assessoria jurídica.'),
 
-      heading('3. O que acontece mês a mês? (modalidade mensal)'),
+      heading('3. O que acontece mês a mês?'),
       makeTable(['Quando','O que acontece','Fluxo'],[
         ['Dia 0','Você transfere o principal para a igual via TED/PIX.','↑ SAI o principal'],
-        ['Meses 1–6','A igual paga os juros com IR de 22,5% já descontado.','↓ ENTRA juros líquidos'],
-        ['Meses 7–12','A igual paga os juros com IR de 20,0% já descontado.','↓ ENTRA juros líquidos'],
-        ['Mês 12','A igual devolve o principal integral + juros do último mês.','↓ ENTRA principal + juros'],
-        ['A qualquer momento','Resgata avisando com 30 dias. Recebe principal + juros pro rata die.','↓ ENTRA principal'],
+        ['Meses 1–11','Juros acumulados internamente. Nenhum pagamento neste período.','— acumulando'],
+        ['Mês 12','A igual devolve o principal integral + 12 meses de juros líquidos (IR de 17,5% já descontado).','↓ ENTRA principal + juros'],
+        ['A qualquer momento','Resgata avisando com 30 dias. Recebe principal + juros pro rata die já líquidos.','↓ ENTRA principal'],
       ], [1800, 5000, 2200]),
-      p('Modalidade no vencimento: os meses 1–11 ficam sem pagamento, e no mês 12 você recebe principal + total de 12 meses de juros, com IR único de 17,5%. Principal não é devolvido aos poucos em nenhuma modalidade.', { color: MUTED }),
+      p('Atenção: o principal não é devolvido aos poucos — fica com a igual durante os 12 meses e volta de uma vez no vencimento junto com todos os juros acumulados.', { color: MUTED }),
 
-      heading('4. Exemplos concretos — R$ 100.000 investidos'),
-      p('CDI ~14,40% a.a. (maio/2026) → ~1,72% bruto/mês. A taxa bruta é a mesma nas duas modalidades — o que muda é apenas o IR.'),
-      p('Modalidade mensal', { color: INK, bold: true }),
-      makeTable(['Item','Valor'],[
-        ['Juros brutos mensais (~1,72%)','~R$ 1.720,00/mês'],
-        ['IR meses 1–6 (22,5%)','– R$ 387,00/mês'],['IR meses 7–12 (20,0%)','– R$ 344,00/mês'],
-        ['Juros líquidos meses 1–6','~R$ 1.333,00/mês'],['Juros líquidos meses 7–12','~R$ 1.376,00/mês'],
-        ['Principal devolvido no mês 12','R$ 100.000,00'],
-        ['Total recebido em 12 meses','~R$ 116.254,00'],
-      ], [5500, 3500]),
-      p('Modalidade no vencimento', { color: INK, bold: true }),
+      heading('4. Exemplo concreto — R$ 100.000 investidos'),
+      p('CDI ~14,40% a.a. (maio/2026) → ~1,72% bruto/mês.'),
       makeTable(['Item','Valor'],[
         ['Juros brutos acumulados (12 × ~1,72%)','~R$ 20.640,00'],
         ['IR único no vencimento (17,5%)','– R$ 3.612,00'],
@@ -447,11 +438,11 @@ app.get('/api/export/guia', async (req, res) => {
         ['CDB banco médio 12m','~13,5%','~11,1%','No vencimento','sim (R$ 250K)'],
         ['LCI / LCA 12m','~12,5%','~12,5% (isento)','No vencimento','sim (R$ 250K)'],
         ['CRI / CRA isentos','~14,5%','~14,5% (isento)','Sec. secundário','não'],
-        ['Mútuo igual (mensal / vencimento)','~20,75%','~16,3% / ~17,1%','30 dias de aviso','não (aval sócios)'],
+        ['Mútuo igual','~20,75%','~17,1%','30 dias de aviso','não (aval sócios)'],
       ], [2400, 1600, 1800, 1800, 1400]),
 
       heading('6. E se eu precisar do dinheiro antes?'),
-      p('É possível resgatar antes do vencimento. Basta avisar a igual com 30 dias de antecedência. A igual devolve o principal integral mais os juros calculados pro rata die sobre o período decorrido, sem penalidade — independentemente da modalidade escolhida.'),
+      p('É possível resgatar antes do vencimento. Basta avisar a igual com 30 dias de antecedência. A igual devolve o principal integral mais os juros calculados pro rata die sobre o período decorrido, sem penalidade.'),
 
       heading('7. Quais são as garantias?'),
       p('Aval pessoal dos sócios: os sócios da igual assinam como avalistas solidários. Se a empresa não honrar o pagamento, os sócios respondem pessoalmente pela dívida com seus bens — garantia direta e juridicamente executável, sem benefício de ordem.'),
@@ -475,7 +466,7 @@ app.get('/api/export/guia', async (req, res) => {
       p('Posso investir como pessoa jurídica? Sim. Para PJ, o tratamento do IR depende do regime de apuração — consulte seu contador.'),
       p('O que acontece se a igual fechar? O contrato tem aval pessoal e solidário dos sócios. Em caso de insolvência, você pode acionar os avalistas diretamente.', { color: INK, bold: true }),
       p('A taxa pode mudar durante o contrato? O spread de 6% ao ano é fixo. O CDI varia conforme o Banco Central.'),
-      p('Os juros são iguais todo mês? Não exatamente. Os juros brutos variam com o CDI e o IR muda entre meses 1–6 e 7–12.', { color: INK, bold: true }),
+      p('Os juros variam mês a mês? Os juros brutos variam com o CDI, mas o spread de 0,5% ao mês é fixo. O valor total é acumulado e pago no mês 12, com IR de 17,5%.', { color: INK, bold: true }),
 
       legal('Este documento é informativo e destinado exclusivamente a investidores convidados pela igual. Não constitui oferta pública de valores mobiliários. Não é produto regulado pelo Banco Central ou pela CVM. Rentabilidade passada não garante rentabilidade futura. Recomenda-se assessoria jurídica e fiscal independente antes da assinatura.'),
     ]}]});
@@ -518,17 +509,17 @@ app.get('/api/export/contrato', async (req, res) => {
         ['Valor do Principal (R$)','[____________]'],['Data de Desembolso','[DD/MM/AAAA]'],
         ['Prazo','12 (doze) meses'],['Data de Vencimento','[DD/MM/AAAA]'],
         ['Remuneração','CDI + 6% (seis por cento) ao ano, calculada mensalmente conforme Cláusula 2.2'],
-        ['Modalidade de recebimento','[  ] Mensal — todo dia 15 via TED/PIX     [  ] No vencimento — acumulado no mês 12 junto com o principal'],
+        ['Modalidade de recebimento','No vencimento — acumulado no mês 12 junto com o principal'],
         ['Amortização do Principal','Integral no vencimento (bullet)'],
         ['Conta para Recebimento','[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]'],
       ]),
       p('2.1. O desembolso do Principal será realizado pelo Mutuante em favor da Mutuária em até 2 (dois) dias úteis após a assinatura do presente Contrato.', { spaceAfter: 80 }),
       p('2.2. A remuneração mensal será calculada pela acumulação da taxa CDI do período, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula: Juros do mês = (CDI acumulado do mês + 0,5%) × Principal.', { spaceAfter: 80 }),
       p('2.3. Na hipótese de atraso: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; (iii) atualização pelo IPCA.', { spaceAfter: 80 }),
-      p('2.4. O Mutuante poderá solicitar antecipação do vencimento com 30 dias de notificação, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados pro rata die sobre o período decorrido, sem penalidade, independentemente da modalidade de recebimento escolhida.'),
+      p('2.4. O Mutuante poderá solicitar antecipação do vencimento com 30 dias de notificação, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados pro rata die sobre o período decorrido, sem penalidade.'),
 
       ...cl('Cláusula 3ª — Retenção na Fonte e Obrigações Fiscais',
-        'Sobre os juros pagos ao Mutuante pessoa física, incidirá IRRF conforme a modalidade escolhida na Cláusula 2: (i) modalidade mensal — 22,5% sobre juros pagos nos meses 1 a 6, e 20,0% sobre juros pagos nos meses 7 a 12, retidos em cada pagamento; (ii) modalidade no vencimento — alíquota única de 17,5% sobre o total de juros acumulados, retida na data de vencimento, dado que a operação tem prazo superior a 360 dias. O principal devolvido não está sujeito a IR.',
+        'Sobre os juros pagos ao Mutuante pessoa física, incidirá IRRF à alíquota de 17,5% sobre o total de juros acumulados, retida na data de vencimento, dado que a operação tem prazo superior a 360 dias (tabela regressiva — faixa de 361 a 720 dias). O principal devolvido não está sujeito a IR.',
         '3.2. Para Mutuante PF, não há incidência de IOF. Para PJ, poderá incidir IOF sobre crédito.',
         '3.3. Eventuais alterações na legislação tributária serão automaticamente aplicadas.'),
 
