@@ -1122,4 +1122,16 @@
 <div id="chartTooltip" class="chart-tooltip"></div>
 <script src="app.js?v=10"></script>
 
+<!-- PIN MODAL -->
+<div id="pinModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:white;padding:32px 28px;max-width:360px;width:90%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
+    <div id="pinModalTitle" style="font-size:15px;font-weight:700;color:#1E1C1A;margin-bottom:16px"></div>
+    <div id="pinModalError" style="display:none;font-size:12px;color:#B45309;margin-bottom:10px;padding:8px 12px;background:#FEF3C7;border-radius:4px">Senha incorreta. Tente novamente.</div>
+    <input id="pinModalInput" type="password" placeholder="Digite a senha" style="width:100%;padding:10px 12px;border:1px solid #E7E5E4;border-radius:4px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button id="pinModalCancel" style="flex:1;padding:9px;border:1px solid #E7E5E4;background:white;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;color:#57534E">Cancelar</button>
+      <button id="pinModalSubmit" style="flex:2;padding:9px;background:#C4603A;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;color:white">Entrar</button>
+    </div>
+  </div>
+</div>
 </body></html>

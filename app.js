@@ -184,6 +184,7 @@ function processRows(rows) {
 
   document.getElementById('initialMsg').style.display = 'none';
   document.getElementById('sidebarNav').style.display = 'block';
+  if (sessionStorage.getItem('mutuoAuth') === '1') revealMutuoSidebar();
   document.getElementById('radarHeader').style.display = 'block';
   document.getElementById('timeFilterBar').classList.add('visible');
   document.getElementById('kpiRow').classList.add('visible');
@@ -1284,6 +1285,7 @@ function hideChartTip() {
 
 // ─── TAB SWITCHING ───────────────────────────────────────
 let _activeTab = 'radar';
+let _mutuoLoaded = false;
 function switchTab(tab) {
   _activeTab = tab;
   closeDrillDrawer();
@@ -1294,31 +1296,228 @@ function switchTab(tab) {
   const isMetas2     = tab === 'metas2';
   const isFinanceiro = tab === 'financeiro';
   const isPrec       = tab === 'precificacao';
-  document.getElementById('radarHeader').style.display      = isRadar  ? 'block' : 'none';
+  const isMutuo      = tab === 'mutuo-lamina' || tab === 'mutuo-guia' || tab === 'mutuo-contrato' || tab === 'mutuo-calc';
+  document.getElementById('radarHeader').style.display         = isRadar  ? 'block' : 'none';
   document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
   document.getElementById('kpiRow').classList.toggle('visible', isRadar);
-  document.getElementById('blocoMain').style.display        = isRadar  ? 'block' : 'none';
-  document.getElementById('viewMetasV2').style.display      = isMetas2 ? 'block' : 'none';
-  document.getElementById('viewFinanceiro').style.display   = 'none';
-  document.getElementById('viewPrecificacao').style.display = 'none';
+  document.getElementById('blocoMain').style.display           = isRadar  ? 'block' : 'none';
+  document.getElementById('viewMetasV2').style.display         = isMetas2 ? 'block' : 'none';
+  document.getElementById('viewFinanceiro').style.display      = 'none';
+  document.getElementById('viewPrecificacao').style.display    = 'none';
+  document.getElementById('viewMutuoLamina').style.display     = tab === 'mutuo-lamina'   ? 'block' : 'none';
+  document.getElementById('viewMutuoGuia').style.display       = tab === 'mutuo-guia'     ? 'block' : 'none';
+  document.getElementById('viewMutuoContrato').style.display   = tab === 'mutuo-contrato' ? 'block' : 'none';
+  document.getElementById('viewMutuoCalc').style.display       = tab === 'mutuo-calc'     ? 'block' : 'none';
   if (isMetas2)     updateMetasV2View();
   if (isFinanceiro) openFinanceiroTab();
   if (isPrec)       openPrecificacaoTab();
+  if (isMutuo)      openMutuoTab(tab);
+}
+
+async function openMutuoTab(tab) {
+  if (!(await requireMutuoAuth())) { switchTab('radar'); return; }
+  document.getElementById('viewMutuoLamina').style.display   = tab === 'mutuo-lamina'   ? 'block' : 'none';
+  document.getElementById('viewMutuoGuia').style.display     = tab === 'mutuo-guia'     ? 'block' : 'none';
+  document.getElementById('viewMutuoContrato').style.display = tab === 'mutuo-contrato' ? 'block' : 'none';
+  document.getElementById('viewMutuoCalc').style.display     = tab === 'mutuo-calc'     ? 'block' : 'none';
+  if (!_mutuoLoaded) loadMutuoStats();
+  if (tab === 'mutuo-calc') initCalc();
+}
+
+// ─── SIMULADOR DO MUTUANTE ───────────────────────────────
+let _calcInited = false;
+function initCalc() {
+  if (_calcInited) return;
+  _calcInited = true;
+  const montanteEl = document.getElementById('calcMontante');
+  montanteEl.addEventListener('input', () => {
+    const raw = montanteEl.value.replace(/\./g, '').replace(',', '.');
+    runCalc();
+  });
+  montanteEl.addEventListener('blur', () => {
+    const num = parseBR(montanteEl.value);
+    if (!isNaN(num) && num > 0) montanteEl.value = num.toLocaleString('pt-BR');
+  });
+  document.getElementById('calcCdi').addEventListener('input', runCalc);
+  runCalc();
+}
+
+function parseBR(s) {
+  return parseFloat(String(s).replace(/\./g, '').replace(',', '.'));
+}
+
+function runCalc() {
+  const montante = parseBR(document.getElementById('calcMontante').value) || 50000;
+  const cdiAa    = parseFloat(document.getElementById('calcCdi').value)      || 14.40;
+  const cdiAm    = cdiAa / 12 / 100;
+  const rate     = cdiAm + 0.005;
+  const fmtR = v => 'R$ ' + Math.round(Math.abs(v)).toLocaleString('pt-BR');
+  const fmtP = v => (v * 100).toFixed(2).replace('.', ',') + '%';
+
+  document.getElementById('calcDerivedRate').textContent = '→ ' + fmtP(rate) + ' a.m.';
+
+  let acum = 0, sumBruto = 0, sumIR = 0, sumLiq = 0;
+  const rows = [];
+  for (let m = 1; m <= 12; m++) {
+    const bruto     = montante * rate;
+    const irRate    = m <= 6 ? 0.225 : 0.20;
+    const ir        = bruto * irRate;
+    const liq       = bruto - ir;
+    const principal = m === 12 ? montante : 0;
+    const totalMes  = liq + principal;
+    acum += liq; sumBruto += bruto; sumIR += ir; sumLiq += liq;
+    rows.push({ m, bruto, ir, liq, principal, totalMes, acum });
+  }
+
+  const R = (v, cls = '') => `<td style="padding:9px 14px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;color:${cls === 'coral' ? 'var(--coral)' : cls === 'green' ? 'var(--green)' : 'var(--ink-soft)'};font-weight:${cls === 'bold' ? '700' : '400'}">${v}</td>`;
+  const L = v => `<td style="padding:9px 14px;border-bottom:1px solid var(--line);font-weight:600;color:var(--ink)">${v}</td>`;
+
+  document.getElementById('calcBody').innerHTML =
+    rows.map(r => {
+      const isLast = r.m === 12;
+      const rowStyle = isLast ? ' style="background:var(--paper)"' : '';
+      return `<tr${rowStyle}>${L('Mês ' + r.m + (isLast ? ' ★' : ''))}${R(fmtR(r.bruto))}${R('– ' + fmtR(r.ir), 'coral')}${R(fmtR(r.liq), 'green')}${R(isLast ? fmtR(r.principal) : '—', isLast ? 'bold' : '')}${R(fmtR(r.totalMes), 'bold')}</tr>`;
+    }).join('') +
+    `<tr style="background:var(--paper-2)">
+      <td style="padding:9px 14px;font-weight:700;color:var(--ink)">Total 12 meses</td>
+      ${R(fmtR(sumBruto))}${R('– ' + fmtR(sumIR), 'coral')}${R(fmtR(sumLiq), 'green')}${R(fmtR(montante), 'bold')}${R(fmtR(sumLiq + montante), 'bold')}
+    </tr>`;
+
+  const rendLiq = sumLiq / montante;
+  document.getElementById('calcKpis').innerHTML = [
+    ['Juros líquidos totais', fmtR(sumLiq), 'var(--green)'],
+    ['Principal devolvido', fmtR(montante), 'var(--ink)'],
+    ['Total recebido', fmtR(sumLiq + montante), 'var(--green)'],
+    ['Rendimento líquido a.a.', fmtP(rendLiq), 'var(--ink)'],
+  ].map(([label, val, color]) => `
+    <div style="background:white;border:1px solid var(--line);padding:16px 18px">
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-mute);margin-bottom:6px">${label}</div>
+      <div style="font-size:17px;font-weight:700;letter-spacing:-.02em;line-height:1;color:${color || 'var(--ink)'}}">${val}</div>
+    </div>`).join('');
+
+  document.getElementById('calcNote').textContent =
+    `Principal de ${fmtR(montante)} devolvido integralmente no mês 12, sem IR · CDI de referência: ${cdiAa.toFixed(2)}% a.a. · Spread fixo: 0,5% a.m.`;
+}
+
+// ─── MUTUO STATS ─────────────────────────────────────────
+async function loadMutuoStats() {
+  _mutuoLoaded = true;
+  try {
+    const data = await fetch('/api/mutuo-stats').then(r => r.json());
+    renderMutuoKPIs(data.kpis);
+    renderMutuoSafras(data.safras);
+  } catch (e) {
+    document.getElementById('mv-kpi-grid').innerHTML   = '<p class="loading">Erro ao carregar dados.</p>';
+    document.getElementById('mv-safra-table').innerHTML = '<p class="loading">Erro ao carregar safras.</p>';
+  }
+}
+
+function renderMutuoKPIs(k) {
+  const fmtC = v => { if (v >= 1e6) return 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + 'M'; if (v >= 1e3) return 'R$ ' + Math.round(v/1e3) + 'K'; return 'R$ ' + Math.round(v); };
+  const fmtP = (v, d=1) => (v*100).toFixed(d) + '%';
+  if (!k || !k.totalCases) { document.getElementById('mv-kpi-grid').innerHTML = '<p class="loading">Sem dados.</p>'; return; }
+  document.getElementById('mv-kpi-grid').innerHTML = `
+    <div class="kpi-box"><div class="kpi-val">${fmtC(k.totalPrincipal)}</div><div class="kpi-label">Principal investido</div><div class="kpi-desc">Capital desembolsado aos clientes nos últimos 12 meses</div></div>
+    <div class="kpi-box"><div class="kpi-val">${fmtC(k.totalDesagio)}</div><div class="kpi-label">Deságio total</div><div class="kpi-desc">Receita bruta gerada pelo desconto na antecipação</div></div>
+    <div class="kpi-box accent"><div class="kpi-val">${fmtP(k.avgYieldTotal, 1)}</div><div class="kpi-label">Yield total médio</div><div class="kpi-desc">Desconto médio sobre o valor de face dos recebíveis</div></div>
+    <div class="kpi-box accent"><div class="kpi-val">${fmtP(k.avgYieldAm)}</div><div class="kpi-label">Yield a.m. médio</div><div class="kpi-desc">Retorno mensal médio sobre o capital empregado</div></div>
+    <div class="kpi-box"><div class="kpi-val">${k.totalCases}</div><div class="kpi-label">Casos</div><div class="kpi-desc">Antecipações realizadas nos últimos 12 meses</div></div>
+    <div class="kpi-box"><div class="kpi-val">${k.avgPayback ? k.avgPayback.toFixed(1) + 'm' : '—'}</div><div class="kpi-label">Payback médio</div><div class="kpi-desc">Tempo médio de recuperação do principal investido</div></div>`;
+}
+
+function renderMutuoSafras(safras) {
+  const fmtC = v => { if (v >= 1e6) return 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + 'M'; if (v >= 1e3) return 'R$ ' + Math.round(v/1e3) + 'K'; return 'R$ ' + Math.round(v); };
+  const fmtP = (v, d=1) => (v*100).toFixed(d) + '%';
+  if (!safras || !safras.length) { document.getElementById('mv-safra-table').innerHTML = '<p class="loading">Sem dados de safra.</p>'; return; }
+  const yc = v => v >= 0.10 ? 'var(--green)' : v >= 0.08 ? 'var(--ink-soft)' : 'var(--amber)';
+  const yb = v => v >= 0.10 ? 'var(--green-soft)' : v < 0.07 ? 'rgba(196,96,58,0.07)' : '';
+  const rows = [...safras].reverse().map(s =>
+    `<tr><td>${s.key}</td><td class="num">${s.n}</td><td class="num">${fmtC(s.principal)}</td><td class="num">${fmtC(s.desagio)}</td>
+     <td class="num" style="color:${yc(s.yieldAm)};background:${yb(s.yieldAm)};font-weight:600">${fmtP(s.yieldAm, 2)}</td>
+     <td class="num">${fmtP(s.yieldTotal, 0)}</td></tr>`).join('');
+  document.getElementById('mv-safra-table').innerHTML = `
+    <table class="tbl">
+      <thead><tr><th>Safra</th><th class="r">Casos</th><th class="r">Principal</th><th class="r">Deságio</th><th class="r">Yield a.m.</th><th class="r">Yield total</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p style="font-size:11px;color:var(--ink-mute);margin-top:6px">Dados ao vivo · últimos 12 meses · casos Pago · atualizado automaticamente</p>`;
+}
+
+function exportMutuoPDF(doc) {
+  window.open('/mutuo?print=' + doc, '_blank');
+}
+
+function revealMutuoSidebar() {
+  const lock = document.getElementById('mutuoLockBtn');
+  const section = document.getElementById('mutuoSidebarSection');
+  if (lock) lock.style.display = 'none';
+  if (section) section.style.display = 'block';
+}
+
+function showPinModal(title, onSubmit) {
+  return new Promise(resolve => {
+    const modal   = document.getElementById('pinModal');
+    const input   = document.getElementById('pinModalInput');
+    const error   = document.getElementById('pinModalError');
+    const titleEl = document.getElementById('pinModalTitle');
+    const submit  = document.getElementById('pinModalSubmit');
+    const cancel  = document.getElementById('pinModalCancel');
+
+    titleEl.textContent = title;
+    input.value = '';
+    error.style.display = 'none';
+    modal.style.display = 'flex';
+    setTimeout(() => input.focus(), 50);
+
+    async function trySubmit() {
+      const val = input.value.trim();
+      if (!val) return;
+      submit.disabled = true;
+      submit.textContent = '…';
+      const ok = await onSubmit(val);
+      submit.disabled = false;
+      submit.textContent = 'Entrar';
+      if (ok) { modal.style.display = 'none'; resolve(true); }
+      else { error.style.display = 'block'; input.value = ''; input.focus(); }
+    }
+    function doCancel() { modal.style.display = 'none'; resolve(false); }
+
+    submit.onclick  = trySubmit;
+    cancel.onclick  = doCancel;
+    input.onkeydown = e => { if (e.key === 'Enter') trySubmit(); if (e.key === 'Escape') doCancel(); };
+  });
+}
+
+async function requireMutuoAuth() {
+  if (sessionStorage.getItem('mutuoAuth') === '1') return true;
+  return showPinModal('🔒 Área restrita — Mútuo & Interno', async pin => {
+    try {
+      const r = await fetch(`/api/mutuo-auth?pin=${encodeURIComponent(pin)}`);
+      if (r.ok) {
+        const data = await r.json();
+        if (data.ok) { sessionStorage.setItem('mutuoAuth', '1'); revealMutuoSidebar(); return true; }
+      }
+    } catch {}
+    return false;
+  });
+}
+
+async function handleMutuoLock() {
+  await requireMutuoAuth();
 }
 
 async function requireFinAuth() {
   if (sessionStorage.getItem('finAuth') === '1') return true;
-  const pin = window.prompt('🔒 Acesso restrito. Digite a senha:');
-  if (!pin) return false;
-  try {
-    const r = await fetch(`/api/fin-auth?pin=${encodeURIComponent(pin)}`);
-    if (r.ok) {
-      const data = await r.json();
-      if (data.ok) { sessionStorage.setItem('finAuth', '1'); return true; }
-    }
-  } catch {}
-  alert('Senha incorreta.');
-  return false;
+  return showPinModal('🔒 Acesso restrito — Financeiro', async pin => {
+    try {
+      const r = await fetch(`/api/fin-auth?pin=${encodeURIComponent(pin)}`);
+      if (r.ok) {
+        const data = await r.json();
+        if (data.ok) { sessionStorage.setItem('finAuth', '1'); return true; }
+      }
+    } catch {}
+    return false;
+  });
 }
 
 async function openFinanceiroTab() {
@@ -2105,23 +2304,28 @@ function renderFinLTMChart(safras) {
     const pY = baseY - pH;
 
     let desEl = '';
+    let topY = pY;
     if (s.desagio > 0) {
       const dH = Math.max(1, (s.desagio / range) * chartH);
       const dY = pY - dH;
+      topY = dY;
+      const desLabelY = dH >= 10 ? dY + dH * 0.65 : dY + dH + 8;
       desEl = `<rect x="${x.toFixed(1)}" y="${dY.toFixed(1)}" width="${barW.toFixed(1)}" height="${dH.toFixed(1)}" fill="#E37B5A" opacity="0.75" rx="1.5"/>
-<text x="${(x+barW/2).toFixed(1)}" y="${(dY-4).toFixed(1)}" font-size="7" font-weight="400" fill="#E37B5A" text-anchor="middle" opacity="0.9">${K(s.desagio)}</text>`;
+<text x="${(x+barW/2).toFixed(1)}" y="${desLabelY.toFixed(1)}" font-size="6.5" font-weight="400" fill="${dH >= 10 ? '#fff' : '#E37B5A'}" text-anchor="middle" opacity="0.9">${K(s.desagio)}</text>`;
     } else if (s.desagio < 0) {
       const dH = Math.max(1, (Math.abs(s.desagio) / range) * chartH);
       desEl = `<rect x="${x.toFixed(1)}" y="${baseY.toFixed(1)}" width="${barW.toFixed(1)}" height="${dH.toFixed(1)}" fill="#E37B5A" opacity="0.5" rx="1.5"/>
 <text x="${(x+barW/2).toFixed(1)}" y="${(baseY+dH+9).toFixed(1)}" font-size="7" font-weight="400" fill="#E37B5A" text-anchor="middle" opacity="0.7">${K(s.desagio)}</text>`;
     }
 
-    const pLabelY = s.desagio <= 0 ? pY - 4 : pY + pH * 0.6;
-    const pFill   = s.desagio <= 0 ? '#4A453F' : '#4A453F';
+    const total = s.principal + Math.max(0, s.desagio);
+    const totalLabel = `<text x="${(x+barW/2).toFixed(1)}" y="${(topY-4).toFixed(1)}" font-size="7.5" font-weight="600" fill="#4A453F" text-anchor="middle">${K(total)}</text>`;
+    const pLabelY = pY + pH * 0.6;
     const pOp     = '0.75';
     return `<rect x="${x.toFixed(1)}" y="${pY.toFixed(1)}" width="${barW.toFixed(1)}" height="${pH.toFixed(1)}" fill="#D0CCC6" opacity="0.55" rx="1.5"/>
 ${desEl}
-<text x="${(x+barW/2).toFixed(1)}" y="${pLabelY.toFixed(1)}" font-size="7" font-weight="400" fill="${pFill}" text-anchor="middle" opacity="${pOp}">${K(s.principal)}</text>`;
+${totalLabel}
+<text x="${(x+barW/2).toFixed(1)}" y="${pLabelY.toFixed(1)}" font-size="7" font-weight="400" fill="#4A453F" text-anchor="middle" opacity="${pOp}">${K(s.principal)}</text>`;
   }).join('');
 
   const xLabels = safras.map((s, i) =>
