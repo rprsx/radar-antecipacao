@@ -498,7 +498,7 @@ strong { color: var(--ink); font-weight: 700; }
 
   <div class="sec">4. Condições do mútuo</div>
   <table class="def-tbl">
-    <tr><td>Remuneração</td><td><strong>CDI + 6% ao ano</strong> — spread fixo de 0,5% a.m. sobre o CDI acumulado do mês<br><span style="font-size:12px;color:var(--ink-mute)">Referência atual (~14,40% CDI): ~1,70% bruto/mês · ~20,40% a.a.</span></td></tr>
+    <tr><td>Remuneração</td><td><strong>CDI + 6% ao ano</strong> — spread fixo de 0,5% a.m. sobre CDI mensal equivalente (regime composto)<br><span style="font-size:12px;color:var(--ink-mute)">Referência atual (~14,40% CDI): ~1,63% bruto/mês · ~21,4% a.a.</span></td></tr>
     <tr><td>Prazo</td><td>12 meses</td></tr>
     <tr><td>Modalidade de recebimento</td><td>Juros no vencimento — acumulado no mês 12 junto com o principal</td></tr>
     <tr><td>Amortização do principal</td><td>Integral no vencimento (bullet)</td></tr>
@@ -511,11 +511,11 @@ strong { color: var(--ink); font-weight: 700; }
   </table>
 
   <div class="sec">5. Retorno estimado — pessoa física</div>
-  <p style="margin-bottom:14px;font-size:13px;color:var(--ink-mute)">CDI de 14,40% a.a. (maio/2026). Remuneração bruta: <strong>CDI + 6% a.a. (~20,75% a.a.)</strong>.</p>
+  <p style="margin-bottom:14px;font-size:13px;color:var(--ink-mute)">CDI de 14,40% a.a. (maio/2026). Remuneração bruta: <strong>CDI + 6% a.a. (~21,4% a.a.)</strong>.</p>
   <table class="def-tbl">
     <tr><td>IR retido na fonte</td><td>17,5% único no vencimento (operação >360 dias)</td></tr>
-    <tr><td>Líquido estimado</td><td><strong style="color:var(--green)">~17,1% a.a.</strong></td></tr>
-    <tr><td>vs. CDI líquido (10,8%)</td><td>~158% do CDI</td></tr>
+    <tr><td>Líquido estimado</td><td><strong style="color:var(--green)">~17,7% a.a.</strong></td></tr>
+    <tr><td>vs. CDI líquido (10,8%)</td><td>~163% do CDI</td></tr>
   </table>
 
   <div class="sec">6. Riscos e mitigantes</div>
@@ -593,8 +593,8 @@ strong { color: var(--ink); font-weight: 700; }
   <p>A remuneração é de <strong>CDI + 6% ao ano</strong>, calculada mensalmente. O valor que você recebe acompanha a taxa de juros do mercado — se o CDI subir, você ganha mais; se cair, um pouco menos.</p>
   <div class="callout callout-coral">
     <div class="callout-label">Fórmula mensal</div>
-    <p><strong>Juros brutos do mês = (CDI acumulado do mês + 0,5%) × valor investido</strong></p>
-    <p style="margin-top:6px;font-size:13px">Com CDI atual de ~14,40% a.a. → CDI mensal ~1,20% + spread 0,50% = <strong>~1,70% bruto/mês</strong></p>
+    <p><strong>taxa_mês = taxa mensal equivalente ao CDI anual (regime composto) + spread fixo de 0,5% ao mês</strong></p>
+    <p style="margin-top:6px;font-size:13px">Com CDI atual de ~14,40% a.a. → CDI mensal equiv. ~1,13% + spread 0,50% = <strong>~1,63% bruto/mês</strong></p>
   </div>
 
   <h3>Quando recebo os juros?</h3>
@@ -603,7 +603,7 @@ strong { color: var(--ink); font-weight: 700; }
   <table class="def-tbl" style="margin-bottom:12px">
     <tr><td>Pagamento dos juros</td><td>Acumulado no mês 12, junto com a devolução do principal</td></tr>
     <tr><td>IR retido na fonte</td><td>17,5% único sobre o total de juros acumulados</td></tr>
-    <tr><td>Juros líquidos estimados (R$ 100k)</td><td>~R$ 17.028 no mês 12</td></tr>
+    <tr><td>Juros líquidos estimados (R$ 100k)</td><td>~R$ 17.655 no mês 12</td></tr>
   </table>
 
   <div class="callout callout-warn">
@@ -630,16 +630,16 @@ strong { color: var(--ink); font-weight: 700; }
   </div>
 
   <div class="sec">4. Exemplo concreto</div>
-  <p style="margin-bottom:16px;font-size:13px;color:var(--ink-mute)">R$ 100.000 investidos · CDI ~14,40% a.a. (maio/2026) → ~1,72% bruto/mês.</p>
+  <p style="margin-bottom:16px;font-size:13px;color:var(--ink-mute)">R$ 100.000 investidos · CDI ~14,40% a.a. (maio/2026) → ~1,63% bruto/mês.</p>
 
   <div class="eg-wrap">
     <div class="eg-head">Juros no vencimento — R$ 100.000</div>
     <table><tbody>
-      <tr><td>Juros brutos acumulados (12 × ~1,72%)</td><td>~R$ 20.640,00</td></tr>
-      <tr class="eg-deduct"><td>IR único no vencimento (17,5%)</td><td>– R$ 3.612,00</td></tr>
-      <tr><td>Juros líquidos no mês 12</td><td>~R$ 17.028,00</td></tr>
+      <tr><td>Juros brutos acumulados (fator composto 12m)</td><td>~R$ 21.400,00</td></tr>
+      <tr class="eg-deduct"><td>IR único no vencimento (17,5%)</td><td>– R$ 3.745,00</td></tr>
+      <tr><td>Juros líquidos no mês 12</td><td>~R$ 17.655,00</td></tr>
       <tr><td>Principal devolvido no mês 12</td><td>R$ 100.000,00</td></tr>
-      <tr class="eg-total"><td>Total recebido no mês 12</td><td>~R$ 117.028,00</td></tr>
+      <tr class="eg-total"><td>Total recebido no mês 12</td><td>~R$ 117.655,00</td></tr>
     </tbody></table>
   </div>
 
@@ -662,8 +662,8 @@ strong { color: var(--ink); font-weight: 700; }
       <tr><td>CRI / CRA isentos</td><td class="r">~14,5%</td><td class="r">~14,5% (isento)</td><td>Sec. secundário</td><td class="mute">não</td></tr>
       <tr class="highlight-row">
         <td><strong>Mútuo igual</strong></td>
-        <td class="r"><strong>~20,75%</strong></td>
-        <td class="r"><strong style="color:var(--green)">~17,1%</strong></td>
+        <td class="r"><strong>~21,4%</strong></td>
+        <td class="r"><strong style="color:var(--green)">~17,7%</strong></td>
         <td><strong>30 dias de aviso</strong></td>
         <td>não (aval sócios)</td>
       </tr>
@@ -804,7 +804,7 @@ strong { color: var(--ink); font-weight: 700; }
       <tr><td>Conta para Recebimento</td><td>[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]</td></tr>
     </table>
     <div class="clause-sub"><strong>2.1.</strong> O desembolso do Principal será realizado pelo <strong>Mutuante</strong> em favor da <strong>Mutuária</strong> em até 2 (dois) dias úteis após a assinatura do presente Contrato.</div>
-    <div class="clause-sub"><strong>2.2.</strong> A remuneração será calculada pela acumulação mensal da taxa CDI do período de referência, divulgada pela B3 S.A., acrescida de spread de 0,5% (zero vírgula cinco por cento) ao mês — equivalente a 6% ao ano na convenção linear. Fórmula de acumulação mensal: <strong>Juros do mês = (CDI acumulado do mês + 0,5%) × Principal</strong>. O total acumulado ao longo dos 12 meses será pago integralmente na Data de Vencimento. A variação do CDI entre os períodos mensais será automaticamente refletida no valor dos juros devidos.</div>
+    <div class="clause-sub"><strong>2.2.</strong> A remuneração será calculada pela taxa mensal equivalente ao CDI anual divulgado pela B3 S.A., pelo regime de capitalização composta, acrescida de spread fixo de 0,5% (zero vírgula cinco por cento) ao mês. As taxas mensais assim apuradas serão acumuladas de forma composta ao longo dos 12 meses, e o total será pago integralmente na Data de Vencimento. A variação do CDI entre os períodos mensais será automaticamente refletida no valor dos juros devidos.</div>
     <div class="clause-sub"><strong>2.3.</strong> Na hipótese de atraso no pagamento, incidirão: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; e (iii) atualização monetária pelo IPCA acumulado no período.</div>
     <div class="clause-sub"><strong>2.4.</strong> O Mutuante poderá solicitar antecipação do vencimento mediante notificação com 30 dias de antecedência, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados <em>pro rata die</em> sobre o período decorrido, sem penalidade.</div>
   </div>

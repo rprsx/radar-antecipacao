@@ -361,11 +361,11 @@ app.get('/api/export/lamina', async (req, res) => {
       ]),
 
       heading('5. Retorno estimado — pessoa física (CDI ref. 14,40% a.a.)'),
-      p('CDI de 14,40% a.a. (maio/2026). Remuneração bruta: CDI + 6% a.a. (~20,75% a.a.).', { color: MUTED, size: 18 }),
+      p('CDI de 14,40% a.a. (maio/2026). Remuneração bruta: CDI + 6% a.a. (~21,4% a.a.).', { color: MUTED, size: 18 }),
       defTable([
         ['IR retido na fonte', '17,5% único no vencimento (operação >360 dias)'],
-        ['Líquido estimado', '~17,1% a.a.'],
-        ['vs. CDI líquido (10,8%)', '~158% do CDI'],
+        ['Líquido estimado', '~17,7% a.a.'],
+        ['vs. CDI líquido (10,8%)', '~163% do CDI'],
       ]),
 
       heading('6. Riscos e mitigantes'),
@@ -401,13 +401,13 @@ app.get('/api/export/guia', async (req, res) => {
 
       heading('2. Quanto recebo e quando?'),
       p('A remuneração é de CDI + 6% ao ano, calculada mensalmente. O valor acompanha a taxa de juros do mercado.'),
-      p('Fórmula mensal: Juros brutos do mês = (CDI acumulado do mês + 0,5%) × valor investido', { color: INK, bold: true }),
-      p('Com CDI atual de ~14,40% a.a. → CDI mensal ~1,20% + spread 0,50% = ~1,70% bruto/mês', { color: MUTED }),
+      p('Fórmula mensal: taxa mensal equivalente ao CDI anual (regime composto) + spread fixo de 0,5% ao mês', { color: INK, bold: true }),
+      p('Com CDI atual de ~14,40% a.a. → CDI mensal equiv. ~1,13% + spread 0,50% = ~1,63% bruto/mês', { color: MUTED }),
       p('Os juros são acumulados durante os 12 meses e pagos no vencimento, junto com o principal. A alíquota de IR é de 17,5% — faixa mais favorável da tabela regressiva, válida para operações acima de 360 dias.'),
       defTable([
         ['Pagamento dos juros','Acumulado no mês 12, junto com a devolução do principal'],
         ['IR retido na fonte','17,5% único sobre o total de juros acumulados'],
-        ['Juros líquidos estimados (R$ 100k)','~R$ 17.028 no mês 12'],
+        ['Juros líquidos estimados (R$ 100k)','~R$ 17.655 no mês 12'],
       ]),
       p('Outras condições de pagamento podem ser discutidas na assinatura.', { color: MUTED, size: 18 }),
       p('Para mutuantes pessoa física, não há IOF nesta operação. Para PJ, o IOF pode incidir — confirmar com assessoria jurídica.'),
@@ -422,13 +422,13 @@ app.get('/api/export/guia', async (req, res) => {
       p('Atenção: o principal não é devolvido aos poucos — fica com a igual durante os 12 meses e volta de uma vez no vencimento junto com todos os juros acumulados.', { color: MUTED }),
 
       heading('4. Exemplo concreto — R$ 100.000 investidos'),
-      p('CDI ~14,40% a.a. (maio/2026) → ~1,72% bruto/mês.'),
+      p('CDI ~14,40% a.a. (maio/2026) → ~1,63% bruto/mês.'),
       makeTable(['Item','Valor'],[
-        ['Juros brutos acumulados (12 × ~1,72%)','~R$ 20.640,00'],
-        ['IR único no vencimento (17,5%)','– R$ 3.612,00'],
-        ['Juros líquidos no mês 12','~R$ 17.028,00'],
+        ['Juros brutos acumulados (fator composto 12m)','~R$ 21.400,00'],
+        ['IR único no vencimento (17,5%)','– R$ 3.745,00'],
+        ['Juros líquidos no mês 12','~R$ 17.655,00'],
         ['Principal devolvido no mês 12','R$ 100.000,00'],
-        ['Total recebido no mês 12','~R$ 117.028,00'],
+        ['Total recebido no mês 12','~R$ 117.655,00'],
       ], [5500, 3500]),
 
       heading('5. Como isso se compara com outras opções?'),
@@ -438,7 +438,7 @@ app.get('/api/export/guia', async (req, res) => {
         ['CDB banco médio 12m','~13,5%','~11,1%','No vencimento','sim (R$ 250K)'],
         ['LCI / LCA 12m','~12,5%','~12,5% (isento)','No vencimento','sim (R$ 250K)'],
         ['CRI / CRA isentos','~14,5%','~14,5% (isento)','Sec. secundário','não'],
-        ['Mútuo igual','~20,75%','~17,1%','30 dias de aviso','não (aval sócios)'],
+        ['Mútuo igual','~21,4%','~17,7%','30 dias de aviso','não (aval sócios)'],
       ], [2400, 1600, 1800, 1800, 1400]),
 
       heading('6. E se eu precisar do dinheiro antes?'),
@@ -507,7 +507,7 @@ app.get('/api/export/contrato', async (req, res) => {
         ['Conta para Recebimento','[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]'],
       ]),
       p('2.1. O desembolso do Principal será realizado pelo Mutuante em favor da Mutuária em até 2 (dois) dias úteis após a assinatura do presente Contrato.', { spaceAfter: 80 }),
-      p('2.2. A remuneração será calculada pela acumulação mensal da taxa CDI do período, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula de acumulação mensal: Juros do mês = (CDI acumulado do mês + 0,5%) × Principal. O total acumulado ao longo dos 12 meses será pago integralmente na Data de Vencimento.', { spaceAfter: 80 }),
+      p('2.2. A remuneração será calculada pela taxa mensal equivalente ao CDI anual divulgado pela B3 S.A., pelo regime de capitalização composta, acrescida de spread fixo de 0,5% (zero vírgula cinco por cento) ao mês. As taxas mensais assim apuradas serão acumuladas de forma composta ao longo dos 12 meses, e o total será pago integralmente na Data de Vencimento. A variação do CDI entre os períodos mensais será automaticamente refletida no valor dos juros devidos.', { spaceAfter: 80 }),
       p('2.3. Na hipótese de atraso: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; (iii) atualização pelo IPCA.', { spaceAfter: 80 }),
       p('2.4. O Mutuante poderá solicitar antecipação do vencimento com 30 dias de notificação, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados pro rata die sobre o período decorrido, sem penalidade.'),
 
