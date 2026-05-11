@@ -419,11 +419,29 @@ strong { color: var(--ink); font-weight: 700; }
   letter-spacing: 0.02em;
 }
 .doc-action-btn:hover { border-color: var(--coral); color: var(--coral); background: var(--coral-light); }
+.step-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--coral-light);
+  border: 1px solid var(--coral-mid);
+  color: var(--coral);
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.step-nav-btn:hover { background: var(--coral-mid); }
 
 /* ── PRINT ── */
 @media print {
   .site-header, .tab-nav, .doc-actions { display: none !important; }
   .tab-content { display: none !important; }
+  body[data-printing="plano"] #tab-plano,
   body[data-printing="lamina"] #tab-lamina,
   body[data-printing="guia"] #tab-guia,
   body[data-printing="contrato"] #tab-contrato { display: block !important; }
@@ -456,14 +474,209 @@ strong { color: var(--ink); font-weight: 700; }
 </header>
 
 <nav class="tab-nav">
-  <button class="tab-btn active" data-tab="lamina">Lâmina do Investidor</button>
+  <button class="tab-btn active" data-tab="plano">Plano de Captação</button>
+  <button class="tab-btn" data-tab="lamina">Lâmina do Investidor</button>
   <button class="tab-btn" data-tab="guia">Guia do Mutuante</button>
   <button class="tab-btn" data-tab="contrato">Contrato de Referência</button>
 </nav>
 
 
+<!-- ═══════════════ TAB: PLANO DE CAPTAÇÃO ═══════════════ -->
+<div id="tab-plano" class="tab-content active">
+<div class="doc-page">
+
+  <div class="doc-actions">
+    <button class="doc-action-btn" onclick="exportPDF('plano')">↓ PDF</button>
+  </div>
+  <div class="doc-eyebrow">Igual Antecipação · Uso Interno · Maio 2026</div>
+  <div class="doc-title">Plano de Captação</div>
+  <div class="doc-subtitle">Briefing para sócios e CEO. Estrutura, justificativa financeira e processo de captação do veículo de mútuo privado de R$1.000.000.</div>
+  <hr class="doc-divider">
+
+  <div class="callout callout-warn" style="margin-bottom:28px">
+    <div class="callout-label">Documento interno</div>
+    <p>Uso exclusivo dos sócios. Não compartilhar com mutuantes. Os documentos do investidor estão nas abas ao lado.</p>
+  </div>
+
+  <div class="sec">1. O que estamos estruturando</div>
+  <p>Criamos um veículo de mútuo privado (Código Civil, arts. 586–592) para captar R$1.000.000 junto a 10 pessoas próximas, com R$100.000 cada.</p>
+  <table class="def-tbl">
+    <tr><td>Instrumento</td><td>Mútuo privado — não regulado pela CVM</td></tr>
+    <tr><td>Volume total</td><td>R$ 1.000.000</td></tr>
+    <tr><td>Mutuantes</td><td>10 pessoas, R$ 100.000 cada</td></tr>
+    <tr><td>Prazo</td><td>12 meses, pagamento bullet no vencimento</td></tr>
+    <tr><td>Remuneração ao mutuante</td><td>CDI + 6% a.a. — <strong>~21,4% bruto / ~17,7% líquido</strong> (ref. CDI 14,40% mai/2026)</td></tr>
+    <tr><td>Garantia</td><td>Aval pessoal e solidário dos sócios</td></tr>
+    <tr><td>Meta de captação</td><td>Maio–junho 2026</td></tr>
+    <tr><td>Shift operacional</td><td>Junho 2026 — capital próprio sai da operação</td></tr>
+  </table>
+  <p>O dinheiro captado substitui o capital próprio que hoje financia as antecipações. A empresa para de usar o caixa da igual como funding operacional e passa a usar capital estruturado, de custo conhecido e prazo fixo.</p>
+
+  <div class="sec">2. Por que fazemos isso agora</div>
+  <h3>Operação madura</h3>
+  <p>Temos mais de 2 anos de histórico real — 850 casos, R$1,6M antecipados, R$690K em deságio, payback médio de 1,9 meses, zero perdas definitivas. Esse histórico credencia a oferta junto a qualquer mutuante.</p>
+  <h3>CDI alto atrai o investidor</h3>
+  <p>Com CDI a 14,40%, oferecer 17,7% líquido é uma proposta concreta — 163% do CDI líquido, com prazo e risco explicados. Se o CDI cair, o spread fixo de 0,5%/mês protege o retorno.</p>
+  <h3>Caixa próprio está sendo consumido</h3>
+  <p>Hoje R$400K/mês saem da conta da igual para financiar as antecipações. Isso funciona, mas imobiliza capital que deveria estar disponível como reserva estratégica — não como funding de operação de crédito.</p>
+
+  <div class="sec">3. O que ganhamos</div>
+  <table class="tbl">
+    <thead><tr><th style="width:28%">Benefício</th><th>O que significa na prática</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Caixa próprio liberado</strong></td><td>R$760K+ que circulam hoje na operação voltam para a conta da igual. Reserva estratégica, capacidade de absorver meses ruins, optionalidade para novas frentes.</td></tr>
+      <tr><td><strong>Passivo estruturado</strong></td><td>Custo de capital explícito e previsível: R$16.300/mês acruado. Sem capital "preso" informalmente na operação.</td></tr>
+      <tr><td><strong>Escala sem consumir equity</strong></td><td>Com R$1M, podemos desembolsar até R$526K/mês sem tocar no caixa próprio. Crescimento financiado por capital de terceiros.</td></tr>
+      <tr><td><strong>Track record para captações futuras</strong></td><td>Pagar 10 mutuantes no mês 12 é o ativo mais valioso para expandir o volume ou buscar capital mais barato na próxima rodada.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">4. Quanto ganhamos</div>
+  <p>O argumento central é o spread entre o custo do capital captado e o yield que a operação gera.</p>
+
+  <h3>Nossa operação — últimos 12 meses</h3>
+  <table class="def-tbl" style="margin-bottom:20px">
+    <tr><td>Yield a.m. médio</td><td><strong style="color:var(--green);font-size:17px">10,8%</strong></td></tr>
+    <tr><td>Yield total médio por ciclo</td><td><strong>29,7%</strong></td></tr>
+    <tr><td>Payback médio</td><td><strong>1,9 meses</strong></td></tr>
+    <tr><td>Principal investido (12m)</td><td>R$ 1.600.000</td></tr>
+    <tr><td>Deságio total (12m)</td><td>R$ 690.000</td></tr>
+  </table>
+
+  <h3>Custo do mútuo</h3>
+  <table class="def-tbl" style="margin-bottom:20px">
+    <tr><td>Taxa paga ao mutuante</td><td>1,63%/mês (21,4% a.a. bruto)</td></tr>
+    <tr><td>Custo mensal acruado (R$1M)</td><td><strong style="color:var(--amber)">R$ 16.300/mês</strong></td></tr>
+    <tr><td>Custo total em 12 meses</td><td><strong style="color:var(--amber)">R$ 214.000</strong></td></tr>
+  </table>
+
+  <h3>O que R$1M gera na operação</h3>
+  <table class="def-tbl" style="margin-bottom:16px">
+    <tr><td>Yield a.m. sobre capital empregado</td><td>10,8%</td></tr>
+    <tr><td>Deságio bruto mensal (R$1M × 10,8%)</td><td><strong style="color:var(--green)">~R$ 108.000/mês</strong></td></tr>
+    <tr><td>Deságio bruto anual</td><td><strong style="color:var(--green)">~R$ 1.296.000</strong></td></tr>
+  </table>
+
+  <div class="callout callout-good">
+    <div class="callout-label">Spread mensal</div>
+    <p><strong>R$108.000 de receita − R$16.300 de custo = ~R$91.700/mês de spread bruto</strong></p>
+    <p style="margin-top:6px;font-size:13px">A empresa opera a 10,8%/mês. O mútuo custa 1,63%/mês. Usamos dívida que custa ~15% do retorno que geramos sobre o mesmo capital.</p>
+  </div>
+  <p style="font-size:12px;color:var(--ink-mute);margin-top:8px">Premissa: capital empregado integralmente. Na prática há alguma ociosidade entre ciclos — mas mesmo com 50% de utilização o spread é amplamente positivo.</p>
+
+  <div class="sec">5. O que melhora na operação</div>
+  <table class="tbl">
+    <thead><tr><th>Antes — caixa próprio</th><th>Depois — mútuo</th></tr></thead>
+    <tbody>
+      <tr><td>Capital da empresa imobilizado na operação</td><td class="pos">Capital próprio disponível como reserva estratégica</td></tr>
+      <tr><td>Custo do capital implícito e invisível</td><td class="pos">Custo visível e previsível: R$16.300/mês</td></tr>
+      <tr><td>Limite de escala = quanto caixa temos</td><td class="pos">Limite de escala = quanto deal flow geramos</td></tr>
+      <tr><td>Sem passivo formal</td><td class="pos">Passivo estruturado, contratual, rastreável</td></tr>
+      <tr><td>Problema no caixa = para a operação</td><td class="pos">Caixa é reserva; mútuo é funding — riscos separados</td></tr>
+      <tr><td>Nenhum relacionamento formal com investidores</td><td class="pos">10 mutuantes como parceiros de médio prazo</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec">6. Fluxo na prática</div>
+  <table class="tbl">
+    <thead><tr><th style="width:18%">Momento</th><th>O que acontece</th><th style="width:22%">Caixa</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Junho 2026</strong><br><span class="mute" style="font-size:12px">captação</span></td>
+        <td>Contratos assinados; TEDs chegam. R$1M disponível. Capital próprio para de financiar a operação gradualmente conforme ciclos antigos encerram.</td>
+        <td class="pos">↓ R$1M entra</td>
+      </tr>
+      <tr>
+        <td><strong>Meses 1–11</strong><br><span class="mute" style="font-size:12px">jul/26 – mai/27</span></td>
+        <td>Capital circula nas antecipações. Deságio (~R$108K/mês) entra no caixa da igual normalmente. Juros do mútuo acumulam — nenhum pagamento aos mutuantes neste período.</td>
+        <td class="pos">↓ ~R$108K/mês deságio</td>
+      </tr>
+      <tr>
+        <td><strong>Mês 12</strong><br><span class="mute" style="font-size:12px">jun/2027</span></td>
+        <td>Último ciclo encerra. Pagamento único: R$1.000.000 principal + R$176.550 juros líquidos + R$37.450 IR retido na fonte.</td>
+        <td class="warn">↑ R$1.214.000 saem</td>
+      </tr>
+      <tr>
+        <td><strong>Decisão</strong><br><span class="mute" style="font-size:12px">jun/2027</span></td>
+        <td>Renovar o veículo para mais 12 meses (provavelmente com volume maior) ou encerrar.</td>
+        <td class="mute">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="sec">7. Processo de captação — o que enviamos, quando e qual documento</div>
+  <p>A captação é feita em 5 etapas. Nunca enviar documentos antes da conversa pessoal.</p>
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="width:4%;white-space:nowrap">#</th>
+        <th style="width:30%">Ação</th>
+        <th style="width:26%">Documento</th>
+        <th>Por quê</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>Conversa pessoal — contexto, ideia, interesse</td>
+        <td><span class="mute">Nenhum</span></td>
+        <td>Relação vem primeiro. Não parece "oferta". Filtra quem não tem perfil antes de gastar tempo.</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>Envio da Lâmina após interesse confirmado</td>
+        <td><button class="step-nav-btn" onclick="goToTab('lamina')">Lâmina do Investidor →</button></td>
+        <td>1 página com estrutura, retorno e riscos. Suficiente para gerar decisão de avançar ou não.</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Call de dúvidas; Guia enviado se solicitado</td>
+        <td><button class="step-nav-btn" onclick="goToTab('guia')">Guia do Mutuante →</button></td>
+        <td>Aprofundamento completo para quem quer entender antes de assinar.</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td>Envio do Contrato para revisão prévia</td>
+        <td><button class="step-nav-btn" onclick="goToTab('contrato')">Contrato de Referência →</button></td>
+        <td>Só após interesse confirmado. Confere seriedade e evita desgaste prematuro.</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td>Assinatura + TED de R$100.000</td>
+        <td><span class="mute">Contrato individualizado</span></td>
+        <td>Contrato com dados do mutuante preenchidos. TED em até 2 dias úteis após assinatura.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info" style="margin-top:16px">
+    <div class="callout-label">Rastreabilidade entre documentos</div>
+    <p>Os três documentos são consistentes entre si: os números da Lâmina, os exemplos do Guia e a fórmula do Contrato usam a mesma metodologia — CDI composto, spread 0,5%/mês, referência CDI 14,40% mai/2026. O modelo financeiro interno suporta os números apresentados neste briefing.</p>
+  </div>
+
+  <div class="sec">8. Próximos passos</div>
+  <table class="tbl">
+    <thead><tr><th style="width:22%">Prazo</th><th>Ação</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Esta semana</strong></td><td>Listar os 10 mutuantes-alvo e priorizar por proximidade e velocidade de decisão</td></tr>
+      <tr><td><strong>Esta semana</strong></td><td>Definir ordem de abordagem — quem fecha primeiro gera momentum para os demais</td></tr>
+      <tr><td><strong>Semana 2</strong></td><td>Iniciar conversas pessoais com os 3 primeiros candidatos</td></tr>
+      <tr><td><strong>Final de maio</strong></td><td>Meta: primeiros 3 contratos assinados — R$300.000 captados</td></tr>
+      <tr><td><strong>Junho</strong></td><td>Shift operacional: capital próprio sai, mútuo entra gradualmente</td></tr>
+      <tr><td><strong>Junho</strong></td><td>Restante dos contratos à medida que o capital for chegando</td></tr>
+    </tbody>
+  </table>
+
+  <div class="legal">
+    Documento interno preparado em maio/2026. Uso exclusivo dos sócios da igual. Números de referência baseados nos últimos 12 meses de operação e CDI de 14,40% a.a. (maio/2026).
+  </div>
+
+</div>
+</div>
+
+
 <!-- ═══════════════ TAB: LÂMINA ═══════════════ -->
-<div id="tab-lamina" class="tab-content active">
+<div id="tab-lamina" class="tab-content">
 <div class="doc-page">
 
   <div class="doc-actions">
@@ -884,15 +1097,18 @@ strong { color: var(--ink); font-weight: 700; }
 
 
 <script>
+function goToTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const btn = document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+  if (btn) btn.classList.add('active');
+  const el = document.getElementById('tab-' + tab);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const tab = btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + tab).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  btn.addEventListener('click', () => goToTab(btn.dataset.tab));
 });
 
 const fmtBRL = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');

@@ -1296,7 +1296,7 @@ function switchTab(tab) {
   const isMetas2     = tab === 'metas2';
   const isFinanceiro = tab === 'financeiro';
   const isPrec       = tab === 'precificacao';
-  const isMutuo      = tab === 'mutuo-lamina' || tab === 'mutuo-guia' || tab === 'mutuo-contrato';
+  const isMutuo      = tab === 'mutuo-plano' || tab === 'mutuo-lamina' || tab === 'mutuo-guia' || tab === 'mutuo-contrato';
   document.getElementById('radarHeader').style.display         = isRadar  ? 'block' : 'none';
   document.getElementById('timeFilterBar').classList.toggle('visible', isRadar);
   document.getElementById('kpiRow').classList.toggle('visible', isRadar);
@@ -1304,6 +1304,7 @@ function switchTab(tab) {
   document.getElementById('viewMetasV2').style.display         = isMetas2 ? 'block' : 'none';
   document.getElementById('viewFinanceiro').style.display      = 'none';
   document.getElementById('viewPrecificacao').style.display    = 'none';
+  document.getElementById('viewMutuoPlano').style.display      = tab === 'mutuo-plano'    ? 'block' : 'none';
   document.getElementById('viewMutuoLamina').style.display     = tab === 'mutuo-lamina'   ? 'block' : 'none';
   document.getElementById('viewMutuoGuia').style.display       = tab === 'mutuo-guia'     ? 'block' : 'none';
   document.getElementById('viewMutuoContrato').style.display   = tab === 'mutuo-contrato' ? 'block' : 'none';
@@ -1315,6 +1316,7 @@ function switchTab(tab) {
 
 async function openMutuoTab(tab) {
   if (!(await requireMutuoAuth())) { switchTab('radar'); return; }
+  document.getElementById('viewMutuoPlano').style.display    = tab === 'mutuo-plano'    ? 'block' : 'none';
   document.getElementById('viewMutuoLamina').style.display   = tab === 'mutuo-lamina'   ? 'block' : 'none';
   document.getElementById('viewMutuoGuia').style.display     = tab === 'mutuo-guia'     ? 'block' : 'none';
   document.getElementById('viewMutuoContrato').style.display = tab === 'mutuo-contrato' ? 'block' : 'none';

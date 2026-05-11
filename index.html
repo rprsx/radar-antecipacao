@@ -123,6 +123,13 @@
   font-family: var(--font-body); white-space: nowrap;
 }
 .doc-pdf-btn:hover { background: var(--coral-mid); }
+.step-nav-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--coral-light); border: 1px solid var(--coral-mid); color: var(--coral);
+  padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.01em; white-space: nowrap;
+}
+.step-nav-btn:hover { background: var(--coral-mid); }
 
 @media print {
   .app-layout > aside, .sidebar, .corner-logo { display: none !important; }
@@ -161,6 +168,7 @@
       <button class="sidebar-item" id="mutuoLockBtn" onclick="handleMutuoLock()" style="margin-top:14px;opacity:0.55">🔒 Mútuo &amp; Interno</button>
       <div id="mutuoSidebarSection" style="display:none">
         <div class="sidebar-section-label" style="margin-top:4px">💼 Veículo de Mútuo</div>
+        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-plano">📊 Plano de Captação</button>
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-lamina">📄 Lâmina</button>
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-guia">📋 Guia do Mutuante</button>
         <button class="sidebar-item sidebar-subitem" data-tab="mutuo-contrato">📝 Contrato</button>
@@ -749,6 +757,134 @@
       </div><!-- precSubSimulador -->
 
     </div><!-- viewPrecificacao -->
+
+    <!-- ═══════════════ PLANO DE CAPTAÇÃO ═══════════════ -->
+    <div id="viewMutuoPlano" class="mutuo-wrap" style="display:none">
+    <div class="doc-page">
+      <div class="doc-top-bar">
+        <div class="doc-eyebrow">Igual Antecipação · Uso Interno · Maio 2026</div>
+        <button class="doc-pdf-btn" onclick="exportMutuoPDF('plano')">↓ Baixar PDF</button>
+      </div>
+      <div class="doc-title">Plano de Captação</div>
+      <div class="doc-subtitle">Briefing para sócios e CEO. Estrutura, justificativa financeira e processo de captação do veículo de mútuo privado de R$1.000.000.</div>
+      <hr class="doc-divider">
+
+      <div class="callout callout-warn" style="margin-bottom:24px">
+        <div class="callout-label">Documento interno</div>
+        <p>Uso exclusivo dos sócios. Não compartilhar com mutuantes. Os documentos do investidor estão no menu ao lado.</p>
+      </div>
+
+      <div class="sec">1. O que estamos estruturando</div>
+      <p>Veículo de mútuo privado (Código Civil, arts. 586–592) para captar R$1.000.000 junto a 10 pessoas próximas, com R$100.000 cada.</p>
+      <table class="def-tbl">
+        <tr><td>Instrumento</td><td>Mútuo privado — não regulado pela CVM</td></tr>
+        <tr><td>Volume total</td><td>R$ 1.000.000</td></tr>
+        <tr><td>Mutuantes</td><td>10 pessoas, R$ 100.000 cada</td></tr>
+        <tr><td>Prazo</td><td>12 meses, pagamento bullet no vencimento</td></tr>
+        <tr><td>Remuneração ao mutuante</td><td>CDI + 6% a.a. — <strong>~21,4% bruto / ~17,7% líquido</strong> (ref. CDI 14,40% mai/2026)</td></tr>
+        <tr><td>Garantia</td><td>Aval pessoal e solidário dos sócios</td></tr>
+        <tr><td>Meta de captação</td><td>Maio–junho 2026</td></tr>
+        <tr><td>Shift operacional</td><td>Junho 2026 — capital próprio sai da operação</td></tr>
+      </table>
+
+      <div class="sec">2. Por que fazemos isso agora</div>
+      <h3>Operação madura</h3>
+      <p>Mais de 2 anos de histórico — 850 casos, R$1,6M antecipados, R$690K em deságio, payback médio de 1,9 meses, zero perdas definitivas.</p>
+      <h3>CDI alto atrai o investidor</h3>
+      <p>Com CDI a 14,40%, oferecer 17,7% líquido é 163% do CDI líquido. Se o CDI cair, o spread fixo de 0,5%/mês protege o retorno do mutuante.</p>
+      <h3>Caixa próprio está sendo consumido</h3>
+      <p>Hoje R$400K/mês saem da conta da igual para financiar as antecipações. Esse capital deveria estar disponível como reserva estratégica.</p>
+
+      <div class="sec">3. O que ganhamos</div>
+      <table class="tbl">
+        <thead><tr><th style="width:28%">Benefício</th><th>O que significa na prática</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Caixa próprio liberado</strong></td><td>R$760K+ que circulam hoje na operação voltam para a conta da igual — reserva, absorção de choques, optionalidade.</td></tr>
+          <tr><td><strong>Passivo estruturado</strong></td><td>Custo de capital explícito e previsível: R$16.300/mês acruado. Sem capital "preso" informalmente.</td></tr>
+          <tr><td><strong>Escala sem consumir equity</strong></td><td>Com R$1M, podemos desembolsar até R$526K/mês sem tocar no caixa próprio.</td></tr>
+          <tr><td><strong>Track record futuro</strong></td><td>Pagar 10 mutuantes no mês 12 é o ativo mais valioso para expandir nas próximas captações.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec">4. Quanto ganhamos</div>
+      <h3>Nossa operação — últimos 12 meses</h3>
+      <table class="def-tbl" style="margin-bottom:16px">
+        <tr><td>Yield a.m. médio</td><td><strong style="color:var(--green);font-size:17px">10,8%</strong></td></tr>
+        <tr><td>Yield total médio por ciclo</td><td><strong>29,7%</strong></td></tr>
+        <tr><td>Payback médio</td><td><strong>1,9 meses</strong></td></tr>
+        <tr><td>Principal investido (12m)</td><td>R$ 1.600.000</td></tr>
+        <tr><td>Deságio total (12m)</td><td>R$ 690.000</td></tr>
+      </table>
+      <h3>Custo vs. retorno do mútuo</h3>
+      <table class="def-tbl" style="margin-bottom:16px">
+        <tr><td>Taxa paga ao mutuante</td><td>1,63%/mês (21,4% a.a. bruto)</td></tr>
+        <tr><td>Custo mensal acruado (R$1M)</td><td><strong style="color:var(--amber)">R$ 16.300/mês</strong></td></tr>
+        <tr><td>Deságio bruto gerado (R$1M × 10,8%)</td><td><strong style="color:var(--green)">~R$ 108.000/mês</strong></td></tr>
+      </table>
+      <div class="callout callout-good">
+        <div class="callout-label">Spread mensal</div>
+        <p><strong>R$108.000 receita − R$16.300 custo = ~R$91.700/mês de spread bruto</strong></p>
+        <p style="margin-top:6px;font-size:13px">A empresa opera a 10,8%/mês. O mútuo custa 1,63%/mês — ~15% do retorno que geramos sobre o mesmo capital.</p>
+      </div>
+
+      <div class="sec">5. O que melhora na operação</div>
+      <table class="tbl">
+        <thead><tr><th>Antes — caixa próprio</th><th>Depois — mútuo</th></tr></thead>
+        <tbody>
+          <tr><td>Capital imobilizado na operação</td><td class="pos">Capital próprio disponível como reserva</td></tr>
+          <tr><td>Custo do capital implícito e invisível</td><td class="pos">Custo visível: R$16.300/mês</td></tr>
+          <tr><td>Limite de escala = quanto caixa temos</td><td class="pos">Limite = quanto deal flow geramos</td></tr>
+          <tr><td>Sem passivo formal</td><td class="pos">Passivo estruturado, contratual, rastreável</td></tr>
+          <tr><td>Problema no caixa = para a operação</td><td class="pos">Caixa é reserva; mútuo é funding</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec">6. Fluxo na prática</div>
+      <table class="tbl">
+        <thead><tr><th style="width:20%">Momento</th><th>O que acontece</th><th style="width:22%">Caixa</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Jun/2026</strong><br><span class="mute" style="font-size:12px">captação</span></td><td>Contratos assinados; R$1M chega. Capital próprio para de sair da operação.</td><td class="pos">↓ R$1M entra</td></tr>
+          <tr><td><strong>Meses 1–11</strong><br><span class="mute" style="font-size:12px">jul/26–mai/27</span></td><td>Capital circula nas antecipações. Deságio (~R$108K/mês) entra no caixa. Juros acumulam — nenhum pagamento aos mutuantes.</td><td class="pos">↓ ~R$108K/mês</td></tr>
+          <tr><td><strong>Mês 12</strong><br><span class="mute" style="font-size:12px">jun/2027</span></td><td>Pagamento único: R$1M principal + R$176.550 juros líquidos + R$37.450 IR retido.</td><td class="warn">↑ R$1.214.000 saem</td></tr>
+          <tr><td><strong>Decisão</strong></td><td>Renovar para mais 12 meses (provavelmente com volume maior) ou encerrar.</td><td class="mute">—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sec">7. Processo de captação — o que enviamos, quando e qual documento</div>
+      <p>A captação é feita em 5 etapas. Nunca enviar documentos antes da conversa pessoal.</p>
+      <table class="tbl">
+        <thead><tr><th style="width:4%">#</th><th style="width:32%">Ação</th><th style="width:26%">Documento</th><th>Por quê</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Conversa pessoal — contexto, ideia, interesse</td><td><span class="mute">Nenhum</span></td><td>Relação vem primeiro. Filtra quem não tem perfil antes de gastar tempo.</td></tr>
+          <tr><td><strong>2</strong></td><td>Envio da Lâmina após interesse confirmado</td><td><button class="step-nav-btn" onclick="switchTab('mutuo-lamina')">Lâmina do Investidor →</button></td><td>1 página com estrutura, retorno e riscos.</td></tr>
+          <tr><td><strong>3</strong></td><td>Call de dúvidas; Guia enviado se solicitado</td><td><button class="step-nav-btn" onclick="switchTab('mutuo-guia')">Guia do Mutuante →</button></td><td>Aprofundamento para quem quer entender antes de assinar.</td></tr>
+          <tr><td><strong>4</strong></td><td>Envio do Contrato para revisão prévia</td><td><button class="step-nav-btn" onclick="switchTab('mutuo-contrato')">Contrato de Referência →</button></td><td>Só após interesse confirmado. Confere seriedade.</td></tr>
+          <tr><td><strong>5</strong></td><td>Assinatura + TED de R$100.000</td><td><span class="mute">Contrato individualizado</span></td><td>TED em até 2 dias úteis após assinatura.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info" style="margin-top:14px">
+        <div class="callout-label">Rastreabilidade</div>
+        <p>Lâmina, Guia e Contrato usam a mesma metodologia e valores de referência — CDI composto, spread 0,5%/mês, CDI 14,40% mai/2026.</p>
+      </div>
+
+      <div class="sec">8. Próximos passos</div>
+      <table class="tbl">
+        <thead><tr><th style="width:22%">Prazo</th><th>Ação</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Esta semana</strong></td><td>Listar os 10 mutuantes-alvo e priorizar por proximidade e velocidade de decisão</td></tr>
+          <tr><td><strong>Esta semana</strong></td><td>Definir ordem de abordagem — quem fecha primeiro gera momentum</td></tr>
+          <tr><td><strong>Semana 2</strong></td><td>Iniciar conversas pessoais com os 3 primeiros candidatos</td></tr>
+          <tr><td><strong>Final de maio</strong></td><td>Meta: primeiros 3 contratos assinados — R$300.000 captados</td></tr>
+          <tr><td><strong>Junho</strong></td><td>Shift operacional: capital próprio sai, mútuo entra</td></tr>
+          <tr><td><strong>Junho</strong></td><td>Restante dos contratos à medida que o capital for chegando</td></tr>
+        </tbody>
+      </table>
+
+      <div class="legal">
+        Documento interno — maio/2026. Uso exclusivo dos sócios da igual. Números baseados nos últimos 12 meses de operação e CDI 14,40% a.a.
+      </div>
+    </div>
+    </div><!-- viewMutuoPlano -->
 
     <!-- ═══════════════ LÂMINA ═══════════════ -->
     <div id="viewMutuoLamina" class="mutuo-wrap" style="display:none">
