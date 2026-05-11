@@ -962,10 +962,17 @@ function renderSafras(safras) {
   const yamColor = v => v >= 0.10 ? 'var(--green)' : v >= 0.08 ? 'var(--ink-soft)' : 'var(--amber)';
   const yamBg    = v => v >= 0.10 ? 'var(--green-soft)' : v < 0.07 ? 'rgba(196,96,58,0.07)' : '';
 
+  const now = new Date();
+  const currentKey = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
   const rows = [...safras].reverse().map(s => {
     const yc = yamColor(s.yieldAm), yb = yamBg(s.yieldAm);
+    const isCurrent = s.key === currentKey;
+    const keyLabel = isCurrent
+      ? `${s.key} <span style="font-size:10px;font-weight:600;color:var(--amber);background:var(--amber-soft);padding:1px 6px;border-radius:3px;vertical-align:middle">em andamento</span>`
+      : s.key;
     return `<tr>
-      <td>${s.key}</td>
+      <td>${keyLabel}</td>
       <td class="num">${s.n}</td>
       <td class="num">${fmtCompact(s.principal)}</td>
       <td class="num">${fmtCompact(s.desagio)}</td>
@@ -988,7 +995,6 @@ function renderSafras(safras) {
       </thead>
       <tbody>${rows}</tbody>
     </table>
-    <p style="font-size:11px;color:var(--ink-mute);margin-top:6px">Dados ao vivo · casos com status Pago · atualizado automaticamente</p>
   `;
 }
 

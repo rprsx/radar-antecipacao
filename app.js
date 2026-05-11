@@ -1353,16 +1353,21 @@ function renderMutuoSafras(safras) {
   if (!safras || !safras.length) { document.getElementById('mv-safra-table').innerHTML = '<p class="loading">Sem dados de safra.</p>'; return; }
   const yc = v => v >= 0.10 ? 'var(--green)' : v >= 0.08 ? 'var(--ink-soft)' : 'var(--amber)';
   const yb = v => v >= 0.10 ? 'var(--green-soft)' : v < 0.07 ? 'rgba(196,96,58,0.07)' : '';
-  const rows = [...safras].reverse().map(s =>
-    `<tr><td>${s.key}</td><td class="num">${s.n}</td><td class="num">${fmtC(s.principal)}</td><td class="num">${fmtC(s.desagio)}</td>
+  const now = new Date();
+  const curKey = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const rows = [...safras].reverse().map(s => {
+    const keyLabel = s.key === curKey
+      ? `${s.key} <span style="font-size:10px;font-weight:600;color:var(--amber);background:var(--amber-soft);padding:1px 6px;border-radius:3px;vertical-align:middle">em andamento</span>`
+      : s.key;
+    return `<tr><td>${keyLabel}</td><td class="num">${s.n}</td><td class="num">${fmtC(s.principal)}</td><td class="num">${fmtC(s.desagio)}</td>
      <td class="num" style="color:${yc(s.yieldAm)};background:${yb(s.yieldAm)};font-weight:600">${fmtP(s.yieldAm, 2)}</td>
-     <td class="num">${fmtP(s.yieldTotal, 0)}</td></tr>`).join('');
+     <td class="num">${fmtP(s.yieldTotal, 0)}</td></tr>`;
+  }).join('');
   document.getElementById('mv-safra-table').innerHTML = `
     <table class="tbl">
       <thead><tr><th>Safra</th><th class="r">Casos</th><th class="r">Principal</th><th class="r">Deságio</th><th class="r">Yield a.m.</th><th class="r">Yield total</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>
-    <p style="font-size:11px;color:var(--ink-mute);margin-top:6px">Dados ao vivo · últimos 12 meses · casos Pago · atualizado automaticamente</p>`;
+    </table>`;
 }
 
 function exportMutuoPDF(doc) {
