@@ -352,7 +352,7 @@ app.get('/api/export/lamina', async (req, res) => {
         ['Prazo','12 meses'],
         ['Modalidade de recebimento','Juros no vencimento — acumulado no mês 12 junto com o principal'],
         ['Amortização do principal','Integral no vencimento (bullet)'],
-        ['Volume total alvo','R$ 800.000'],
+        ['Volume total alvo','R$ 1.000.000'],
         ['IR (pessoa física)','17,5% único no vencimento (operação >360 dias) — retido na fonte'],
         ['IOF','Não incide para mutuante PF · PJ: confirmar com assessoria'],
         ['Garantia','Aval pessoal e solidário dos sócios da igual'],
@@ -460,13 +460,6 @@ app.get('/api/export/guia', async (req, res) => {
         ['Sem FGC','Este mútuo não é coberto pelo Fundo Garantidor de Créditos.'],
         ['Histórico curto','A operação tem pouco mais de 1 ano. Histórico positivo, mas curto para ciclos adversos.'],
       ], [2800, 6200]),
-
-      heading('10. Perguntas frequentes'),
-      p('Posso investir qualquer valor? Sim, não há valor mínimo fixo.', { color: INK, bold: true }),
-      p('Posso investir como pessoa jurídica? Sim. Para PJ, o tratamento do IR depende do regime de apuração — consulte seu contador.'),
-      p('O que acontece se a igual fechar? O contrato tem aval pessoal e solidário dos sócios. Em caso de insolvência, você pode acionar os avalistas diretamente.', { color: INK, bold: true }),
-      p('A taxa pode mudar durante o contrato? O spread de 6% ao ano é fixo. O CDI varia conforme o Banco Central.'),
-      p('Os juros variam mês a mês? Os juros brutos variam com o CDI, mas o spread de 0,5% ao mês é fixo. O valor total é acumulado e pago no mês 12, com IR de 17,5%.', { color: INK, bold: true }),
 
       legal('Este documento é informativo e destinado exclusivamente a investidores convidados pela igual. Não constitui oferta pública de valores mobiliários. Não é produto regulado pelo Banco Central ou pela CVM. Rentabilidade passada não garante rentabilidade futura. Recomenda-se assessoria jurídica e fiscal independente antes da assinatura.'),
     ]}]});
