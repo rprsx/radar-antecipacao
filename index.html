@@ -6,6 +6,138 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=2">
+<style>
+/* ─── SIDEBAR SUB-ITEMS ─────────────────────────────── */
+.sidebar-subitem { padding-left: 32px !important; font-size: 12px !important; }
+
+/* ─── MUTUO WRAP — variáveis e reset ────────────────── */
+.mutuo-wrap {
+  --coral:       #C4603A;
+  --coral-light: #F9EDE7;
+  --coral-mid:   #EED3C8;
+  --ink:         #1E1C1A;
+  --ink-soft:    #57534E;
+  --ink-mute:    #A8A29E;
+  --border:      #E7E5E4;
+  --green:       #3A7A54;
+  --green-soft:  #EBF4EE;
+  --amber:       #B45309;
+  --amber-soft:  #FEF3C7;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink);
+  padding-bottom: 60px;
+}
+.mutuo-wrap .doc-page {
+  max-width: 760px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--border);
+  padding: 48px 56px;
+}
+.mutuo-wrap .doc-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; }
+.mutuo-wrap .doc-title   { font-size: 26px; font-weight: 800; letter-spacing: -.025em; color: var(--ink); line-height: 1.2; margin-bottom: 10px; }
+.mutuo-wrap .doc-subtitle{ font-size: 15px; color: var(--ink-soft); line-height: 1.5; }
+.mutuo-wrap .doc-divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+.mutuo-wrap .sec { font-size: 16px; font-weight: 700; color: var(--coral); margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--coral-mid); letter-spacing: -.01em; }
+.mutuo-wrap .sec:first-of-type { margin-top: 0; }
+.mutuo-wrap h3  { font-size: 15px; font-weight: 700; color: var(--ink); margin: 20px 0 6px; }
+.mutuo-wrap h4  { font-size: 12px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .08em; margin: 16px 0 6px; }
+.mutuo-wrap p   { color: var(--ink-soft); margin-bottom: 10px; font-size: 15px; line-height: 1.65; }
+.mutuo-wrap p:last-child { margin-bottom: 0; }
+.mutuo-wrap ul, .mutuo-wrap ol { padding-left: 20px; color: var(--ink-soft); margin-bottom: 10px; font-size: 15px; }
+.mutuo-wrap li  { margin-bottom: 4px; }
+.mutuo-wrap strong { color: var(--ink); font-weight: 700; }
+/* KPI grid */
+.mutuo-wrap .kpi-grid  { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 16px 0; }
+.mutuo-wrap .kpi-box   { background: white; border: 1px solid var(--border); padding: 18px 20px; }
+.mutuo-wrap .kpi-desc  { font-size: 10px; color: var(--ink-mute); margin-top: 6px; line-height: 1.4; }
+.mutuo-wrap .kpi-box.accent      { background: var(--coral-light); border-color: var(--coral-mid); }
+.mutuo-wrap .kpi-box.green-soft  { background: var(--green-soft); border-color: rgba(58,122,84,.2); }
+.mutuo-wrap .kpi-val   { font-size: 26px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.mutuo-wrap .kpi-box.accent .kpi-val    { color: var(--coral); }
+.mutuo-wrap .kpi-box.green-soft .kpi-val{ color: var(--green); }
+.mutuo-wrap .kpi-label { font-size: 10px; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+/* Tables */
+.mutuo-wrap .tbl { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; border: 1px solid var(--border); overflow: hidden; }
+.mutuo-wrap .tbl th { background: var(--coral); color: white; padding: 9px 13px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.mutuo-wrap .tbl th.r, .mutuo-wrap .tbl td.r { text-align: right; }
+.mutuo-wrap .tbl td { padding: 10px 13px; border-bottom: 1px solid var(--border); color: var(--ink-soft); vertical-align: top; }
+.mutuo-wrap .tbl tr:last-child td { border-bottom: none; }
+.mutuo-wrap .tbl .num  { text-align: right; font-variant-numeric: tabular-nums; }
+.mutuo-wrap .tbl .pos  { color: var(--green); font-weight: 600; }
+.mutuo-wrap .tbl .warn { color: var(--amber); font-weight: 600; }
+.mutuo-wrap .tbl .mute { color: var(--ink-mute); }
+.mutuo-wrap .tbl .highlight-row td { background: var(--coral-light); font-weight: 700; color: var(--ink); }
+/* Def table */
+.mutuo-wrap .def-tbl { width: 100%; border-collapse: collapse; margin: 14px 0; border: 1px solid var(--border); font-size: 14px; }
+.mutuo-wrap .def-tbl tr { border-bottom: 1px solid var(--border); }
+.mutuo-wrap .def-tbl tr:last-child { border-bottom: none; }
+.mutuo-wrap .def-tbl td { padding: 11px 14px; }
+.mutuo-wrap .def-tbl td:first-child { font-weight: 700; color: var(--ink); width: 34%; background: #FAFAF9; border-right: 1px solid var(--border); }
+.mutuo-wrap .def-tbl td:last-child  { color: var(--ink-soft); background: white; }
+/* Callouts */
+.mutuo-wrap .callout       { padding: 13px 16px; margin: 14px 0; font-size: 14px; }
+.mutuo-wrap .callout p     { font-size: 14px; margin-bottom: 0; }
+.mutuo-wrap .callout-info  { background: white; border: 1px solid var(--border); border-left: 3px solid var(--ink-mute); }
+.mutuo-wrap .callout-coral { background: var(--coral-light); border: 1px solid var(--coral-mid); border-left: 3px solid var(--coral); }
+.mutuo-wrap .callout-warn  { background: var(--amber-soft); border: 1px solid #FDE68A; border-left: 3px solid var(--amber); }
+.mutuo-wrap .callout-good  { background: var(--green-soft); border: 1px solid rgba(58,122,84,.2); border-left: 3px solid var(--green); }
+.mutuo-wrap .callout-label { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 5px; }
+.mutuo-wrap .callout-info  .callout-label { color: var(--ink-mute); }
+.mutuo-wrap .callout-coral .callout-label { color: var(--coral); }
+.mutuo-wrap .callout-warn  .callout-label { color: var(--amber); }
+.mutuo-wrap .callout-good  .callout-label { color: var(--green); }
+/* Example tables */
+.mutuo-wrap .eg-wrap { background: white; border: 1px solid var(--border); overflow: hidden; margin: 14px 0; }
+.mutuo-wrap .eg-head { background: var(--coral); color: white; padding: 9px 16px; font-size: 13px; font-weight: 700; }
+.mutuo-wrap .eg-wrap table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.mutuo-wrap .eg-wrap td  { padding: 9px 16px; border-bottom: 1px solid var(--border); color: var(--ink-soft); }
+.mutuo-wrap .eg-wrap tr:last-child td { border-bottom: none; }
+.mutuo-wrap .eg-wrap td:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.mutuo-wrap .eg-wrap tr.eg-deduct td { color: var(--amber) !important; }
+.mutuo-wrap .eg-wrap tr.eg-total  td { font-weight: 800; color: var(--coral) !important; background: var(--coral-light); }
+/* Contract */
+.mutuo-wrap .contract-head       { text-align: center; margin-bottom: 32px; }
+.mutuo-wrap .contract-main-title { font-size: 18px; font-weight: 800; letter-spacing: -.01em; color: var(--ink); }
+.mutuo-wrap .contract-sub-title  { font-size: 13px; color: var(--ink-mute); font-style: italic; margin-top: 4px; }
+.mutuo-wrap .party-label { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-mute); margin: 18px 0 7px; }
+.mutuo-wrap .clause-block  { margin-bottom: 24px; }
+.mutuo-wrap .clause-title  { font-size: 14px; font-weight: 800; color: var(--coral); margin-bottom: 8px; }
+.mutuo-wrap .clause-body   { font-size: 14px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 7px; }
+.mutuo-wrap .clause-sub    { font-size: 14px; color: var(--ink-soft); padding-left: 18px; margin: 7px 0; line-height: 1.7; }
+.mutuo-wrap .sign-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 36px; margin-top: 36px; }
+.mutuo-wrap .sign-line     { border-top: 1px solid var(--ink); padding-top: 7px; margin-top: 44px; font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+.mutuo-wrap .legal         { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--ink-mute); line-height: 1.6; font-style: italic; }
+.mutuo-wrap .loading       { color: var(--ink-mute); font-size: 13px; padding: 16px 0; }
+
+.doc-top-bar {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+}
+.doc-top-bar .doc-eyebrow { margin-bottom: 0; }
+.doc-pdf-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--coral); border: 1px solid var(--coral-mid); background: var(--coral-light);
+  padding: 5px 12px; cursor: pointer;
+  font-family: var(--font-body); white-space: nowrap;
+}
+.doc-pdf-btn:hover { background: var(--coral-mid); }
+
+@media print {
+  .app-layout > aside, .sidebar, .corner-logo { display: none !important; }
+  .main-content > *:not(.mutuo-wrap.printing-active) { display: none !important; }
+  .mutuo-wrap { display: none !important; }
+  .mutuo-wrap.printing-active { display: block !important; }
+  .doc-pdf-btn { display: none !important; }
+  .mutuo-wrap .doc-page { margin: 0; border: none; box-shadow: none; padding: 32px; max-width: 100%; }
+  body { background: white; }
+  .callout, .kpi-grid, .tbl th, .def-tbl td:first-child {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -26,6 +158,16 @@
       <button class="sidebar-item" data-tab="metas2">🎯 Report | Metas</button>
       <button class="sidebar-item" data-tab="financeiro">💰 Report | Financeiro</button>
       <button class="sidebar-item" data-tab="precificacao">💡 Precificação</button>
+      <button class="sidebar-item" id="mutuoLockBtn" onclick="handleMutuoLock()" style="margin-top:14px;opacity:0.55">🔒 Mútuo &amp; Interno</button>
+      <div id="mutuoSidebarSection" style="display:none">
+        <div class="sidebar-section-label" style="margin-top:4px">💼 Veículo de Mútuo</div>
+        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-lamina">📄 Lâmina</button>
+        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-guia">📋 Guia do Mutuante</button>
+        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-contrato">📝 Contrato</button>
+        <button class="sidebar-item sidebar-subitem" data-tab="mutuo-calc">📊 Simulador</button>
+        <div class="sidebar-section-label" style="margin-top:14px">🔧 Interno</div>
+        <a href="/interno" class="sidebar-item" style="text-decoration:none;font-size:13px">🏦 Fluxo Interno</a>
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div id="syncBar" class="sync-bar hidden">
@@ -607,6 +749,358 @@
       </div><!-- precSubSimulador -->
 
     </div><!-- viewPrecificacao -->
+
+    <!-- ═══════════════ LÂMINA ═══════════════ -->
+    <div id="viewMutuoLamina" class="mutuo-wrap" style="display:none">
+    <div class="doc-page" id="printLamina">
+      <div class="doc-top-bar">
+        <div class="doc-eyebrow">Igual Antecipação · Lâmina do Investidor · Maio 2026</div>
+        <button class="doc-pdf-btn" onclick="exportMutuoPDF('lamina')">↓ Baixar PDF</button>
+      </div>
+      <div class="doc-title">Veículo de Mútuo</div>
+      <div class="doc-subtitle">Mútuo privado com remuneração de <strong>CDI + 6% ao ano</strong>, prazo de 12 meses, lastreado na operação de antecipação de recebíveis judiciais. Modalidade de recebimento dos juros à escolha do investidor na assinatura. Garantia: aval pessoal dos sócios.</div>
+      <hr class="doc-divider">
+      <div class="sec">1. Como funciona a operação</div>
+      <table class="tbl">
+        <thead><tr><th style="white-space:nowrap;width:1%">Etapa</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr><td style="white-space:nowrap"><strong>01 — causa ganha</strong></td><td>Cliente obtém condenação judicial e tem direito a receber honorários em parcelas futuras.</td></tr>
+          <tr><td style="white-space:nowrap"><strong>02 — oferta igual</strong></td><td>A igual identifica o caso e propõe antecipar o valor, descontando o deságio na transferência.</td></tr>
+          <tr><td style="white-space:nowrap"><strong>03 — contrato assinado</strong></td><td>A igual desembolsa o principal ao cliente com deságio já descontado e assume o risco de recebimento integral.</td></tr>
+          <tr><td style="white-space:nowrap"><strong>04 — recebimento</strong></td><td>A igual recebe o valor de face do devedor judicial conforme as parcelas cedidas são pagas. Payback médio: ~1,9 meses.</td></tr>
+        </tbody>
+      </table>
+      <div class="sec">2. Indicadores da operação — últimos 12 meses</div>
+      <div id="mv-kpi-grid" class="kpi-grid"><div class="loading">Carregando dados…</div></div>
+      <div class="sec">3. Histórico de performance por safra</div>
+      <div id="mv-safra-table"><div class="loading">Carregando safras…</div></div>
+      <div class="sec">4. Condições do mútuo</div>
+      <table class="def-tbl">
+        <tr><td>Remuneração</td><td><strong>CDI + 6% ao ano</strong> — spread fixo de 0,5% a.m. sobre o CDI acumulado do mês<br><span style="font-size:12px;color:var(--ink-mute)">Referência atual (~14,40% CDI): ~1,70% bruto/mês · ~20,40% a.a.</span></td></tr>
+        <tr><td>Prazo</td><td>12 meses</td></tr>
+        <tr><td>Modalidade de recebimento</td><td>À escolha na assinatura: <strong>mensal</strong> (TED/PIX todo mês) ou <strong>no vencimento</strong> (acumulado, pago junto com o principal no mês 12) — ver impacto no IR na seção 5</td></tr>
+        <tr><td>Amortização do principal</td><td>Integral no vencimento (bullet)</td></tr>
+        <tr><td>Volume total alvo</td><td>R$ 800.000</td></tr>
+        <tr><td>IR (pessoa física)</td><td>Mensal: 22,5% m.1–6 · 20,0% m.7–12 &nbsp;·&nbsp; Vencimento: 17,5% único (operação >360 dias) — retido na fonte</td></tr>
+        <tr><td>IOF</td><td>Não incide para mutuante PF &nbsp;·&nbsp; PJ: confirmar com assessoria</td></tr>
+        <tr><td>Garantia</td><td><strong>Aval pessoal e solidário dos sócios da igual</strong></td></tr>
+        <tr><td>Natureza jurídica</td><td>Mútuo privado — arts. 586–592 Código Civil &nbsp;·&nbsp; Não regulado pela CVM</td></tr>
+        <tr><td>Resgate antecipado</td><td>30 dias de aviso, sem penalidade</td></tr>
+      </table>
+      <div class="sec">5. Retorno estimado — pessoa física</div>
+      <p style="margin-bottom:12px;font-size:13px;color:var(--ink-mute)">CDI de 14,40% a.a. (maio/2026). Taxa bruta idêntica nas duas modalidades — a diferença é exclusivamente no IR.</p>
+      <table class="tbl">
+        <thead><tr><th></th><th class="r">Juros mensais</th><th class="r">Juros no vencimento</th></tr></thead>
+        <tbody>
+          <tr><td>Remuneração bruta</td><td class="r" colspan="2" style="text-align:center">CDI + 6% a.a. (~<strong>20,75% a.a.</strong>)</td></tr>
+          <tr><td>IR retido na fonte</td><td class="r">22,5% m.1–6 &nbsp;·&nbsp; 20,0% m.7–12</td><td class="r">17,5% único no vencimento</td></tr>
+          <tr class="highlight-row"><td><strong>Líquido estimado</strong></td><td class="r"><strong>~16,3% a.a.</strong></td><td class="r"><strong style="color:var(--green)">~17,1% a.a.</strong></td></tr>
+          <tr><td>vs. CDI líquido (10,8%)</td><td class="r">~151% do CDI</td><td class="r">~158% do CDI</td></tr>
+        </tbody>
+      </table>
+      <div class="sec">6. Riscos e mitigantes</div>
+      <table class="tbl">
+        <thead><tr><th style="width:20%">Risco</th><th style="width:42%">Descrição</th><th>Mitigante</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Crédito da igual</strong></td><td>A igual pode não honrar os pagamentos do mútuo.</td><td class="pos">Aval pessoal e solidário dos sócios.</td></tr>
+          <tr><td><strong>Atraso judicial</strong></td><td>O devedor judicial pode atrasar parcelas.</td><td class="pos">Crédito executado judicialmente. Atrasos já refletidos no payback histórico.</td></tr>
+          <tr><td><strong>Perda definitiva</strong></td><td>Devedor insolvente sem pagamento.</td><td class="pos">0 casos de perda definitiva desde abr/2024.</td></tr>
+          <tr><td><strong>Variação do CDI</strong></td><td>Queda da Selic reduz o retorno mensal.</td><td class="pos">Spread de 0,5% a.m. fixo. Investidor se beneficia se CDI subir.</td></tr>
+          <tr><td><strong>Liquidez</strong></td><td>Capital imobilizado por 12 meses.</td><td class="pos">Resgate antecipado com 30 dias de aviso, sem penalidade.</td></tr>
+          <tr><td><strong>Sem FGC</strong></td><td>Não coberto pelo Fundo Garantidor de Créditos.</td><td>Aval pessoal dos sócios como proteção direta e executável.</td></tr>
+        </tbody>
+      </table>
+      <div class="legal">Este documento é destinado exclusivamente a investidores convidados pela igual e não constitui oferta pública de valores mobiliários. Trata-se de mútuo privado nos termos dos arts. 586–592 do Código Civil. Não registrado na CVM. Rentabilidade passada não garante rentabilidade futura.</div>
+    </div>
+    </div><!-- viewMutuoLamina -->
+
+    <!-- ═══════════════ GUIA ═══════════════ -->
+    <div id="viewMutuoGuia" class="mutuo-wrap" style="display:none">
+    <div class="doc-page" id="printGuia">
+      <div class="doc-top-bar">
+        <div class="doc-eyebrow">Igual Antecipação · Guia do Mutuante · Maio 2026</div>
+        <button class="doc-pdf-btn" onclick="exportMutuoPDF('guia')">↓ Baixar PDF</button>
+      </div>
+      <div class="doc-title">Guia do Mutuante</div>
+      <div class="doc-subtitle">Tudo que você precisa saber antes de investir. Linguagem simples, sem jargão financeiro desnecessário.</div>
+      <hr class="doc-divider">
+      <div class="sec">1. O que é isso, em uma frase?</div>
+      <p>Você empresta dinheiro para a igual por 12 meses. A igual usa esse dinheiro para financiar a operação de antecipação de recebíveis judiciais. Em troca, você recebe os juros na modalidade escolhida na assinatura e recupera o valor emprestado inteiro no prazo.</p>
+      <div class="callout callout-info">
+        <div class="callout-label">Analogia simples</div>
+        <p>É parecido com um CDB de banco: você empresta e pega o principal de volta no vencimento. A diferença é que aqui o retorno é maior, o risco é diferente (sem FGC, mas com aval pessoal dos sócios) — e você escolhe se quer receber os juros todo mês ou acumulados no final.</p>
+      </div>
+      <div class="sec">2. Quanto recebo e quando?</div>
+      <p>A remuneração é de <strong>CDI + 6% ao ano</strong>, calculada mensalmente. O valor que você recebe acompanha a taxa de juros do mercado — se o CDI subir, você ganha mais; se cair, um pouco menos.</p>
+      <div class="callout callout-coral">
+        <div class="callout-label">Fórmula mensal</div>
+        <p><strong>Juros brutos do mês = (CDI acumulado do mês + 0,5%) × valor investido</strong></p>
+        <p style="margin-top:6px;font-size:13px">Com CDI atual de ~14,40% a.a. → CDI mensal ~1,20% + spread 0,50% = <strong>~1,70% bruto/mês</strong></p>
+      </div>
+      <h3>Quando recebo os juros? Escolha a modalidade</h3>
+      <p>Sobre os juros incide IR Retido na Fonte (IRRF) com alíquotas regressivas. A escolha da modalidade impacta diretamente o IR pago e, portanto, o retorno líquido:</p>
+      <table class="tbl">
+        <thead><tr><th>Modalidade</th><th>Quando entra o dinheiro</th><th class="r">IR (IRRF)</th><th class="r">Juros líquidos (R$ 100 inv.)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mensal</strong></td><td>Todo mês via TED/PIX</td><td class="r">22,5% m.1–6 &nbsp;·&nbsp; 20,0% m.7–12</td><td class="r">~R$ 1,33/mês (m.1–6) · ~R$ 1,38/mês (m.7–12)</td></tr>
+          <tr class="highlight-row"><td><strong>No vencimento</strong></td><td>Acumulado · pago no mês 12 junto com o principal</td><td class="r">17,5% único (>360 dias)</td><td class="r">~R$ 17,03 no mês 12</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-good">
+        <div class="callout-label">IR mais eficiente no vencimento</div>
+        <p>Na modalidade mensal, os juros dos primeiros 6 meses são tributados a 22,5% — a alíquota mais alta da tabela regressiva. Ao optar pelo vencimento, todo o rendimento cai na faixa de 17,5%, gerando <strong>~+0,8pp de retorno líquido a mais</strong> (~16,3% vs ~17,1% a.a.). A escolha depende do seu fluxo de caixa.</p>
+      </div>
+      <div class="callout callout-warn">
+        <div class="callout-label">Atenção: os juros variam com o CDI</div>
+        <p>O valor não é fixo — acompanha o CDI. O spread de 0,5% ao mês é sempre garantido. A igual desconta o IR e transfere o líquido; você não precisa recolher nada separadamente.</p>
+      </div>
+      <p style="margin-top:10px">Para mutuantes <strong>pessoa física</strong>, não há IOF nesta operação. Para <strong>pessoa jurídica</strong>, o IOF pode incidir — confirmar com assessoria jurídica.</p>
+      <div class="sec">3. O que acontece mês a mês?</div>
+      <table class="tbl">
+        <thead><tr><th>Quando</th><th>O que acontece</th><th>Fluxo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dia 0</strong></td><td>Você transfere o principal para a igual via TED/PIX.</td><td><strong style="color:var(--coral)">↑ SAI o principal</strong></td></tr>
+          <tr><td><strong>Meses 1–6</strong></td><td>A igual paga os juros com IR de 22,5% já descontado. Valor varia com CDI.</td><td><strong style="color:var(--green)">↓ ENTRA juros líquidos</strong></td></tr>
+          <tr><td><strong>Meses 7–12</strong></td><td>A igual paga os juros com IR de 20,0% já descontado. Valor varia com CDI.</td><td><strong style="color:var(--green)">↓ ENTRA juros líquidos</strong></td></tr>
+          <tr><td><strong>Mês 12</strong></td><td>A igual devolve o principal integral + juros do último mês.</td><td><strong style="color:var(--green)">↓ ENTRA principal + juros</strong></td></tr>
+          <tr><td><strong>A qualquer momento</strong></td><td>Resgata avisando com 30 dias. Recebe principal + juros proporcionais.</td><td><strong style="color:var(--green)">↓ ENTRA principal</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn">
+        <div class="callout-label">Atenção</div>
+        <p>O principal não é devolvido aos poucos — fica com a igual durante os 12 meses e volta de uma vez no vencimento.</p>
+      </div>
+      <div class="callout callout-info">
+        <div class="callout-label">Modalidade no vencimento</div>
+        <p>Se preferir receber acumulado: os meses 1–11 ficam sem pagamento, e no mês 12 você recebe <strong>principal + total de 12 meses de juros</strong>, com IR único de 17,5%.</p>
+      </div>
+      <div class="sec">4. Exemplos concretos</div>
+      <p style="margin-bottom:14px;font-size:13px;color:var(--ink-mute)">R$ 100.000 investidos · CDI ~14,40% a.a. (maio/2026) → ~1,72% bruto/mês. <strong>A taxa bruta é a mesma nas duas modalidades</strong> — o que muda é apenas o IR.</p>
+      <div class="eg-wrap">
+        <div class="eg-head">Modalidade mensal — R$ 100.000</div>
+        <table><tbody>
+          <tr><td>Juros brutos mensais (~1,72%)</td><td>~R$ 1.720,00/mês</td></tr>
+          <tr class="eg-deduct"><td>IR meses 1–6 (22,5%)</td><td>– R$ 387,00/mês</td></tr>
+          <tr class="eg-deduct"><td>IR meses 7–12 (20,0%)</td><td>– R$ 344,00/mês</td></tr>
+          <tr><td>Juros líquidos meses 1–6</td><td>~R$ 1.333,00/mês</td></tr>
+          <tr><td>Juros líquidos meses 7–12</td><td>~R$ 1.376,00/mês</td></tr>
+          <tr><td>Principal devolvido no mês 12</td><td>R$ 100.000,00</td></tr>
+          <tr class="eg-total"><td>Total recebido em 12 meses</td><td>~R$ 116.254,00</td></tr>
+        </tbody></table>
+      </div>
+      <div class="eg-wrap">
+        <div class="eg-head">Modalidade no vencimento — R$ 100.000</div>
+        <table><tbody>
+          <tr><td>Juros brutos acumulados (12 × ~1,72%)</td><td>~R$ 20.640,00</td></tr>
+          <tr class="eg-deduct"><td>IR único no vencimento (17,5%)</td><td>– R$ 3.612,00</td></tr>
+          <tr><td>Juros líquidos no mês 12</td><td>~R$ 17.028,00</td></tr>
+          <tr><td>Principal devolvido no mês 12</td><td>R$ 100.000,00</td></tr>
+          <tr class="eg-total"><td>Total recebido no mês 12</td><td>~R$ 117.028,00</td></tr>
+        </tbody></table>
+      </div>
+      <div class="sec">5. Como isso se compara com outras opções?</div>
+      <table class="tbl">
+        <thead><tr><th>Produto</th><th class="r">Taxa bruta a.a.</th><th class="r">Taxa líquida a.a.</th><th>Liquidez</th><th>FGC</th></tr></thead>
+        <tbody>
+          <tr><td>Tesouro Selic</td><td class="r">~14,9%</td><td class="r">~10,8%</td><td>Diária</td><td class="mute">não</td></tr>
+          <tr><td>CDB banco grande 12m</td><td class="r">~10,8%</td><td class="r">~10,8%</td><td>No vencimento</td><td class="pos">sim (R$ 250K)</td></tr>
+          <tr><td>CDB banco médio 12m</td><td class="r">~13,5%</td><td class="r">~11,1%</td><td>No vencimento</td><td class="pos">sim (R$ 250K)</td></tr>
+          <tr><td>LCI / LCA 12m</td><td class="r">~12,5%</td><td class="r">~12,5% (isento)</td><td>No vencimento</td><td class="pos">sim (R$ 250K)</td></tr>
+          <tr><td>CRI / CRA isentos</td><td class="r">~14,5%</td><td class="r">~14,5% (isento)</td><td>Sec. secundário</td><td class="mute">não</td></tr>
+          <tr class="highlight-row"><td><strong>Mútuo igual</strong><br><span style="font-size:11px;font-weight:400;color:var(--ink-soft)">mensal / no vencimento</span></td><td class="r"><strong>~20,75%</strong></td><td class="r"><strong style="color:var(--coral)">~16,3% / ~17,1%</strong></td><td><strong>30 dias de aviso</strong></td><td>não (aval sócios)</td></tr>
+        </tbody>
+      </table>
+      <div class="sec">6. E se eu precisar do dinheiro antes?</div>
+      <p>É possível resgatar antes do vencimento avisando a igual com 30 dias. A igual devolve o principal integral mais os juros calculados <strong>pro rata die</strong> (dia a dia) sobre o período decorrido, sem penalidade — independentemente da modalidade escolhida.</p>
+      <div class="sec">7. Preciso declarar no Imposto de Renda?</div>
+      <p>Sim, mas é simples. O IR é retido na fonte — você não recolhe nada. Na declaração anual, informe os juros brutos em <em>Rendimentos Sujeitos à Tributação Exclusiva/Definitiva</em>. A igual envia o Informe de Rendimentos até fevereiro do ano seguinte.</p>
+      <div class="sec">8. Quais são as garantias?</div>
+      <p><strong>Aval pessoal dos sócios:</strong> os sócios assinam como avalistas solidários e respondem pessoalmente pela dívida com seus bens individuais — sem benefício de ordem.</p>
+      <p><strong>Recebíveis judiciais como lastro:</strong> recursos alocados em condenações judiciais transitadas em julgado, diversificados em dezenas de operações por mês.</p>
+      <div class="sec">9. Quais são os riscos?</div>
+      <table class="tbl">
+        <thead><tr><th style="width:26%">Risco</th><th>O que significa na prática</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A igual não consegue pagar</strong></td><td>Risco principal. Mitigante: aval pessoal dos sócios. Histórico: 0 casos de perda definitiva desde o início das operações (abr/2024).</td></tr>
+          <tr><td><strong>Atraso nos juros</strong></td><td>A igual pode atrasar um pagamento mensal. O contrato prevê multa de 2% e juros moratórios de 1% a.m.</td></tr>
+          <tr><td><strong>CDI cai muito</strong></td><td>Se o Banco Central reduzir os juros, o rendimento mensal diminui. O spread de 0,5% ao mês é sempre garantido.</td></tr>
+          <tr><td><strong>Sem liquidez imediata</strong></td><td>Diferente de um CDB, você não resgata a qualquer momento. Prazo mínimo de aviso: 30 dias.</td></tr>
+          <tr><td><strong>Sem FGC</strong></td><td>Este mútuo não é coberto pelo Fundo Garantidor de Créditos.</td></tr>
+          <tr><td><strong>Histórico curto</strong></td><td>A operação tem pouco mais de 1 ano. O histórico é positivo, mas ainda é curto para ciclos econômicos adversos.</td></tr>
+        </tbody>
+      </table>
+      <div class="sec">10. Perguntas frequentes</div>
+      <h3>Posso investir qualquer valor?</h3><p>Sim, não há valor mínimo fixo.</p>
+      <h3>O que acontece se a igual fechar?</h3><p>O contrato tem aval pessoal e solidário dos sócios — você pode acioná-los diretamente.</p>
+      <h3>A taxa pode mudar durante o contrato?</h3><p>O spread de 6% a.a. é fixo. O CDI varia conforme a política do Banco Central.</p>
+      <h3>Os juros são iguais todo mês?</h3><p>Não exatamente. Os juros brutos variam com o CDI e o IR muda entre meses 1–6 (22,5%) e 7–12 (20,0%). As variações na prática são pequenas.</p>
+      <div class="legal">Este documento é informativo e destinado exclusivamente a investidores convidados pela igual. Não constitui oferta pública de valores mobiliários. Não é produto financeiro regulado pelo Banco Central ou pela CVM. Recomenda-se assessoria jurídica e fiscal independente antes da assinatura.</div>
+    </div>
+    </div><!-- viewMutuoGuia -->
+
+    <!-- ═══════════════ CONTRATO ═══════════════ -->
+    <div id="viewMutuoContrato" class="mutuo-wrap" style="display:none">
+    <div class="doc-page" id="printContrato">
+      <div class="doc-top-bar" style="margin-bottom:20px">
+        <div class="doc-eyebrow" style="margin-bottom:0">Igual Antecipação · Contrato de Mútuo</div>
+        <button class="doc-pdf-btn" onclick="exportMutuoPDF('contrato')">↓ Baixar PDF</button>
+      </div>
+      <div class="callout callout-warn" style="margin-bottom:28px">
+        <div class="callout-label">Versão de referência</div>
+        <p>Este é o modelo de contrato utilizado nas operações de mútuo. O contrato definitivo será emitido individualmente com os dados de cada mutuante preenchidos.</p>
+      </div>
+      <div class="contract-head">
+        <div class="contract-main-title">CONTRATO DE MÚTUO COM RENDIMENTO INDEXADO AO CDI</div>
+        <div class="contract-sub-title">Operação de Antecipação de Recebíveis Judiciais</div>
+      </div>
+      <div class="sec" style="margin-top:0">Qualificação das Partes</div>
+      <div class="party-label">Mutuária (tomadora dos recursos)</div>
+      <table class="def-tbl" style="margin-bottom:18px">
+        <tr><td>Razão Social</td><td>[RAZÃO SOCIAL DA IGUAL]</td></tr>
+        <tr><td>CNPJ</td><td>[CNPJ]</td></tr>
+        <tr><td>Endereço</td><td>[ENDEREÇO COMPLETO]</td></tr>
+        <tr><td>Representante Legal</td><td>[NOME], [CARGO], CPF [CPF], RG [RG]</td></tr>
+      </table>
+      <div class="party-label">Mutuante (investidor) — Pessoa Física</div>
+      <table class="def-tbl" style="margin-bottom:18px">
+        <tr><td>Nome completo</td><td>[NOME COMPLETO]</td></tr>
+        <tr><td>CPF</td><td>[CPF]</td></tr>
+        <tr><td>RG</td><td>[RG] — Órgão: [ÓRGÃO]</td></tr>
+        <tr><td>Endereço</td><td>[ENDEREÇO COMPLETO]</td></tr>
+        <tr><td>E-mail</td><td>[E-MAIL]</td></tr>
+        <tr><td>Telefone</td><td>[TELEFONE]</td></tr>
+      </table>
+      <hr class="doc-divider">
+      <div class="clause-body">As partes acima qualificadas celebram o presente Contrato de Mútuo com Rendimento Indexado ao CDI ("Contrato"), que se regerá pelas seguintes cláusulas e condições, em conformidade com os artigos 586 a 592 do Código Civil Brasileiro (Lei n.º 10.406/2002) e demais normas aplicáveis.</div>
+      <div class="clause-body">A Mutuária atua no segmento de antecipação de recebíveis judiciais, adiantando a pessoas físicas o valor líquido de créditos oriundos de processos trabalhistas e cíveis com condenação transitada em julgado. O presente Contrato tem por finalidade viabilizar o financiamento dessa atividade por meio de capital captado junto ao Mutuante.</div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 1ª — Objeto</div>
+        <div class="clause-body">O presente Contrato tem por objeto o empréstimo, pelo Mutuante à Mutuária, do valor descrito na Cláusula 2ª ("Principal"), a ser utilizado exclusivamente na operação de antecipação de recebíveis judiciais conduzida pela Mutuária.</div>
+        <div class="clause-sub"><strong>1.1.</strong> O Mutuante declara ciência de que os recursos serão empregados na atividade de antecipação de recebíveis, não cabendo ao Mutuante qualquer ingerência na seleção dos casos ou na condução operacional da Mutuária.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 2ª — Valor, Prazo e Condições Financeiras</div>
+        <table class="def-tbl" style="margin-bottom:12px">
+          <tr><td>Valor do Principal (R$)</td><td>[____________]</td></tr>
+          <tr><td>Data de Desembolso</td><td>[DD/MM/AAAA]</td></tr>
+          <tr><td>Prazo</td><td>12 (doze) meses</td></tr>
+          <tr><td>Data de Vencimento</td><td>[DD/MM/AAAA]</td></tr>
+          <tr><td>Remuneração</td><td>CDI + 6% (seis por cento) ao ano, calculada mensalmente conforme Cláusula 2.2</td></tr>
+          <tr><td>Modalidade de recebimento</td><td>[ &nbsp;] <strong>Mensal</strong> — todo dia 15 via TED/PIX &nbsp;&nbsp; [ &nbsp;] <strong>No vencimento</strong> — acumulado no mês 12 junto com o principal</td></tr>
+          <tr><td>Amortização do Principal</td><td>Integral no vencimento (bullet)</td></tr>
+          <tr><td>Conta para Recebimento</td><td>[BANCO] — Ag. [____] — Cc. [__________] — [CPF/CNPJ]</td></tr>
+        </table>
+        <div class="clause-sub"><strong>2.1.</strong> O desembolso do Principal será realizado pelo <strong>Mutuante</strong> em favor da <strong>Mutuária</strong> em até 2 (dois) dias úteis após a assinatura do presente Contrato.</div>
+        <div class="clause-sub"><strong>2.2.</strong> A remuneração mensal será calculada pela acumulação da taxa CDI do período de referência, divulgada pela B3 S.A., acrescida de spread de 0,5% ao mês. Fórmula: <strong>Juros do mês = (CDI acumulado do mês + 0,5%) × Principal</strong>.</div>
+        <div class="clause-sub"><strong>2.3.</strong> Na hipótese de atraso no pagamento, incidirão: (i) multa moratória de 2%; (ii) juros de mora de 1% ao mês, pro rata die; e (iii) atualização monetária pelo IPCA acumulado no período.</div>
+        <div class="clause-sub"><strong>2.4.</strong> O Mutuante poderá solicitar antecipação do vencimento mediante notificação com 30 dias de antecedência, caso em que a Mutuária devolverá o Principal acrescido dos juros calculados <em>pro rata die</em> sobre o período decorrido, sem penalidade, independentemente da modalidade de recebimento escolhida.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 3ª — Retenção na Fonte e Obrigações Fiscais</div>
+        <div class="clause-body">Sobre os juros pagos ao Mutuante pessoa física, incidirá IRRF conforme a modalidade de recebimento escolhida na Cláusula 2: (i) <strong>modalidade mensal</strong> — 22,5% sobre juros pagos nos meses 1 a 6, e 20,0% sobre juros pagos nos meses 7 a 12, retidos em cada pagamento; (ii) <strong>modalidade no vencimento</strong> — alíquota única de 17,5% sobre o total de juros acumulados, retida na data de vencimento, dado que a operação tem prazo superior a 360 dias. O principal devolvido não está sujeito a IR.</div>
+        <div class="clause-sub"><strong>3.2.</strong> Para Mutuante PF, não há incidência de IOF nesta operação.</div>
+        <div class="clause-sub"><strong>3.3.</strong> Eventuais alterações na legislação tributária serão automaticamente aplicadas, sem necessidade de aditamento.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 4ª — Declarações e Garantias do Mutuante</div>
+        <div class="clause-body">O Mutuante declara e garante que: é maior de 18 anos e capaz (PF) ou regularmente constituída (PJ); tem plena ciência dos riscos, incluindo risco de crédito da Mutuária; os recursos são de origem lícita; entende que a operação não constitui valor mobiliário regulado pela CVM.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 5ª — Declarações e Obrigações da Mutuária</div>
+        <div class="clause-body">A Mutuária declara e se obriga a: empregar os recursos exclusivamente na antecipação de recebíveis judiciais; manter escrituração contábil regular; notificar o Mutuante com 15 dias de antecedência sobre eventos que possam impactar sua capacidade de pagamento; manter obrigações tributárias, previdenciárias e trabalhistas em dia.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 6ª — Vencimento Antecipado</div>
+        <div class="clause-body">A Mutuária estará sujeita ao vencimento antecipado nas hipóteses de: decretação de falência ou recuperação judicial; atraso superior a 30 dias no pagamento de juros; descumprimento de obrigação relevante não sanado em 15 dias após notificação.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 7ª — Confidencialidade</div>
+        <div class="clause-body">As partes comprometem-se a manter em sigilo todas as informações obtidas em razão deste Contrato pelo prazo de 5 anos após o término da vigência.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 8ª — Cessão</div>
+        <div class="clause-body">O Contrato não poderá ser cedido sem o prévio consentimento escrito da outra parte.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 9ª — Aval e Garantia Pessoal</div>
+        <div class="clause-body">Os sócios da Mutuária abaixo qualificados prestam, neste ato, aval solidário, incondicional e irrevogável, obrigando-se solidária e individualmente, como principais pagadores, pelo integral cumprimento de todas as obrigações pecuniárias assumidas pela Mutuária.</div>
+        <table class="def-tbl" style="margin:12px 0">
+          <tr><td style="background:var(--coral-light);color:var(--coral)">Avalista 1</td><td>Nome: [NOME] &nbsp;·&nbsp; CPF: [CPF] &nbsp;·&nbsp; RG: [RG]</td></tr>
+          <tr><td style="background:var(--coral-light);color:var(--coral)">Avalista 2</td><td>Nome: [NOME] &nbsp;·&nbsp; CPF: [CPF] &nbsp;·&nbsp; RG: [RG]</td></tr>
+        </table>
+        <div class="clause-sub"><strong>9.1.</strong> O aval é incondicional e independente de benefício de ordem — o Mutuante pode exigir o cumprimento diretamente dos avalistas, sem prévia excussão dos bens da Mutuária.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 10ª — Disposições Gerais</div>
+        <div class="clause-body">Este Contrato representa a totalidade do acordo entre as partes. Alterações somente valem se formalizadas por escrito e assinadas por ambas.</div>
+      </div>
+      <div class="clause-block">
+        <div class="clause-title">Cláusula 11ª — Foro</div>
+        <div class="clause-body">Fica eleito o foro da Comarca de [CIDADE/UF], com renúncia expressa a qualquer outro, para dirimir quaisquer dúvidas ou litígios decorrentes do presente Contrato.</div>
+      </div>
+      <hr class="doc-divider">
+      <p style="font-size:14px">[CIDADE], [DD] de [MÊS] de [ANO].</p>
+      <div class="sign-grid">
+        <div><div class="sign-line">MUTUÁRIA — [RAZÃO SOCIAL DA IGUAL]<br>[NOME DO REPRESENTANTE] · [CARGO] · CPF: [CPF]</div></div>
+        <div><div class="sign-line">MUTUANTE — [NOME COMPLETO / RAZÃO SOCIAL]<br>CPF/CNPJ: [CPF/CNPJ]</div></div>
+        <div><div class="sign-line">AVALISTA 1 — [NOME]<br>CPF: [CPF]</div></div>
+        <div><div class="sign-line">AVALISTA 2 — [NOME]<br>CPF: [CPF]</div></div>
+        <div><div class="sign-line">TESTEMUNHA 1 — [NOME]<br>CPF: [CPF]</div></div>
+        <div><div class="sign-line">TESTEMUNHA 2 — [NOME]<br>CPF: [CPF]</div></div>
+      </div>
+      <div class="legal">Este instrumento constitui mútuo privado entre partes, celebrado nos termos dos artigos 586 a 592 do Código Civil. Não se trata de valor mobiliário nem de produto financeiro regulado pela CVM ou pelo Banco Central.</div>
+    </div>
+    </div><!-- viewMutuoContrato -->
+
+    <!-- ═══════════════ SIMULADOR ═══════════════ -->
+    <div id="viewMutuoCalc" style="display:none;padding-bottom:60px">
+      <div class="view-header" style="padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line)">
+        <div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-mute);margin-bottom:4px">Mútuo · Simulador</div>
+          <div class="view-title">Simulador do Mutuante</div>
+          <div class="view-subtitle">Projeção de retorno para 12 meses com base no montante investido</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:24px;background:white;border:1px solid var(--line);padding:14px 20px;margin-bottom:20px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute)">Montante investido</span>
+          <span style="font-size:11px;color:var(--ink-mute)">R$</span>
+          <input id="calcMontante" type="text" inputmode="numeric" value="50.000"
+            style="font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);padding:6px 10px;color:var(--ink);background:var(--paper);width:130px;text-align:right">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute)">CDI a.a.</span>
+          <input id="calcCdi" type="number" value="14.40" step="0.25" min="0" max="50"
+            style="font-family:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);padding:6px 10px;color:var(--ink);background:var(--paper);width:90px;text-align:right">
+          <span style="font-size:11px;color:var(--ink-mute)">%</span>
+          <span id="calcDerivedRate" style="font-size:11px;color:var(--ink-mute)"></span>
+        </div>
+      </div>
+
+      <div id="calcKpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px"></div>
+
+      <div style="background:white;border:1px solid var(--line)">
+        <div style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink)">Projeção mês a mês</span>
+          <span style="font-size:11px;color:var(--ink-mute)">CDI + 0,5% a.m. · IR regressivo retido na fonte</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead>
+            <tr style="background:var(--paper-2)">
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:left;border-bottom:1px solid var(--line)">Mês</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Juros brutos</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">IR retido</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Juros líquidos</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Devolução principal</th>
+              <th style="padding:8px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-mute);text-align:right;border-bottom:1px solid var(--line)">Total recebido</th>
+            </tr>
+          </thead>
+          <tbody id="calcBody"></tbody>
+        </table>
+        <div id="calcNote" style="font-size:10px;color:var(--ink-mute);padding:8px 14px;border-top:1px solid var(--line);background:var(--paper)"></div>
+      </div>
+    </div><!-- viewMutuoCalc -->
 
   </main>
 
