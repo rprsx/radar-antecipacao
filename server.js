@@ -361,9 +361,8 @@ app.get('/api/export/lamina', async (req, res) => {
       ]),
 
       heading('5. Retorno estimado — pessoa física (CDI ref. 14,40% a.a.)'),
-      p('Taxa bruta idêntica nas duas modalidades — a diferença é exclusivamente no IR.', { color: MUTED, size: 18 }),
+      p('CDI de 14,40% a.a. (maio/2026). Remuneração bruta idêntica nas duas modalidades: CDI + 6% a.a. (~20,75% a.a.). A diferença é exclusivamente no IR.', { color: MUTED, size: 18 }),
       makeTable(['', 'Juros mensais', 'Juros no vencimento'], [
-        ['Remuneração bruta', 'CDI + 6% a.a. (~20,75% a.a.)', 'CDI + 6% a.a. (~20,75% a.a.)'],
         ['IR retido na fonte', '22,5% m.1–6 · 20,0% m.7–12', '17,5% único no vencimento'],
         ['Líquido estimado', '~16,3% a.a.', '~17,1% a.a.'],
         ['vs. CDI líquido (10,8%)', '~151% do CDI', '~158% do CDI'],
